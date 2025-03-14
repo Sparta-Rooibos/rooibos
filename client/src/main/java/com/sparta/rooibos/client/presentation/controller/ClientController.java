@@ -3,6 +3,8 @@ package com.sparta.rooibos.client.presentation.controller;
 import com.sparta.rooibos.client.application.service.ClientService;
 import com.sparta.rooibos.client.application.service.dto.req.CreateClientApplicationRequest;
 
+
+import com.sparta.rooibos.client.presentation.dto.res.SearchClientResponse;
 import com.sparta.rooibos.client.presentation.dto.req.CreateClientRequest;
 import com.sparta.rooibos.client.presentation.dto.res.CreateClientResponse;
 import lombok.RequiredArgsConstructor;
@@ -13,9 +15,11 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/client")
 public class ClientController {
     private final ClientService clientService;
+
+    //TODO 검색 파라미터 적용
     @GetMapping
-    public void getClientList() {
-        clientService.getClientList();
+    public SearchClientResponse getClientList() {
+        return new SearchClientResponse(clientService.getClientList());
     }
     @GetMapping("/{clientId}")
     public void getClient() {
