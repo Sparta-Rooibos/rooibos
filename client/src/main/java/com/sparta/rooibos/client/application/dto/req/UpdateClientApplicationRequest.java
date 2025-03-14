@@ -1,4 +1,4 @@
-package com.sparta.rooibos.client.application.service.dto.req;
+package com.sparta.rooibos.client.application.dto.req;
 
 import com.sparta.rooibos.client.presentation.dto.req.UpdateClientRequest;
 

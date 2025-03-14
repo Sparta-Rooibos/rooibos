@@ -1,10 +1,10 @@
 package com.sparta.rooibos.client.presentation.controller;
 
+import com.sparta.rooibos.client.application.dto.req.CreateClientApplicationRequest;
 import com.sparta.rooibos.client.application.service.ClientService;
-import com.sparta.rooibos.client.application.service.dto.req.CreateClientApplicationRequest;
 
 
-import com.sparta.rooibos.client.application.service.dto.req.UpdateClientApplicationRequest;
+import com.sparta.rooibos.client.application.dto.req.UpdateClientApplicationRequest;
 import com.sparta.rooibos.client.presentation.dto.req.UpdateClientRequest;
 import com.sparta.rooibos.client.presentation.dto.res.GetClientResponse;
 import com.sparta.rooibos.client.presentation.dto.res.SearchClientResponse;

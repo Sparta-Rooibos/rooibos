@@ -1,7 +1,7 @@
 package com.sparta.rooibos.client.presentation.dto.res;
 
 
-import com.sparta.rooibos.client.application.service.dto.res.GetClientApplicationResponse;
+import com.sparta.rooibos.client.application.dto.res.GetClientApplicationResponse;
 
 import java.time.LocalDateTime;
 
