@@ -1,11 +1,12 @@
 package com.sparta.rooibos.client.application.service;
 
-import com.sparta.rooibos.client.application.service.dto.req.CreateClientApplicationRequest;
-import com.sparta.rooibos.client.application.service.dto.req.UpdateClientApplicationRequest;
-import com.sparta.rooibos.client.application.service.dto.res.CreateClientApplicationResponse;
-import com.sparta.rooibos.client.application.service.dto.res.GetClientApplicationResponse;
-import com.sparta.rooibos.client.application.service.dto.res.SearchClientApplicationListResponse;
-import com.sparta.rooibos.client.application.service.dto.res.SearchClientApplicationResponse;
+
+import com.sparta.rooibos.client.application.dto.req.CreateClientApplicationRequest;
+import com.sparta.rooibos.client.application.dto.req.UpdateClientApplicationRequest;
+import com.sparta.rooibos.client.application.dto.res.CreateClientApplicationResponse;
+import com.sparta.rooibos.client.application.dto.res.GetClientApplicationResponse;
+import com.sparta.rooibos.client.application.dto.res.SearchClientApplicationListResponse;
+import com.sparta.rooibos.client.application.dto.res.SearchClientApplicationResponse;
 import com.sparta.rooibos.client.domain.entity.Client;
 import com.sparta.rooibos.client.domain.model.ClientType;
 import com.sparta.rooibos.client.domain.repository.ClientRepository;

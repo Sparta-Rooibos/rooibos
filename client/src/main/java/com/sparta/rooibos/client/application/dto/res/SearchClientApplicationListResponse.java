@@ -1,4 +1,4 @@
-package com.sparta.rooibos.client.application.service.dto.res;
+package com.sparta.rooibos.client.application.dto.res;
 
 import java.util.UUID;
 

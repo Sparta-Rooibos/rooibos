@@ -1,6 +1,6 @@
 package com.sparta.rooibos.client.presentation.dto.res;
 
-import com.sparta.rooibos.client.application.service.dto.res.SearchClientApplicationResponse;
+import com.sparta.rooibos.client.application.dto.res.SearchClientApplicationResponse;
 
 import java.util.List;
 
