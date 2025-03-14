@@ -1,4 +1,4 @@
-package com.sparta.rooibos.client.insfacture.repository;
+package com.sparta.rooibos.client.infrastructure.repository;
 
 import com.sparta.rooibos.client.domain.entity.Client;
 import com.sparta.rooibos.client.domain.repository.ClientRepository;
