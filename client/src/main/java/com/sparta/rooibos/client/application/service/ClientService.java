@@ -1,6 +1,7 @@
 package com.sparta.rooibos.client.application.service;
 
 import com.sparta.rooibos.client.application.service.dto.req.CreateClientApplicationRequest;
+import com.sparta.rooibos.client.application.service.dto.req.UpdateClientApplicationRequest;
 import com.sparta.rooibos.client.application.service.dto.res.CreateClientApplicationResponse;
 import com.sparta.rooibos.client.application.service.dto.res.GetClientApplicationResponse;
 import com.sparta.rooibos.client.application.service.dto.res.SearchClientApplicationListResponse;
@@ -10,6 +11,7 @@ import com.sparta.rooibos.client.domain.model.ClientType;
 import com.sparta.rooibos.client.domain.repository.ClientRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -38,11 +40,11 @@ public class ClientService {
     public GetClientApplicationResponse getClient(UUID clientId) {
         Client client = clientRepository.findById(clientId).orElseThrow(() -> new IllegalArgumentException("해당 하는 업체가 존재하지 않습니다."));
         return new GetClientApplicationResponse(client.getId().toString(),
-                                                client.getName(),
-                                                client.getClientAddress(),
-                                                client.getType().name(),
-                                                LocalDateTime.now(),
-                                                LocalDateTime.now());
+                client.getName(),
+                client.getClientAddress(),
+                client.getType().name(),
+                LocalDateTime.now(),
+                LocalDateTime.now());
     }
 
     public CreateClientApplicationResponse createClient(CreateClientApplicationRequest createClientRequest) {
@@ -57,8 +59,12 @@ public class ClientService {
         return new CreateClientApplicationResponse(client);
     }
 
-    public void updateClient() {
-
+    @Transactional
+    public boolean updateClient(UpdateClientApplicationRequest request) {
+        UUID id = request.clientId();
+        Client client = clientRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 하는 업체가 존재하지 않습니다."));
+        client.update(request.name(), request.address());
+        return true;
     }
 
     public void deleteClient() {

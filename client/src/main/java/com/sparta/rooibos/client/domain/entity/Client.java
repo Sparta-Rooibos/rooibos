@@ -36,4 +36,9 @@ public class Client {
         this.managedHubId = managedHubId;
         this.clientAddress = address;
     }
+
+    public void update(String name, String address) {
+        this.name = name;
+        this.clientAddress = address;
+    }
 }
