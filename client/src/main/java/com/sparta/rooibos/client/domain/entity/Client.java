@@ -41,4 +41,9 @@ public class Client {
         this.name = name;
         this.clientAddress = address;
     }
+
+    public boolean delete() {
+        //TODO: 소프트 삭제 구현
+        return true;
+    }
 }

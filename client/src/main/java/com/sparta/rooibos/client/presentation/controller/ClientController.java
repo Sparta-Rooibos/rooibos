@@ -26,21 +26,25 @@ public class ClientController {
     public SearchClientResponse getClientList() {
         return new SearchClientResponse(clientService.getClientList());
     }
+
     @GetMapping("/{clientId}")
     public GetClientResponse getClient(@PathVariable UUID clientId) {
         return new GetClientResponse(clientService.getClient(clientId));
     }
+
     @PostMapping()
     public CreateClientResponse createClient(@RequestBody CreateClientRequest createClientRequest) {
         return new CreateClientResponse(clientService.createClient(new CreateClientApplicationRequest(createClientRequest)));
 
     }
+
     @PutMapping("/{clientId}")
     public boolean updateClient(@PathVariable UUID clientId, @RequestBody UpdateClientRequest request) {
-        return clientService.updateClient(new UpdateClientApplicationRequest(clientId,request));
+        return clientService.updateClient(new UpdateClientApplicationRequest(clientId, request));
     }
+
     @PatchMapping("/{clientId}")
-    public void deleteClient() {
-        clientService.deleteClient();
+    public boolean deleteClient(@PathVariable UUID clientId) {
+        return clientService.deleteClient(clientId);
     }
 }

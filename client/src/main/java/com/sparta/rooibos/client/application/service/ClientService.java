@@ -67,7 +67,10 @@ public class ClientService {
         return true;
     }
 
-    public void deleteClient() {
+    @Transactional
+    public boolean deleteClient(UUID id) {
+        Client client = clientRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 하는 업체가 존재하지 않습니다."));
 
+       return client.delete();
     }
 }
