@@ -1,5 +1,6 @@
 package com.sparta.rooibos.client.domain.entity;
 
+import com.sparta.rooibos.common.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -10,7 +11,7 @@ import java.util.UUID;
 @Table(name = "p_client")
 @NoArgsConstructor
 @AllArgsConstructor
-public class Client {
+public class Client extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
