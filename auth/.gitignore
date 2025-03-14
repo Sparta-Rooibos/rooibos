@@ -1,0 +1,37 @@
+HELP.md
+.gradle
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath ㅈㅣ금보면 보이시나여 일단 터미널보시면 지금 하위깃삭제햇구여 그랫더니 다시커밋목록에 파일들이 생성됐어요 저게 원래는 커밋을 눌렀던애들인데 눌러서없어졌는데 다시 생겼거든요  문제는  커피아이콘 붙었어여 주석처리마냥 근데 눌러보면 주석처리는 아니고 봐보ㅗ세여
+.project
+.settings
+.springBeans
+.sts4-cache
+bin/
+!**/src/main/**/bin/
+!**/src/test/**/bin/
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+out/
+!**/src/main/**/out/
+!**/src/test/**/out/
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+### VS Code ###
+.vscode/
