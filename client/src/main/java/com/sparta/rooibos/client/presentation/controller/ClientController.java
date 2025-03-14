@@ -4,11 +4,14 @@ import com.sparta.rooibos.client.application.service.ClientService;
 import com.sparta.rooibos.client.application.service.dto.req.CreateClientApplicationRequest;
 
 
+import com.sparta.rooibos.client.presentation.dto.res.GetClientResponse;
 import com.sparta.rooibos.client.presentation.dto.res.SearchClientResponse;
 import com.sparta.rooibos.client.presentation.dto.req.CreateClientRequest;
 import com.sparta.rooibos.client.presentation.dto.res.CreateClientResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -22,8 +25,8 @@ public class ClientController {
         return new SearchClientResponse(clientService.getClientList());
     }
     @GetMapping("/{clientId}")
-    public void getClient() {
-        clientService.getClient();
+    public GetClientResponse getClient(@PathVariable UUID clientId) {
+        return new GetClientResponse(clientService.getClient(clientId));
     }
     @PostMapping()
     public CreateClientResponse createClient(@RequestBody CreateClientRequest createClientRequest) {

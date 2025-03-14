@@ -2,6 +2,7 @@ package com.sparta.rooibos.client.application.service;
 
 import com.sparta.rooibos.client.application.service.dto.req.CreateClientApplicationRequest;
 import com.sparta.rooibos.client.application.service.dto.res.CreateClientApplicationResponse;
+import com.sparta.rooibos.client.application.service.dto.res.GetClientApplicationResponse;
 import com.sparta.rooibos.client.application.service.dto.res.SearchClientApplicationListResponse;
 import com.sparta.rooibos.client.application.service.dto.res.SearchClientApplicationResponse;
 import com.sparta.rooibos.client.domain.entity.Client;
@@ -10,7 +11,9 @@ import com.sparta.rooibos.client.domain.repository.ClientRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -23,16 +26,23 @@ public class ClientService {
         List<Client> clientList = clientRepository.findAll();
         return new SearchClientApplicationResponse(
                 clientList.stream()
-                .map(client -> new SearchClientApplicationListResponse(
-                        client.getId(),
-                        client.getName(),
-                        client.getType().name(),
-                        client.getManagedHubId(),
-                        client.getClientAddress())).toList(), 0L, 0L, 0L);
+                        .map(client -> new SearchClientApplicationListResponse(
+                                client.getId(),
+                                client.getName(),
+                                client.getType().name(),
+                                client.getManagedHubId(),
+                                client.getClientAddress())).toList(), 0L, 0L, 0L);
     }
 
-    public void getClient() {
-
+    //TODO 시간타입 추가
+    public GetClientApplicationResponse getClient(UUID clientId) {
+        Client client = clientRepository.findById(clientId).orElseThrow(() -> new IllegalArgumentException("해당 하는 업체가 존재하지 않습니다."));
+        return new GetClientApplicationResponse(client.getId().toString(),
+                                                client.getName(),
+                                                client.getClientAddress(),
+                                                client.getType().name(),
+                                                LocalDateTime.now(),
+                                                LocalDateTime.now());
     }
 
     public CreateClientApplicationResponse createClient(CreateClientApplicationRequest createClientRequest) {
