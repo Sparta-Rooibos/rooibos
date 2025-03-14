@@ -4,6 +4,8 @@ import com.sparta.rooibos.client.application.service.ClientService;
 import com.sparta.rooibos.client.application.service.dto.req.CreateClientApplicationRequest;
 
 
+import com.sparta.rooibos.client.application.service.dto.req.UpdateClientApplicationRequest;
+import com.sparta.rooibos.client.presentation.dto.req.UpdateClientRequest;
 import com.sparta.rooibos.client.presentation.dto.res.GetClientResponse;
 import com.sparta.rooibos.client.presentation.dto.res.SearchClientResponse;
 import com.sparta.rooibos.client.presentation.dto.req.CreateClientRequest;
@@ -34,8 +36,8 @@ public class ClientController {
 
     }
     @PutMapping("/{clientId}")
-    public void updateClient() {
-        clientService.updateClient();
+    public boolean updateClient(@PathVariable UUID clientId, @RequestBody UpdateClientRequest request) {
+        return clientService.updateClient(new UpdateClientApplicationRequest(clientId,request));
     }
     @PatchMapping("/{clientId}")
     public void deleteClient() {
