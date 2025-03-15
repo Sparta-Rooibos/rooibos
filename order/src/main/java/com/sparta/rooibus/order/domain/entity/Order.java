@@ -69,8 +69,8 @@ public class Order {
     @Column(name = "deleted_by", length = 50)
     private String deletedBy;  // 삭제자
 
-    // 주문 저장시 UUID 생성해서 저장
-    // TODO : 저장할때 생성자 찾아서 생성자도 넣기
+    // TODO : 저장,수정,삭제할때 user값 넣기
+
     @PrePersist
     public void prePersist() {
         if (this.id == null) {
@@ -94,7 +94,6 @@ public class Order {
         this.requirement = requestDTO.requirement();
         this.status = OrderStatus.PENDING;
 
-    // TODO : 저장할때 수정자 찾아서 수정자 넣기
         this.updatedAt = LocalDateTime.now();
     }
 
@@ -126,5 +125,9 @@ public class Order {
         }
 
 
+    }
+
+    public void delete() {
+        this.deletedAt = LocalDateTime.now();
     }
 }
