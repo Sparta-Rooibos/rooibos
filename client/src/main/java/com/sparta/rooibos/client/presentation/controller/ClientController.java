@@ -6,6 +6,7 @@ import com.sparta.rooibos.client.application.service.ClientService;
 
 
 import com.sparta.rooibos.client.application.dto.req.UpdateClientApplicationRequest;
+import com.sparta.rooibos.client.presentation.dto.req.SearchClientRequest;
 import com.sparta.rooibos.client.presentation.dto.req.UpdateClientRequest;
 import com.sparta.rooibos.client.presentation.dto.req.UpdateHubIdRequest;
 import com.sparta.rooibos.client.presentation.dto.res.GetClientResponse;
@@ -28,15 +29,10 @@ public class ClientController {
     private final ClientService clientService;
 
     @GetMapping
-    public ResponseEntity<SearchClientResponse> getClientList(@RequestParam(required = false) String name,
-                                                              @RequestParam(required = false) String address,
-                                                              @RequestParam(required = false) String type,
-                                                              @RequestParam(required = false) Boolean deleteCheck,
-                                                              @RequestParam(defaultValue = "createdAt") String sort,
-                                                              @RequestParam(defaultValue = "1") int page,
-                                                              @RequestParam(defaultValue = "10") int size) {
-        Pageable pageable = PageRequest.of(page - 1, size, Sort.by(Sort.Direction.DESC, sort));
-        return ResponseEntity.ok(new SearchClientResponse(clientService.getClientList(new SearchClientApplicationCondition(pageable, name, address, type, deleteCheck))));
+    public ResponseEntity<SearchClientResponse> getClientList(
+            @ModelAttribute SearchClientRequest request) {
+        Pageable pageable = PageRequest.of(request.page() - 1, request.size(), Sort.by(Sort.Direction.DESC, request.sort()));
+        return ResponseEntity.ok(new SearchClientResponse(clientService.getClientList(request.toApplication(pageable))));
     }
 
     @GetMapping("/{clientId}")
