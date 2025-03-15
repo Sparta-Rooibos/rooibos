@@ -4,6 +4,7 @@ package com.sparta.rooibos.client.application.service;
 import com.sparta.rooibos.client.application.dto.condition.SearchClientApplicationCondition;
 import com.sparta.rooibos.client.application.dto.req.CreateClientApplicationRequest;
 import com.sparta.rooibos.client.application.dto.req.UpdateClientApplicationRequest;
+import com.sparta.rooibos.client.application.dto.req.UpdateHubIdApplicationRequest;
 import com.sparta.rooibos.client.application.dto.res.CreateClientApplicationResponse;
 import com.sparta.rooibos.client.application.dto.res.GetClientApplicationResponse;
 import com.sparta.rooibos.client.application.dto.res.SearchClientApplicationListResponse;
@@ -80,5 +81,12 @@ public class ClientService {
         Client client = clientRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 하는 업체가 존재하지 않습니다."));
         //TODO 삭제시 계정 ID를 가져온다.
         return client.delete("계정아이디");
+    }
+
+    @Transactional
+    public boolean changeUsedHub(UpdateHubIdApplicationRequest request) {
+        UUID id = request.clientId();
+        Client client = clientRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 하는 업체가 존재하지 않습니다."));
+        return client.changeUsedHub(request.hubId());
     }
 }
