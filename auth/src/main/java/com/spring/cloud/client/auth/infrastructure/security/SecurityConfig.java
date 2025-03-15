@@ -16,13 +16,6 @@ import java.util.Collections;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-//    MSA에서는 User 서비스와 직접 통신하지 않고, Kafka를 사용하여 인증 요청을 처리하므로 AuthenticationManager를 사용하지 않아도 됩니다.
-//    @Bean
-//    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
-//
-//        return configuration.getAuthenticationManager();
-//    }
-
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
 
@@ -65,17 +58,6 @@ public class SecurityConfig {
                         .requestMatchers("/auth/logout").authenticated()
                         .anyRequest().authenticated());
 
-        //  이제 LoginFilter가 제거되었으므로, JwtFilter를 UsernamePasswordAuthenticationFilter 앞에 배치해야 함
-//        http
-//                .addFilterBefore(new JwtFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
-//        http
-//                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil, refreshRepository), UsernamePasswordAuthenticationFilter.class);
-//         로그아웃 요청은 AuthService.logout()에서 처리되므로 CustomLogoutFilter가 필요 없음
-//        http
-//                .addFilterBefore(new CustomLogoutFilter(jwtUtil, refreshRepository), LogoutFilter.class);
-
-
-        //세션 설정
         http
                 .sessionManagement((session) -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS));

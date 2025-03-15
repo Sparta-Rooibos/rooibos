@@ -1,7 +1,7 @@
 package com.spring.cloud.client.auth.presentation.controller;
 
 import com.spring.cloud.client.auth.application.service.AuthService;
-import com.spring.cloud.client.auth.application.dto.LoginDTO;
+import com.spring.cloud.client.auth.application.dto.request.LoginRequest;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -18,8 +18,8 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginDTO loginDTO, HttpServletRequest request, HttpServletResponse response) {
-        return authService.login(loginDTO, request, response);
+    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest, HttpServletRequest request, HttpServletResponse response) {
+        return authService.login(loginRequest, request, response);
     }
 
     @PostMapping("/logout")

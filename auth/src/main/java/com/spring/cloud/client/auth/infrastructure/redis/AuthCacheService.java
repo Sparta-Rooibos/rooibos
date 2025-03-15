@@ -32,9 +32,4 @@ public class AuthCacheService {
     public void deleteUserCache(String username) {
         redisTemplate.delete(CACHE_PREFIX + username);
     }
-
-     // 블랙리스트 확인 기능 추가
-    public boolean isTokenBlacklisted(String token) {
-        return blacklistService.isTokenBlacklisted(token);
-    }
 }
