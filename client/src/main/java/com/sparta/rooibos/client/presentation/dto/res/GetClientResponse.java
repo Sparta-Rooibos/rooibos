@@ -5,9 +5,10 @@ import com.sparta.rooibos.client.application.dto.res.GetClientApplicationRespons
 
 import java.time.LocalDateTime;
 
-public record GetClientResponse(String id, String name, String address, String type, LocalDateTime createdAt, LocalDateTime updatedAt) {
+public record GetClientResponse(String id, String name, String address, String type, String managedHubId,
+                                LocalDateTime createdAt, LocalDateTime updatedAt) {
     public GetClientResponse(GetClientApplicationResponse client) {
-        this(client.id(), client.name(), client.address(), client.type(), client.createdAt(), client.updatedAt());
+        this(client.id(), client.name(), client.address(), client.type(), client.managedHubId(), client.createdAt(), client.updatedAt());
     }
 
 }

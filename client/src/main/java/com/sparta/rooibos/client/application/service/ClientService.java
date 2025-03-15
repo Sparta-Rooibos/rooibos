@@ -50,6 +50,7 @@ public class ClientService {
                 client.getName(),
                 client.getClientAddress(),
                 client.getType().name(),
+                client.getManagedHubId(),
                 client.getCreateAt(),
                 client.getUpdateAt());
     }
