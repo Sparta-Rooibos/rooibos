@@ -110,4 +110,21 @@ public class Order {
         if(requestDTO.requirement()!=null)
             this.requirement = requestDTO.requirement();
     }
+
+    public void updateStatus(String status){
+        switch (status){
+            case "주문 접수":
+                this.status = OrderStatus.PENDING;
+            case "주문 처리중":
+                this.status = OrderStatus.PROCESSING;
+            case "배송 중":
+                this.status = OrderStatus.DELIVERING;
+            case "배송 완료":
+                this.status = OrderStatus.DELIVERED;
+            case "취소":
+                this.status = OrderStatus.CANCELLED;
+        }
+
+
+    }
 }
