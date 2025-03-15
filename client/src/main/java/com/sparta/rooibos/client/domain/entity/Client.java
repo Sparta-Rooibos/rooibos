@@ -77,4 +77,9 @@ public class Client {
         this.deleteBy = userName;
         return true;
     }
+
+    public boolean changeUsedHub(String hubId) {
+        this.managedHubId = hubId;
+        return true;
+    }
 }

@@ -7,6 +7,7 @@ import com.sparta.rooibos.client.application.service.ClientService;
 
 import com.sparta.rooibos.client.application.dto.req.UpdateClientApplicationRequest;
 import com.sparta.rooibos.client.presentation.dto.req.UpdateClientRequest;
+import com.sparta.rooibos.client.presentation.dto.req.UpdateHubIdRequest;
 import com.sparta.rooibos.client.presentation.dto.res.GetClientResponse;
 import com.sparta.rooibos.client.presentation.dto.res.SearchClientResponse;
 import com.sparta.rooibos.client.presentation.dto.req.CreateClientRequest;
@@ -56,5 +57,10 @@ public class ClientController {
     public boolean deleteClient(@PathVariable UUID clientId) {
         return clientService.deleteClient(clientId);
     }
+
     //사용 허브 변경
+    @PatchMapping("/change/hub/{clientId}")
+    public boolean changeUsedHub(@PathVariable UUID clientId, @RequestBody UpdateHubIdRequest request) {
+        return clientService.changeUsedHub(request.toApplication(clientId));
+    }
 }
