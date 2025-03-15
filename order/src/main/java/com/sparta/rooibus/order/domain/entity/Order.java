@@ -1,6 +1,7 @@
 package com.sparta.rooibus.order.domain.entity;
 
 import com.sparta.rooibus.order.application.dto.request.CreateOrderRequestDTO;
+import com.sparta.rooibus.order.application.dto.request.UpdateOrderRequestDTO;
 import com.sparta.rooibus.order.domain.model.OrderStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -15,9 +16,11 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Where;
 
 @Entity
 @Table(name = "p_order")  // DB 테이블 이름 p_order와 매핑
+@Where(clause = "deleted_at IS NULL")
 @Getter
 @NoArgsConstructor
 public class Order {
@@ -90,5 +93,21 @@ public class Order {
         this.quantity = requestDTO.quantity();
         this.requirement = requestDTO.requirement();
         this.status = OrderStatus.PENDING;
+
+    // TODO : 저장할때 수정자 찾아서 수정자 넣기
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    public void update(UpdateOrderRequestDTO requestDTO) {
+        if(requestDTO.requestClientId()!=null)
+            this.requestClientId = requestDTO.requestClientId();
+        if(requestDTO.responseClientId()!=null)
+            this.responseClientId = requestDTO.responseClientId();
+        if(requestDTO.productId()!=null)
+            this.productId = requestDTO.productId();
+        if(requestDTO.quantity()!=null)
+            this.quantity = requestDTO.quantity();
+        if(requestDTO.requirement()!=null)
+            this.requirement = requestDTO.requirement();
     }
 }

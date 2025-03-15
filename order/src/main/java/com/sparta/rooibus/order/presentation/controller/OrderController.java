@@ -4,10 +4,13 @@ import com.sparta.rooibus.order.application.dto.request.CreateOrderRequestDTO;
 import com.sparta.rooibus.order.application.dto.response.CreateOrderResponseDTO;
 import com.sparta.rooibus.order.application.service.OrderService;
 
+import com.sparta.rooibus.order.application.dto.request.UpdateOrderRequestDTO;
+import com.sparta.rooibus.order.application.dto.request.UpdateOrderResponseDTO;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class OrderController {
 
     private final OrderService orderService;
-
+// TODO : ResponseEntity 타입 String -> responseDTO 해야할까 물어보기
     @PostMapping
     public ResponseEntity<String> createOrder(@Valid @RequestBody CreateOrderRequestDTO request) {
         CreateOrderResponseDTO response = orderService.createOrder(request);
@@ -26,5 +29,11 @@ public class OrderController {
             "Order(" + response.orderId() + ") " + ",Delivery(" +
                 response.deliveryId() + ") is created"
         );
+    }
+
+    @PutMapping
+    public ResponseEntity<UpdateOrderResponseDTO> updateOrder(@Valid @RequestBody UpdateOrderRequestDTO request){
+        UpdateOrderResponseDTO response = orderService.updateOrder(request);
+        return ResponseEntity.ok(response);
     }
 }
