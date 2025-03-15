@@ -25,7 +25,6 @@ import java.util.UUID;
 public class ClientController {
     private final ClientService clientService;
 
-    //TODO 검색 파라미터 적용
     @GetMapping
     public SearchClientResponse getClientList(@RequestParam(required = false) String name,
                                               @RequestParam(required = false) String address,
@@ -44,13 +43,13 @@ public class ClientController {
 
     @PostMapping()
     public CreateClientResponse createClient(@RequestBody CreateClientRequest createClientRequest) {
-        return new CreateClientResponse(clientService.createClient(new CreateClientApplicationRequest(createClientRequest)));
+        return new CreateClientResponse(clientService.createClient(createClientRequest.toApplication()));
 
     }
 
     @PutMapping("/{clientId}")
     public boolean updateClient(@PathVariable UUID clientId, @RequestBody UpdateClientRequest request) {
-        return clientService.updateClient(new UpdateClientApplicationRequest(clientId, request));
+        return clientService.updateClient(request.toApplication(clientId));
     }
 
     @PatchMapping("/{clientId}")

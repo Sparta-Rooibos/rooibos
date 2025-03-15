@@ -9,4 +9,5 @@ public record GetClientResponse(String id, String name, String address, String t
     public GetClientResponse(GetClientApplicationResponse client) {
         this(client.id(), client.name(), client.address(), client.type(), client.createdAt(), client.updatedAt());
     }
+
 }
