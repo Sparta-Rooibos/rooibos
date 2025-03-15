@@ -1,5 +1,6 @@
-package com.spring.cloud.client.auth.application.service;
+package com.spring.cloud.client.auth.infrastructure.util;
 
+import com.spring.cloud.client.auth.application.service.CookieProvider;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -9,9 +10,9 @@ import java.util.Arrays;
 import java.util.Optional;
 
 @Service
-public class CookieService {
-    public static Cookie createCookie(String key, String value) {
-        Cookie cookie = new Cookie(key, value);
+public class CookieUtil implements CookieProvider {
+    public Cookie createCookie(String value) {
+        Cookie cookie = new Cookie("refresh", value);
         cookie.setMaxAge(24 * 60 * 60);
         //cookie.setSecure(true);
         cookie.setPath("/");
@@ -35,3 +36,4 @@ public class CookieService {
         response.addCookie(cookie);
     }
 }
+
