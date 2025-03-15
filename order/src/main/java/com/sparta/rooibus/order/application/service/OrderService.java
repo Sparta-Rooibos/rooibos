@@ -1,13 +1,14 @@
 package com.sparta.rooibus.order.application.service;
 
 import com.sparta.rooibus.order.application.dto.request.CreateOrderRequestDTO;
-import com.sparta.rooibus.order.application.dto.request.DeleteOrderResponseDTO;
+import com.sparta.rooibus.order.application.dto.response.DeleteOrderResponseDTO;
 import com.sparta.rooibus.order.application.dto.request.DeliveryRequestDTO;
 import com.sparta.rooibus.order.application.dto.request.UpdateOrderRequestDTO;
 import com.sparta.rooibus.order.application.dto.response.CreateOrderResponseDTO;
+import com.sparta.rooibus.order.application.dto.response.GetOrderResponseDTO;
 import com.sparta.rooibus.order.domain.entity.Order;
 import com.sparta.rooibus.order.domain.repository.OrderRepository;
-import com.sparta.rooibus.order.application.dto.request.UpdateOrderResponseDTO;
+import com.sparta.rooibus.order.application.dto.response.UpdateOrderResponseDTO;
 import jakarta.validation.Valid;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -49,11 +50,26 @@ public class OrderService {
 
     @Transactional
     public DeleteOrderResponseDTO deleteOrder(UUID orderId) {
+//      1. 목표 주문 찾기
         Order targetOrder = orderRepository.findById(orderId).orElseThrow(
             ()-> new IllegalArgumentException("삭제할 주문이 없습니다.")
         );
+
+//      2. 주문 삭제
         targetOrder.delete();
+
         DeleteOrderResponseDTO response = new DeleteOrderResponseDTO(targetOrder);
+        return response;
+    }
+
+    @Transactional(readOnly = true)
+    public GetOrderResponseDTO getOrder(UUID orderId) {
+//      1. 목표 주문 찾기
+        Order targetOrder = orderRepository.findById(orderId).orElseThrow(
+            ()-> new IllegalArgumentException("해당 주문이 없습니다.")
+        );
+
+        GetOrderResponseDTO response = new GetOrderResponseDTO(targetOrder);
         return response;
     }
 }
