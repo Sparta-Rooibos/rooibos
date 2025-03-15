@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -27,40 +28,40 @@ public class ClientController {
     private final ClientService clientService;
 
     @GetMapping
-    public SearchClientResponse getClientList(@RequestParam(required = false) String name,
-                                              @RequestParam(required = false) String address,
-                                              @RequestParam(required = false) String type,
-                                              @RequestParam(defaultValue = "createdAt") String sort,
-                                              @RequestParam(defaultValue = "1") int page,
-                                              @RequestParam(defaultValue = "10") int size) {
+    public ResponseEntity<SearchClientResponse> getClientList(@RequestParam(required = false) String name,
+                                                             @RequestParam(required = false) String address,
+                                                             @RequestParam(required = false) String type,
+                                                             @RequestParam(defaultValue = "createdAt") String sort,
+                                                             @RequestParam(defaultValue = "1") int page,
+                                                             @RequestParam(defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page - 1, size, Sort.by(Sort.Direction.DESC, sort));
-        return new SearchClientResponse(clientService.getClientList(new SearchClientApplicationCondition(name, address, type, pageable)));
+        return ResponseEntity.ok(new SearchClientResponse(clientService.getClientList(new SearchClientApplicationCondition(name, address, type, pageable))));
     }
 
     @GetMapping("/{clientId}")
-    public GetClientResponse getClient(@PathVariable UUID clientId) {
-        return new GetClientResponse(clientService.getClient(clientId));
+    public ResponseEntity<GetClientResponse> getClient(@PathVariable UUID clientId) {
+        return ResponseEntity.ok(new GetClientResponse(clientService.getClient(clientId)));
     }
 
     @PostMapping()
-    public CreateClientResponse createClient(@RequestBody CreateClientRequest createClientRequest) {
-        return new CreateClientResponse(clientService.createClient(createClientRequest.toApplication()));
+    public ResponseEntity<CreateClientResponse> createClient(@RequestBody CreateClientRequest createClientRequest) {
+        return ResponseEntity.ok(new CreateClientResponse(clientService.createClient(createClientRequest.toApplication())));
 
     }
 
     @PutMapping("/{clientId}")
-    public boolean updateClient(@PathVariable UUID clientId, @RequestBody UpdateClientRequest request) {
-        return clientService.updateClient(request.toApplication(clientId));
+    public ResponseEntity<Boolean> updateClient(@PathVariable UUID clientId, @RequestBody UpdateClientRequest request) {
+        return ResponseEntity.ok(clientService.updateClient(request.toApplication(clientId)));
     }
 
     @PatchMapping("/{clientId}")
-    public boolean deleteClient(@PathVariable UUID clientId) {
-        return clientService.deleteClient(clientId);
+    public ResponseEntity<Boolean> deleteClient(@PathVariable UUID clientId) {
+        return ResponseEntity.ok(clientService.deleteClient(clientId));
     }
 
     //사용 허브 변경
     @PatchMapping("/change/hub/{clientId}")
-    public boolean changeUsedHub(@PathVariable UUID clientId, @RequestBody UpdateHubIdRequest request) {
-        return clientService.changeUsedHub(request.toApplication(clientId));
+    public ResponseEntity<Boolean> changeUsedHub(@PathVariable UUID clientId, @RequestBody UpdateHubIdRequest request) {
+        return ResponseEntity.ok(clientService.changeUsedHub(request.toApplication(clientId)));
     }
 }
