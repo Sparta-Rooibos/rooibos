@@ -10,7 +10,7 @@ import com.sparta.rooibos.client.application.dto.res.GetClientApplicationRespons
 import com.sparta.rooibos.client.application.dto.res.SearchClientApplicationListResponse;
 import com.sparta.rooibos.client.application.dto.res.SearchClientApplicationResponse;
 import com.sparta.rooibos.client.domain.entity.Client;
-import com.sparta.rooibos.client.domain.model.ClientType;
+import com.sparta.rooibos.client.domain.entity.ClientType;
 import com.sparta.rooibos.client.domain.repository.ClientRepository;
 import com.sparta.rooibos.client.domain.repository.QueryClientRepository;
 import lombok.RequiredArgsConstructor;

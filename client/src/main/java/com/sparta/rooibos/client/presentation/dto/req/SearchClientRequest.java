@@ -7,7 +7,6 @@ import org.springframework.data.domain.Pageable;
 public record SearchClientRequest(String name, String address, String type,
                                   String sort, Integer page, Integer size,
                                   Boolean isDeleted) {
-
     public SearchClientRequest {
         sort = sort == null ? "createAt" : sort;
         page = page == null ? 1 : page;

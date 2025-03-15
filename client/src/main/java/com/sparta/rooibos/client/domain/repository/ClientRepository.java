@@ -8,11 +8,6 @@ import java.util.UUID;
 
 public interface ClientRepository {
     Client save(Client client);
-
     Optional<Client> findByIdAndDeleteByIsNull(UUID id);
-
-
     Optional<Client> findByNameAndDeleteByIsNull(String name);
-
-
 }

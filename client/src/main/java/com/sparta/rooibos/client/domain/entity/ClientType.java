@@ -1,4 +1,4 @@
-package com.sparta.rooibos.client.domain.model;
+package com.sparta.rooibos.client.domain.entity;
 
 public enum ClientType {
     PRODUCE, CONSUME

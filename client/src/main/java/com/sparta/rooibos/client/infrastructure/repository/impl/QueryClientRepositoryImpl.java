@@ -5,7 +5,7 @@ import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.sparta.rooibos.client.domain.entity.Client;
 import com.sparta.rooibos.client.domain.entity.QClient;
-import com.sparta.rooibos.client.domain.model.ClientType;
+import com.sparta.rooibos.client.domain.entity.ClientType;
 import com.sparta.rooibos.client.domain.repository.QueryClientRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

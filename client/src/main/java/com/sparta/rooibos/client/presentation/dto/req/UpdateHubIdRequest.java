@@ -5,7 +5,6 @@ import com.sparta.rooibos.client.application.dto.req.UpdateHubIdApplicationReque
 import java.util.UUID;
 
 public record UpdateHubIdRequest(String hubId) {
-
     public UpdateHubIdApplicationRequest toApplication(UUID clientId) {
         return new UpdateHubIdApplicationRequest(clientId, hubId);
     }
