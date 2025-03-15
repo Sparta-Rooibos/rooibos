@@ -1,18 +1,13 @@
 package com.sparta.rooibos.client.presentation.controller;
 
-import com.sparta.rooibos.client.application.dto.condition.SearchClientApplicationCondition;
-import com.sparta.rooibos.client.application.dto.req.CreateClientApplicationRequest;
 import com.sparta.rooibos.client.application.service.ClientService;
-
-
-import com.sparta.rooibos.client.application.dto.req.UpdateClientApplicationRequest;
+import com.sparta.rooibos.client.presentation.dto.req.CreateClientRequest;
 import com.sparta.rooibos.client.presentation.dto.req.SearchClientRequest;
 import com.sparta.rooibos.client.presentation.dto.req.UpdateClientRequest;
 import com.sparta.rooibos.client.presentation.dto.req.UpdateHubIdRequest;
+import com.sparta.rooibos.client.presentation.dto.res.CreateClientResponse;
 import com.sparta.rooibos.client.presentation.dto.res.GetClientResponse;
 import com.sparta.rooibos.client.presentation.dto.res.SearchClientResponse;
-import com.sparta.rooibos.client.presentation.dto.req.CreateClientRequest;
-import com.sparta.rooibos.client.presentation.dto.res.CreateClientResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;

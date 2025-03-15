@@ -1,7 +1,6 @@
 package com.sparta.rooibos.client.application.service;
 
 
-import com.sparta.rooibos.client.application.dto.condition.SearchClientApplicationCondition;
 import com.sparta.rooibos.client.application.dto.req.CreateClientApplicationRequest;
 import com.sparta.rooibos.client.application.dto.req.SearchClientApplicationRequest;
 import com.sparta.rooibos.client.application.dto.req.UpdateClientApplicationRequest;
