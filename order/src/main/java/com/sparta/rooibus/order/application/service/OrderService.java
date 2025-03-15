@@ -1,6 +1,7 @@
 package com.sparta.rooibus.order.application.service;
 
 import com.sparta.rooibus.order.application.dto.request.CreateOrderRequestDTO;
+import com.sparta.rooibus.order.application.dto.request.DeleteOrderResponseDTO;
 import com.sparta.rooibus.order.application.dto.request.DeliveryRequestDTO;
 import com.sparta.rooibus.order.application.dto.request.UpdateOrderRequestDTO;
 import com.sparta.rooibus.order.application.dto.response.CreateOrderResponseDTO;
@@ -8,6 +9,7 @@ import com.sparta.rooibus.order.domain.entity.Order;
 import com.sparta.rooibus.order.domain.repository.OrderRepository;
 import com.sparta.rooibus.order.application.dto.request.UpdateOrderResponseDTO;
 import jakarta.validation.Valid;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,6 +44,16 @@ public class OrderService {
         targetOrder.update(request);
 
         UpdateOrderResponseDTO response = new UpdateOrderResponseDTO(targetOrder);
+        return response;
+    }
+
+    @Transactional
+    public DeleteOrderResponseDTO deleteOrder(UUID orderId) {
+        Order targetOrder = orderRepository.findById(orderId).orElseThrow(
+            ()-> new IllegalArgumentException("삭제할 주문이 없습니다.")
+        );
+        targetOrder.delete();
+        DeleteOrderResponseDTO response = new DeleteOrderResponseDTO(targetOrder);
         return response;
     }
 }

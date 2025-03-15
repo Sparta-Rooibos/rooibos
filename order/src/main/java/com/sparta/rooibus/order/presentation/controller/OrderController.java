@@ -6,9 +6,13 @@ import com.sparta.rooibus.order.application.service.OrderService;
 
 import com.sparta.rooibus.order.application.dto.request.UpdateOrderRequestDTO;
 import com.sparta.rooibus.order.application.dto.request.UpdateOrderResponseDTO;
+import com.sparta.rooibus.order.application.dto.request.DeleteOrderResponseDTO;
 import jakarta.validation.Valid;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -34,6 +38,12 @@ public class OrderController {
     @PutMapping
     public ResponseEntity<UpdateOrderResponseDTO> updateOrder(@Valid @RequestBody UpdateOrderRequestDTO request){
         UpdateOrderResponseDTO response = orderService.updateOrder(request);
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/{orderId}")
+    public ResponseEntity<DeleteOrderResponseDTO> deleteOrder(@PathVariable("orderId")UUID orderId){
+        DeleteOrderResponseDTO response = orderService.deleteOrder(orderId);
         return ResponseEntity.ok(response);
     }
 }
