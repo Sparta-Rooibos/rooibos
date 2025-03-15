@@ -1,8 +1,10 @@
 package com.sparta.rooibus.order.presentation.controller;
 
 import com.sparta.rooibus.order.application.dto.request.CreateOrderRequestDTO;
+import com.sparta.rooibus.order.application.dto.request.SearchOrderRequestDTO;
 import com.sparta.rooibus.order.application.dto.response.CreateOrderResponseDTO;
 import com.sparta.rooibus.order.application.dto.response.GetOrderResponseDTO;
+import com.sparta.rooibus.order.application.dto.response.SearchOrderResponseDTO;
 import com.sparta.rooibus.order.application.service.OrderService;
 
 import com.sparta.rooibus.order.application.dto.request.UpdateOrderRequestDTO;
@@ -11,6 +13,7 @@ import com.sparta.rooibus.order.application.dto.response.DeleteOrderResponseDTO;
 import jakarta.validation.Valid;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +22,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -53,5 +57,22 @@ public class OrderController {
     public ResponseEntity<GetOrderResponseDTO> getOrder(@PathVariable("orderId")UUID orderId){
         GetOrderResponseDTO response = orderService.getOrder(orderId);
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/search")
+    public Page<SearchOrderResponseDTO> searchOrders(
+        @RequestParam(required = false, defaultValue = "") String keyword,
+        @RequestParam(required = false, defaultValue = "") String filterKey,
+        @RequestParam(required = false, defaultValue = "") String filterValue,
+        @RequestParam(required = false, defaultValue = "asc") String sort,
+        @RequestParam(required = false, defaultValue = "0") int page,
+        @RequestParam(required = false, defaultValue = "10") int size) {
+
+        // DTO 객체로 변환
+        SearchOrderRequestDTO requestDTO = new SearchOrderRequestDTO(
+            keyword, filterKey, filterValue, sort, page, size
+        );
+
+        return orderService.searchOrders(requestDTO);
     }
 }

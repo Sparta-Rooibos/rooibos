@@ -1,17 +1,25 @@
 package com.sparta.rooibus.order.application.service;
 
 import com.sparta.rooibus.order.application.dto.request.CreateOrderRequestDTO;
+import com.sparta.rooibus.order.application.dto.request.SearchOrderRequestDTO;
 import com.sparta.rooibus.order.application.dto.response.DeleteOrderResponseDTO;
 import com.sparta.rooibus.order.application.dto.request.DeliveryRequestDTO;
 import com.sparta.rooibus.order.application.dto.request.UpdateOrderRequestDTO;
 import com.sparta.rooibus.order.application.dto.response.CreateOrderResponseDTO;
 import com.sparta.rooibus.order.application.dto.response.GetOrderResponseDTO;
+import com.sparta.rooibus.order.application.dto.response.SearchOrderResponseDTO;
 import com.sparta.rooibus.order.domain.entity.Order;
+import com.sparta.rooibus.order.domain.repository.OrderQueryRepository;
 import com.sparta.rooibus.order.domain.repository.OrderRepository;
 import com.sparta.rooibus.order.application.dto.response.UpdateOrderResponseDTO;
 import jakarta.validation.Valid;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +29,7 @@ public class OrderService {
 
     private final OrderRepository orderRepository;
     private final DeliveryService deliveryService;
+    private final OrderQueryRepository orderQueryRepository;
 
     @Transactional
     public CreateOrderResponseDTO createOrder(@Valid CreateOrderRequestDTO request) {
@@ -71,5 +80,18 @@ public class OrderService {
 
         GetOrderResponseDTO response = new GetOrderResponseDTO(targetOrder);
         return response;
+    }
+
+    public Page<SearchOrderResponseDTO> searchOrders(SearchOrderRequestDTO requestDTO) {
+        PageRequest pageRequest = PageRequest.of(requestDTO.page(), requestDTO.size());
+        Page<Order> ordersPage = orderQueryRepository.searchOrders(requestDTO, pageRequest);
+
+        List<SearchOrderResponseDTO> orderResponseDTOs = ordersPage.getContent()
+            .stream()
+            .map(SearchOrderResponseDTO::new)
+            .collect(Collectors.toList());
+
+        return new PageImpl<>(orderResponseDTOs, pageRequest, ordersPage.getTotalElements());
+
     }
 }
