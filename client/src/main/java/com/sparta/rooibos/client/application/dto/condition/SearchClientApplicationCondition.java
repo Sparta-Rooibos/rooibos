@@ -1,29 +1,16 @@
 package com.sparta.rooibos.client.application.dto.condition;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import org.springframework.data.domain.Pageable;
 
 @AllArgsConstructor
-public class SearchClientApplicationCondition {
-    private String name;
-    private String address;
-    private String type;
-    private Pageable pageable;
+@Getter
+public final class SearchClientApplicationCondition {
+    private final Pageable pageable;
+    private final String name;
+    private final String address;
+    private final String type;
+    private final Boolean deleteCheck;
 
-
-    public String getName() {
-        return name;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public Pageable getPageable() {
-        return pageable;
-    }
 }

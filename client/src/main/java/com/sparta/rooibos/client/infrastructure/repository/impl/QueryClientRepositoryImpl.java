@@ -23,11 +23,13 @@ public class QueryClientRepositoryImpl implements QueryClientRepository {
     private final QClient client = QClient.client;
 
     @Override
-    public Page<Client> getClientList(Pageable pageable, String name, String address, String type) {
+    public Page<Client> getClientList(Pageable pageable, String name, String address, String type, Boolean deleteCheck) {
         List<Client> content = query.select(client)
                 .where(nullNameCheck(name),
                         nullAddressCheck(address),
-                        nullTypeCheck(type))
+                        nullTypeCheck(type),
+                        nullDeleteCheck(deleteCheck)
+                )
                 .from(client)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -37,7 +39,8 @@ public class QueryClientRepositoryImpl implements QueryClientRepository {
                 .where(
                         nullNameCheck(name),
                         nullAddressCheck(address),
-                        nullTypeCheck(type))
+                        nullTypeCheck(type),
+                        nullDeleteCheck(deleteCheck))
                 .from(client)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize());
@@ -48,6 +51,13 @@ public class QueryClientRepositoryImpl implements QueryClientRepository {
 
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
 
+    }
+
+    private Predicate nullDeleteCheck(Boolean deleteCheck) {
+        return deleteCheck == null ? null :
+                deleteCheck
+                ? client.deleteAt.isNotNull()
+                : client.deleteAt.isNull();
     }
 
     private Predicate nullTypeCheck(String type) {
