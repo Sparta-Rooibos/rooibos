@@ -29,13 +29,14 @@ public class ClientController {
 
     @GetMapping
     public ResponseEntity<SearchClientResponse> getClientList(@RequestParam(required = false) String name,
-                                                             @RequestParam(required = false) String address,
-                                                             @RequestParam(required = false) String type,
-                                                             @RequestParam(defaultValue = "createdAt") String sort,
-                                                             @RequestParam(defaultValue = "1") int page,
-                                                             @RequestParam(defaultValue = "10") int size) {
+                                                              @RequestParam(required = false) String address,
+                                                              @RequestParam(required = false) String type,
+                                                              @RequestParam(required = false) Boolean deleteCheck,
+                                                              @RequestParam(defaultValue = "createdAt") String sort,
+                                                              @RequestParam(defaultValue = "1") int page,
+                                                              @RequestParam(defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page - 1, size, Sort.by(Sort.Direction.DESC, sort));
-        return ResponseEntity.ok(new SearchClientResponse(clientService.getClientList(new SearchClientApplicationCondition(name, address, type, pageable))));
+        return ResponseEntity.ok(new SearchClientResponse(clientService.getClientList(new SearchClientApplicationCondition(pageable, name, address, type, deleteCheck))));
     }
 
     @GetMapping("/{clientId}")

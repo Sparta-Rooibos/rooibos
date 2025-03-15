@@ -4,9 +4,9 @@ import com.sparta.rooibos.client.application.dto.res.SearchClientApplicationList
 
 import java.util.UUID;
 
-public record SearchClientListResponse(UUID id, String name, String type, String managedHubId, String address) {
+public record SearchClientListResponse(UUID id, String name, String type, String managedHubId, String address, boolean isDeleted) {
     public SearchClientListResponse(SearchClientApplicationListResponse response) {
-        this(response.id(), response.name(), response.type(), response.managedHubId(), response.address());
+        this(response.id(), response.name(), response.type(), response.managedHubId(), response.address(), response.isDeleted());
     }
 
 }
