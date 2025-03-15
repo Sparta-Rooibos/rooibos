@@ -5,7 +5,6 @@ import com.sparta.rooibos.client.application.dto.res.CreateClientApplicationResp
 import java.util.UUID;
 
 public record CreateClientResponse(UUID id, String name) {
-
     public CreateClientResponse(CreateClientApplicationResponse client) {
         this(client.id(),client.name());
     }

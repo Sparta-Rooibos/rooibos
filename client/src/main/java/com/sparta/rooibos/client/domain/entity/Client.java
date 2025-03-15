@@ -1,6 +1,5 @@
 package com.sparta.rooibos.client.domain.entity;
 
-import com.sparta.rooibos.client.domain.model.ClientType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
