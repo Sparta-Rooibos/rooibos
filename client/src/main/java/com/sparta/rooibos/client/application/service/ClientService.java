@@ -3,6 +3,7 @@ package com.sparta.rooibos.client.application.service;
 
 import com.sparta.rooibos.client.application.dto.condition.SearchClientApplicationCondition;
 import com.sparta.rooibos.client.application.dto.req.CreateClientApplicationRequest;
+import com.sparta.rooibos.client.application.dto.req.SearchClientApplicationRequest;
 import com.sparta.rooibos.client.application.dto.req.UpdateClientApplicationRequest;
 import com.sparta.rooibos.client.application.dto.req.UpdateHubIdApplicationRequest;
 import com.sparta.rooibos.client.application.dto.res.CreateClientApplicationResponse;
@@ -26,12 +27,12 @@ public class ClientService {
     private final ClientRepository clientRepository;
     private final QueryClientRepository queryClientRepository;
 
-    public SearchClientApplicationResponse getClientList(SearchClientApplicationCondition condition) {
-        Page<Client> clients = queryClientRepository.getClientList(condition.getPageable(),
-                condition.getName(),
-                condition.getAddress(),
-                condition.getType(),
-                condition.getDeleteCheck());
+    public SearchClientApplicationResponse getClientList(SearchClientApplicationRequest condition) {
+        Page<Client> clients = queryClientRepository.getClientList(condition.pageable(),
+                condition.name(),
+                condition.address(),
+                condition.type(),
+                condition.isDeleted());
         return new SearchClientApplicationResponse(
                 clients.getContent().stream()
                         .map(client -> new SearchClientApplicationListResponse(
