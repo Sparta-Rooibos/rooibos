@@ -3,24 +3,20 @@ package com.sparta.rooibos.client.application.service;
 
 import com.sparta.rooibos.client.application.dto.condition.SearchClientApplicationCondition;
 import com.sparta.rooibos.client.application.dto.req.CreateClientApplicationRequest;
-import com.sparta.rooibos.client.application.dto.req.SearchClientApplicationRequest;
 import com.sparta.rooibos.client.application.dto.req.UpdateClientApplicationRequest;
 import com.sparta.rooibos.client.application.dto.res.CreateClientApplicationResponse;
 import com.sparta.rooibos.client.application.dto.res.GetClientApplicationResponse;
 import com.sparta.rooibos.client.application.dto.res.SearchClientApplicationListResponse;
 import com.sparta.rooibos.client.application.dto.res.SearchClientApplicationResponse;
 import com.sparta.rooibos.client.domain.entity.Client;
-import com.sparta.rooibos.client.domain.entity.QClient;
 import com.sparta.rooibos.client.domain.model.ClientType;
 import com.sparta.rooibos.client.domain.repository.ClientRepository;
 import com.sparta.rooibos.client.domain.repository.QueryClientRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.UUID;
 
 @Service

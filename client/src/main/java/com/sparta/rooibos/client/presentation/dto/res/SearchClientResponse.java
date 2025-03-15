@@ -7,6 +7,6 @@ import java.util.List;
 public record SearchClientResponse(List<SearchClientListResponse> clients, long totalCount, long page, long size) {
     public SearchClientResponse(SearchClientApplicationResponse response) {
         this(response.clients()
-                .stream().map(r -> new SearchClientListResponse(r)).toList(), response.totalCount(), response.page(), response.size());
+                .stream().map(SearchClientListResponse::new).toList(), response.totalCount(), response.page(), response.size());
     }
 }
