@@ -114,20 +114,22 @@ public class Order {
         switch (status){
             case "주문 접수":
                 this.status = OrderStatus.PENDING;
+                break;
             case "주문 처리중":
                 this.status = OrderStatus.PROCESSING;
+                break;
             case "배송 중":
                 this.status = OrderStatus.DELIVERING;
+                break;
             case "배송 완료":
                 this.status = OrderStatus.DELIVERED;
-            case "취소":
-                this.status = OrderStatus.CANCELLED;
+                break;
         }
-
-
+    this.updatedAt = LocalDateTime.now();
     }
 
     public void delete() {
+        this.status = OrderStatus.CANCELLED;
         this.deletedAt = LocalDateTime.now();
     }
 }
