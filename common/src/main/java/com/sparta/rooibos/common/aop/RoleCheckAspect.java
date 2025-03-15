@@ -1,4 +1,5 @@
-package com.spring.cloud.client.auth.common.aop;
+package com.sparta.rooibos.common.aop;
+
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class RoleCheckAspect {
 
-    private final JwtRoleParser jwtRoleParser;
+    private final com.spring.cloud.client.auth.common.aop.JwtRoleParser jwtRoleParser;
     private final HttpServletRequest request;
 
     @Around("@annotation(roleCheck)")

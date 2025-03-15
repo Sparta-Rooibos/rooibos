@@ -1,4 +1,4 @@
-package com.spring.cloud.client.auth.common.aop;
+package com.sparta.rooibos.common.utils;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
