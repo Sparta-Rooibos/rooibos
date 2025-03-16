@@ -7,7 +7,9 @@ import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
 
@@ -15,7 +17,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 public abstract class BaseEntity {
-    @CreationTimestamp
+    @CreatedDate
     @Column(updatable = false, nullable = false)
     private LocalDateTime createAt;
 
@@ -23,7 +25,7 @@ public abstract class BaseEntity {
     @Column(updatable = false, nullable = false)
     private String createBy;
 
-    @UpdateTimestamp
+    @LastModifiedDate
     @Column
     private LocalDateTime updateAt;
 
@@ -36,4 +38,13 @@ public abstract class BaseEntity {
 
     @Column
     private String deleteBy;
+
+    @Column
+    private boolean hidden = false;
+
+    public void delete(String deletedBy) {
+        this.deleteAt = LocalDateTime.now();
+        this.deleteBy = deletedBy;
+        this.hidden = true;
+    }
 }
