@@ -21,21 +21,16 @@ public class AuthService {
     private final JwtProvider jwtProvider;
     private final RefreshRepository refreshRepository;
     private final RedisProvider redisProvider;
-    private final EventService eventService;
     private final BCryptPasswordEncoder passwordEncoder;
     private final CookieProvider cookieProvider;
 
     @Transactional
     public ResponseEntity<?> login(LoginRequest loginRequest, HttpServletRequest request, HttpServletResponse response) {
-        // ✅ 1) Redis에서 유저 정보 캐싱 확인
-        Optional<UserDTO> cachedUser = redisProvider.getUserInfo(loginRequest.username());
-
-        UserDTO user = cachedUser.orElseGet(() -> {
-            // ✅ 2) Kafka로 유저 인증 요청 (비동기 메시징)
-            UserDTO fetchedUser = eventService.requestUserInfo(loginRequest.username());
-            redisProvider.createUserInfo(fetchedUser); // 캐싱 저장
-            return fetchedUser;
-        });
+        Optional<UserDTO> cachedUser = redisProvider.getUserInfo(loginRequest.email());
+        if (cachedUser.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("유효한 계정이 아닙니다.");
+        }
+        UserDTO user = cachedUser.get();
 
         if (!passwordEncoder.matches(loginRequest.password(), user.password())) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("비밀번호가 일치하지 않습니다.");
