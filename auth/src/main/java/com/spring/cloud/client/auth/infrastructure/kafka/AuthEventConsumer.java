@@ -30,6 +30,8 @@ public class AuthEventConsumer {
     @KafkaListener(topics = "auth-service.user.reported", groupId = "auth-service")
     public void handleUserReport(String email) {
         log.info("유저 신고 감지 - 블랙리스트 추가: {}", email);
-        blacklistService.addToBlacklist(email);
+//        blacklistService.blacklistRefreshToken(email);
+//        blacklistService.blacklistAccessToken(email);
+        authCacheService.deleteUserInfo(email);
     }
 }

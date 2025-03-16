@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -22,4 +23,33 @@ public class BlacklistService {
     public boolean isTokenBlacklisted(String token) {
         return redisTemplate.hasKey(BLACKLIST_PREFIX + token);
     }
+
+//    public void blacklistRefreshToken(String email) {
+//        Set<String> refreshTokens = redisTemplate.keys(REFRESH_PREFIX + email + ":*");
+//
+//        if (refreshTokens != null) {
+//            for (String tokenKey : refreshTokens) {
+//                String token = redisTemplate.opsForValue().get(tokenKey);
+//                if (token != null) {
+//                    redisTemplate.opsForValue().set(BLACKLIST_PREFIX + token, "BLOCKED", BLACKLIST_TTL, TimeUnit.MINUTES);
+//                }
+//                redisTemplate.delete(tokenKey);
+//            }
+//        }
+//    }
+//
+//    public void blacklistAccessToken(String email) {
+//        Set<String> accessTokens = redisTemplate.keys(ACCESS_PREFIX + email + ":*");
+//
+//        if (accessTokens != null) {
+//            for (String tokenKey : accessTokens) {
+//                String token = redisTemplate.opsForValue().get(tokenKey);
+//                if (token != null) {
+//                    redisTemplate.opsForValue().set(BLACKLIST_PREFIX + token, "BLOCKED", BLACKLIST_TTL, TimeUnit.MINUTES);
+//                }
+//                redisTemplate.delete(tokenKey);
+//            }
+//        }
+//    }
+
 }
