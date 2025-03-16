@@ -1,11 +1,11 @@
 package com.sparta.rooibos.product.application.service;
 
-import com.sparta.rooibos.product.application.dto.request.CreateProductApplicationRequest;
-import com.sparta.rooibos.product.application.dto.request.UpdateProductApplicationRequest;
-import com.sparta.rooibos.product.application.dto.response.CreateProductApplicationResponse;
-import com.sparta.rooibos.product.application.dto.response.GetProductApplicationResponse;
-import com.sparta.rooibos.product.application.dto.response.SearchProductApplicationListResponse;
-import com.sparta.rooibos.product.application.dto.response.SearchProductApplicationResponse;
+import com.sparta.rooibos.product.application.dto.request.CreateProductRequest;
+import com.sparta.rooibos.product.application.dto.request.UpdateProductRequest;
+import com.sparta.rooibos.product.application.dto.response.CreateProductResponse;
+import com.sparta.rooibos.product.application.dto.response.GetProductResponse;
+import com.sparta.rooibos.product.application.dto.response.SearchProductListResponse;
+import com.sparta.rooibos.product.application.dto.response.SearchProductResponse;
 import com.sparta.rooibos.product.domain.entity.Product;
 import com.sparta.rooibos.product.domain.repository.ProductRepository;
 import jakarta.transaction.Transactional;
@@ -21,19 +21,19 @@ public class ProductService {
     private final ProductRepository productRepository;
 
 
-    public SearchProductApplicationResponse getProductList() {
+    public SearchProductResponse getProductList() {
         List<Product> products = productRepository.findAll();
-        return new SearchProductApplicationResponse(products.stream().map(
-                p -> new SearchProductApplicationListResponse(p.getId(), p.getName(), p.getClientId(), p.getManagedHubId())).toList(),
+        return new SearchProductResponse(products.stream().map(
+                p -> new SearchProductListResponse(p.getId(), p.getName(), p.getClientId(), p.getManagedHubId())).toList(),
                 0L, 0L, 0L);
     }
 
-    public GetProductApplicationResponse getProduct(UUID productId) {
+    public GetProductResponse getProduct(UUID productId) {
         Product product = productRepository.findById(productId).orElseThrow(() -> new IllegalArgumentException("제공하는 상품이 존재하지 않습니다."));
-        return new GetProductApplicationResponse(product);
+        return new GetProductResponse(product);
     }
 
-    public CreateProductApplicationResponse createProduct(CreateProductApplicationRequest request) {
+    public CreateProductResponse createProduct(CreateProductRequest request) {
 
         // 상품 등록
         Product product = productRepository.save(new Product(
@@ -44,11 +44,11 @@ public class ProductService {
         ));
 
 
-        return new CreateProductApplicationResponse(product.getId(), request.name());
+        return new CreateProductResponse(product.getId(), request.name());
     }
 
     @Transactional
-    public boolean updateProduct(UpdateProductApplicationRequest request) {
+    public boolean updateProduct(UpdateProductRequest request) {
         UUID id = request.productId();
         final Product product = productRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("제공하는 상품이 존재하지 않습니다."));
         // 상품 수정

@@ -1,4 +1,4 @@
-package com.sparta.rooibos.product.presentation.dto.response;
+package com.sparta.rooibos.product.application.dto.response;
 
 import java.util.UUID;
 
