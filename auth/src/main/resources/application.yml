@@ -13,9 +13,10 @@ spring:
       properties:
         spring.json.trusted.packages: "*"
 
-  redis:
-    host: localhost  # ? Redis ?? ??
-    port: 6379
+  data:
+    redis:
+      host: localhost  # ? Redis ?? ??
+      port: 6379
 
 eureka:
   client:
