@@ -3,8 +3,11 @@ package com.sparta.rooibos.product.presentation.controller;
 import com.sparta.rooibos.product.application.service.ProductService;
 import com.sparta.rooibos.product.presentation.dto.request.CreateProductRequest;
 import com.sparta.rooibos.product.presentation.dto.response.CreateProductResponse;
+import com.sparta.rooibos.product.presentation.dto.response.GetProductResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -18,8 +21,8 @@ public class ProductController {
     }
 
     @GetMapping("/{productId}")
-    public void getProduct(@PathVariable String productId) {
-        productService.getProduct(productId);
+    public GetProductResponse getProduct(@PathVariable UUID productId) {
+        return new GetProductResponse(productService.getProduct(productId));
     }
 
     @PostMapping
