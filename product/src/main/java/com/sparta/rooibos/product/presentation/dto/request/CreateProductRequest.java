@@ -1,6 +1,6 @@
-package com.sparta.rooibos.product.presentation.dto.req;
+package com.sparta.rooibos.product.presentation.dto.request;
 
-import com.sparta.rooibos.product.application.dto.req.CreateProductApplicationRequest;
+import com.sparta.rooibos.product.application.dto.request.CreateProductApplicationRequest;
 
 
 public record CreateProductRequest(String name, String clientId, String managedHubId) {

@@ -1,6 +1,6 @@
-package com.sparta.rooibos.product.presentation.dto.res;
+package com.sparta.rooibos.product.presentation.dto.response;
 
-import com.sparta.rooibos.product.application.dto.res.CreateProductApplicationResponse;
+import com.sparta.rooibos.product.application.dto.response.CreateProductApplicationResponse;
 
 import java.util.UUID;
 

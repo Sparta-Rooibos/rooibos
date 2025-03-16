@@ -1,8 +1,8 @@
 package com.sparta.rooibos.product.presentation.controller;
 
 import com.sparta.rooibos.product.application.service.ProductService;
-import com.sparta.rooibos.product.presentation.dto.req.CreateProductRequest;
-import com.sparta.rooibos.product.presentation.dto.res.CreateProductResponse;
+import com.sparta.rooibos.product.presentation.dto.request.CreateProductRequest;
+import com.sparta.rooibos.product.presentation.dto.response.CreateProductResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
