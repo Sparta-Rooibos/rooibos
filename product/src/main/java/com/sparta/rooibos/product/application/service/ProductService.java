@@ -1,12 +1,14 @@
 package com.sparta.rooibos.product.application.service;
 
 import com.sparta.rooibos.product.application.dto.request.CreateProductApplicationRequest;
+import com.sparta.rooibos.product.application.dto.request.UpdateProductApplicationRequest;
 import com.sparta.rooibos.product.application.dto.response.CreateProductApplicationResponse;
 import com.sparta.rooibos.product.application.dto.response.GetProductApplicationResponse;
 import com.sparta.rooibos.product.application.dto.response.SearchProductApplicationListResponse;
 import com.sparta.rooibos.product.application.dto.response.SearchProductApplicationResponse;
 import com.sparta.rooibos.product.domain.entity.Product;
 import com.sparta.rooibos.product.domain.repository.ProductRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -29,7 +31,6 @@ public class ProductService {
     public GetProductApplicationResponse getProduct(UUID productId) {
         Product product = productRepository.findById(productId).orElseThrow(() -> new IllegalArgumentException("제공하는 상품이 존재하지 않습니다."));
         return new GetProductApplicationResponse(product);
-
     }
 
     public CreateProductApplicationResponse createProduct(CreateProductApplicationRequest request) {
@@ -46,8 +47,13 @@ public class ProductService {
         return new CreateProductApplicationResponse(product.getId(), request.name());
     }
 
-    public void updateProduct(String productId) {
-
+    @Transactional
+    public boolean updateProduct(UpdateProductApplicationRequest request) {
+        UUID id = request.productId();
+        final Product product = productRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("제공하는 상품이 존재하지 않습니다."));
+        // 상품 수정
+        product.update(request.name());
+        return true;
     }
 
     public void deleteProduct(String productId) {

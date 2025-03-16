@@ -2,6 +2,7 @@ package com.sparta.rooibos.product.presentation.controller;
 
 import com.sparta.rooibos.product.application.service.ProductService;
 import com.sparta.rooibos.product.presentation.dto.request.CreateProductRequest;
+import com.sparta.rooibos.product.presentation.dto.request.UpdateProductRequest;
 import com.sparta.rooibos.product.presentation.dto.response.CreateProductResponse;
 import com.sparta.rooibos.product.presentation.dto.response.GetProductResponse;
 import com.sparta.rooibos.product.presentation.dto.response.SearchProductResponse;
@@ -33,8 +34,8 @@ public class ProductController {
     }
 
     @PutMapping("/{productId}")
-    public void updateProduct(@PathVariable String productId) {
-        productService.updateProduct(productId);
+    public boolean updateProduct(@PathVariable UUID productId, @RequestBody UpdateProductRequest request) {
+        return productService.updateProduct(request.toApplication(productId));
     }
 
     @PatchMapping("/{productId}")

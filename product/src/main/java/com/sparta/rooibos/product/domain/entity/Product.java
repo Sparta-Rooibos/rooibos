@@ -59,4 +59,8 @@ public class Product {
         this.managedHubId = managedHubId;
         this.createBy = userId;
     }
+
+    public void update(String name) {
+        this.name = name;
+    }
 }
