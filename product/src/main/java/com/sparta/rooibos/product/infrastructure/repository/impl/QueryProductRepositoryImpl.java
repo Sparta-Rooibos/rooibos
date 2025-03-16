@@ -23,10 +23,11 @@ public class QueryProductRepositoryImpl implements QueryProductRepository {
     private final QProduct product = QProduct.product;
 
     @Override
-    public Page<Product> getProductList(Pageable pageable, UUID id, String name) {
+    public Page<Product> getProductList(Pageable pageable, UUID id, String name, Boolean deleteCheck) {
         List<Product> content = query.select(product)
                 .where(nullNameCheck(name),
-                        nullIdCheck(id)
+                        nullIdCheck(id),
+                        nullCheckDeleted(deleteCheck)
                 )
                 .from(product)
                 .offset(pageable.getOffset())
@@ -36,7 +37,8 @@ public class QueryProductRepositoryImpl implements QueryProductRepository {
         JPAQuery<Long> countQuery = query.select(product.count())
                 .where(
                         nullNameCheck(name),
-                        nullIdCheck(id)
+                        nullIdCheck(id),
+                        nullCheckDeleted(deleteCheck)
                 )
                 .from(product)
                 .offset(pageable.getOffset())
@@ -47,6 +49,10 @@ public class QueryProductRepositoryImpl implements QueryProductRepository {
         }
 
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
+    }
+
+    private Predicate nullCheckDeleted(Boolean deleteCheck) {
+        return deleteCheck == null ? null : deleteCheck ? product.deleteBy.isNotNull() : product.deleteBy.isNull();
     }
 
     private Predicate nullIdCheck(UUID id) {

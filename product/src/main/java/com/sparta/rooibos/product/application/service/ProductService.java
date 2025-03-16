@@ -25,20 +25,22 @@ public class ProductService {
 
 
     public SearchProductResponse getProductList(SearchProductRequest request) {
-        Page<Product> products = queryProductRepository.getProductList(request.pageable(),request.id(),request.name());
+        Page<Product> products = queryProductRepository.getProductList(request.pageable(), request.id(), request.name(), request.isDeleted());
 
         return new SearchProductResponse(products.getContent().stream().map(
-                p -> new SearchProductListResponse(p.getId(), p.getName(), p.getClientId(), p.getManagedHubId())).toList(),
+                p -> new SearchProductListResponse(p.getId(), p.getName(), p.getClientId(), p.getManagedHubId(), p.getDeleteBy() != null)).toList(),
                 products.getTotalElements(), products.getNumber() + 1, products.getSize());
     }
 
     public GetProductResponse getProduct(UUID productId) {
-        Product product = productRepository.findById(productId).orElseThrow(() -> new IllegalArgumentException("제공하는 상품이 존재하지 않습니다."));
+        Product product = productRepository.findByIdAndDeleteByIsNull(productId).orElseThrow(() -> new IllegalArgumentException("제공하는 상품이 존재하지 않습니다."));
         return new GetProductResponse(product);
     }
 
     public CreateProductResponse createProduct(CreateProductRequest request) {
-
+        if (productRepository.findByNameAndDeleteByIsNull(request.name()).isPresent()) {
+            throw new IllegalArgumentException("이미 존재하는 상품입니다.");
+        }
         // 상품 등록
         Product product = productRepository.save(new Product(
                 request.name(),
@@ -54,7 +56,14 @@ public class ProductService {
     @Transactional
     public boolean updateProduct(UpdateProductRequest request) {
         UUID id = request.productId();
-        final Product product = productRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("제공하는 상품이 존재하지 않습니다."));
+        //아이디가 같은 경우에는 무시한다.
+        if (productRepository.findByNameAndDeleteByIsNull(request.name()).filter(
+                product -> !product.getId().equals(id)
+        ).isPresent()) {
+            throw new IllegalArgumentException("이미 존재하는 상품입니다.");
+        }
+
+        final Product product = productRepository.findByIdAndDeleteByIsNull(id).orElseThrow(() -> new IllegalArgumentException("제공하는 상품이 존재하지 않습니다."));
         // 상품 수정
         product.update(request.name());
         return true;
@@ -62,7 +71,7 @@ public class ProductService {
 
     @Transactional
     public boolean deleteProduct(UUID id) {
-        final Product product = productRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("제공하는 상품이 존재하지 않습니다."));
+        final Product product = productRepository.findByIdAndDeleteByIsNull(id).orElseThrow(() -> new IllegalArgumentException("제공하는 상품이 존재하지 않습니다."));
         product.delete("계정아이디");
         return true;
     }
