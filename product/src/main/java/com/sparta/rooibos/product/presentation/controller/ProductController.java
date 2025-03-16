@@ -1,11 +1,11 @@
 package com.sparta.rooibos.product.presentation.controller;
 
 import com.sparta.rooibos.product.application.service.ProductService;
-import com.sparta.rooibos.product.presentation.dto.request.CreateProductRequest;
-import com.sparta.rooibos.product.presentation.dto.request.UpdateProductRequest;
-import com.sparta.rooibos.product.presentation.dto.response.CreateProductResponse;
-import com.sparta.rooibos.product.presentation.dto.response.GetProductResponse;
-import com.sparta.rooibos.product.presentation.dto.response.SearchProductResponse;
+import com.sparta.rooibos.product.presentation.dto.request.CreateProductRequestDto;
+import com.sparta.rooibos.product.presentation.dto.request.UpdateProductRequestDto;
+import com.sparta.rooibos.product.presentation.dto.response.CreateProductResponseDto;
+import com.sparta.rooibos.product.presentation.dto.response.GetProductResponseDto;
+import com.sparta.rooibos.product.presentation.dto.response.SearchProductResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,22 +19,22 @@ public class ProductController {
 
 
     @GetMapping
-    public SearchProductResponse getProductList() {
-        return new SearchProductResponse(productService.getProductList());
+    public SearchProductResponseDto getProductList() {
+        return new SearchProductResponseDto(productService.getProductList());
     }
 
     @GetMapping("/{productId}")
-    public GetProductResponse getProduct(@PathVariable UUID productId) {
-        return new GetProductResponse(productService.getProduct(productId));
+    public GetProductResponseDto getProduct(@PathVariable UUID productId) {
+        return new GetProductResponseDto(productService.getProduct(productId));
     }
 
     @PostMapping
-    public CreateProductResponse createProduct(@RequestBody CreateProductRequest request) {
-        return new CreateProductResponse(productService.createProduct(request.toApplication()));
+    public CreateProductResponseDto createProduct(@RequestBody CreateProductRequestDto request) {
+        return new CreateProductResponseDto(productService.createProduct(request.toApplication()));
     }
 
     @PutMapping("/{productId}")
-    public boolean updateProduct(@PathVariable UUID productId, @RequestBody UpdateProductRequest request) {
+    public boolean updateProduct(@PathVariable UUID productId, @RequestBody UpdateProductRequestDto request) {
         return productService.updateProduct(request.toApplication(productId));
     }
 
