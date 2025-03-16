@@ -39,8 +39,8 @@ public class ProductController {
     }
 
     @PatchMapping("/{productId}")
-    public void deleteProduct(@PathVariable String productId) {
-        productService.deleteProduct(productId);
+    public boolean deleteProduct(@PathVariable UUID productId) {
+        return productService.deleteProduct(productId);
     }
 
 }

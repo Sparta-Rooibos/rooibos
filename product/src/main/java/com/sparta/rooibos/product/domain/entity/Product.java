@@ -63,4 +63,9 @@ public class Product {
     public void update(String name) {
         this.name = name;
     }
+
+    public void delete(String userId) {
+        this.deleteBy = userId;
+        this.deleteAt = LocalDateTime.now();
+    }
 }
