@@ -1,6 +1,7 @@
 package com.sparta.rooibos.product.application.service;
 
 import com.sparta.rooibos.product.application.dto.request.CreateProductRequest;
+import com.sparta.rooibos.product.application.dto.request.SearchProductRequest;
 import com.sparta.rooibos.product.application.dto.request.UpdateProductRequest;
 import com.sparta.rooibos.product.application.dto.response.CreateProductResponse;
 import com.sparta.rooibos.product.application.dto.response.GetProductResponse;
@@ -8,24 +9,27 @@ import com.sparta.rooibos.product.application.dto.response.SearchProductListResp
 import com.sparta.rooibos.product.application.dto.response.SearchProductResponse;
 import com.sparta.rooibos.product.domain.entity.Product;
 import com.sparta.rooibos.product.domain.repository.ProductRepository;
+import com.sparta.rooibos.product.domain.repository.QueryProductRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class ProductService {
     private final ProductRepository productRepository;
+    private final QueryProductRepository queryProductRepository;
 
 
-    public SearchProductResponse getProductList() {
-        List<Product> products = productRepository.findAll();
-        return new SearchProductResponse(products.stream().map(
+    public SearchProductResponse getProductList(SearchProductRequest request) {
+        Page<Product> products = queryProductRepository.getProductList(request.pageable(),request.id(),request.name());
+
+        return new SearchProductResponse(products.getContent().stream().map(
                 p -> new SearchProductListResponse(p.getId(), p.getName(), p.getClientId(), p.getManagedHubId())).toList(),
-                0L, 0L, 0L);
+                products.getTotalElements(), products.getNumber() + 1, products.getSize());
     }
 
     public GetProductResponse getProduct(UUID productId) {

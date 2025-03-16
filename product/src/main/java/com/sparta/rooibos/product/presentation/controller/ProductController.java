@@ -2,11 +2,15 @@ package com.sparta.rooibos.product.presentation.controller;
 
 import com.sparta.rooibos.product.application.service.ProductService;
 import com.sparta.rooibos.product.presentation.dto.request.CreateProductRequestDto;
+import com.sparta.rooibos.product.presentation.dto.request.SearchProductRequestDto;
 import com.sparta.rooibos.product.presentation.dto.request.UpdateProductRequestDto;
 import com.sparta.rooibos.product.presentation.dto.response.CreateProductResponseDto;
 import com.sparta.rooibos.product.presentation.dto.response.GetProductResponseDto;
 import com.sparta.rooibos.product.presentation.dto.response.SearchProductResponseDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -19,8 +23,9 @@ public class ProductController {
 
 
     @GetMapping
-    public SearchProductResponseDto getProductList() {
-        return new SearchProductResponseDto(productService.getProductList());
+    public SearchProductResponseDto getProductList(@ModelAttribute SearchProductRequestDto request) {
+        Pageable pageable = PageRequest.of(request.page() - 1, request.size(), Sort.by(Sort.Direction.DESC, request.sort()));
+        return new SearchProductResponseDto(productService.getProductList(request.toApplication(pageable)));
     }
 
     @GetMapping("/{productId}")
