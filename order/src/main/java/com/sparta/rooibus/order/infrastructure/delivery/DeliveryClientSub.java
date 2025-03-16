@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class DeliveryClientSub implements DeliveryService {
-// 배달 서비스가 아직 준비 안되었을때 임시 서비스 로직 DeliveryService가 이걸 사용
     @Override
     public CreateOrderResponseDTO createDelivery(DeliveryRequestDTO request) {
         CreateOrderResponseDTO response =

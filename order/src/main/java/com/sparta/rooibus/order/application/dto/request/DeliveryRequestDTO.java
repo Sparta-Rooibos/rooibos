@@ -5,10 +5,10 @@ import jakarta.validation.constraints.NotNull;
 import java.util.UUID;
 
 public record DeliveryRequestDTO(
-    @NotNull UUID orderID,           // 주문 ID
-    @NotNull UUID requestClientId,   // 공급 업체 ID
-    @NotNull UUID responseClientId,  // 수령 업체 ID
-    @NotNull UUID productId          // 상품 ID
+    @NotNull UUID orderID,
+    @NotNull UUID requestClientId,
+    @NotNull UUID responseClientId,
+    @NotNull UUID productId
 ) {
     public DeliveryRequestDTO(Order order) {
         this(

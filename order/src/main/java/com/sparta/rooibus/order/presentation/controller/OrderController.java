@@ -31,7 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class OrderController {
 
     private final OrderService orderService;
-// TODO : ResponseEntity 타입 String -> responseDTO 해야할까 물어보기
+// TODO : ResponseEntity 타입 String -> responseDTO 해야할까 물어보기, page같은 경우는 dto필요하다고 생각함. 근데 나머지는?
     @PostMapping
     public ResponseEntity<String> createOrder(@Valid @RequestBody CreateOrderRequestDTO request) {
         CreateOrderResponseDTO response = orderService.createOrder(request);
@@ -68,7 +68,6 @@ public class OrderController {
         @RequestParam(required = false, defaultValue = "0") int page,
         @RequestParam(required = false, defaultValue = "10") int size) {
 
-        // DTO 객체로 변환
         SearchOrderRequestDTO requestDTO = new SearchOrderRequestDTO(
             keyword, filterKey, filterValue, sort, page, size
         );
