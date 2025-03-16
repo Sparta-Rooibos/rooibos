@@ -1,0 +1,8 @@
+rootProject.name = 'rooibos'
+
+include 'common'
+include 'client'
+include 'auth'
+include 'euraka'
+include 'product'
+include 'user'
