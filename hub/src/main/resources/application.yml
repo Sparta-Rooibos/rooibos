@@ -1,0 +1,25 @@
+spring:
+  application:
+    name: hub-service
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/rooibos-hub
+    username: root
+    password: 1234
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+
+server:
+  port: 0
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:19090/eureka
