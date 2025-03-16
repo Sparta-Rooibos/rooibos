@@ -3,11 +3,14 @@ package com.sparta.rooibos.product.application.service;
 import com.sparta.rooibos.product.application.dto.request.CreateProductApplicationRequest;
 import com.sparta.rooibos.product.application.dto.response.CreateProductApplicationResponse;
 import com.sparta.rooibos.product.application.dto.response.GetProductApplicationResponse;
+import com.sparta.rooibos.product.application.dto.response.SearchProductApplicationListResponse;
+import com.sparta.rooibos.product.application.dto.response.SearchProductApplicationResponse;
 import com.sparta.rooibos.product.domain.entity.Product;
 import com.sparta.rooibos.product.domain.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -16,8 +19,11 @@ public class ProductService {
     private final ProductRepository productRepository;
 
 
-    public void getProductList() {
-
+    public SearchProductApplicationResponse getProductList() {
+        List<Product> products = productRepository.findAll();
+        return new SearchProductApplicationResponse(products.stream().map(
+                p -> new SearchProductApplicationListResponse(p.getId(), p.getName(), p.getClientId(), p.getManagedHubId())).toList(),
+                0L, 0L, 0L);
     }
 
     public GetProductApplicationResponse getProduct(UUID productId) {
