@@ -3,7 +3,7 @@ package sparta.rooibos.hub.application.service.adapter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import sparta.rooibos.hub.application.dto.CreateHubResponseDto;
+import sparta.rooibos.hub.application.dto.HubResponseDto;
 import sparta.rooibos.hub.application.mapper.HubMapper;
 import sparta.rooibos.hub.application.service.port.HubService;
 import sparta.rooibos.hub.domain.model.Hub;
@@ -19,9 +19,9 @@ public class HubServiceImpl implements HubService {
 
     @Override
     @Transactional
-    public CreateHubResponseDto createHub(CreateHubRequestDto createHubRequestDto) {
+    public HubResponseDto createHub(CreateHubRequestDto createHubRequestDto) {
         Hub newHub = hubMapper.toHub(createHubRequestDto);
 
-        return hubMapper.toCreateHubResponseDto(hubRepository.createHub(newHub));
+        return hubMapper.toHubResponseDto(hubRepository.createHub(newHub));
     }
 }
