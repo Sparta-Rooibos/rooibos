@@ -24,8 +24,8 @@ public class RedisProviderImpl implements RedisProvider {
     }
 
     @Override
-    public void deleteUserCache(String username) {
-        authCacheService.deleteUserCache(username);
+    public void deleteUserInfo(String username) {
+        authCacheService.deleteUserInfo(username);
     }
 
     @Override

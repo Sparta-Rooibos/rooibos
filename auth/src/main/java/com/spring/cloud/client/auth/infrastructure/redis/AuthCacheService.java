@@ -13,23 +13,19 @@ import java.util.concurrent.TimeUnit;
 @RequiredArgsConstructor
 public class AuthCacheService {
     private final RedisTemplate<String, UserDTO> redisTemplate;
-    private final BlacklistService blacklistService;
 
     private static final String CACHE_PREFIX = "auth:user:";
     private static final long CACHE_TTL = 30;
 
-    // 사용자 정보 캐싱
-    public void createUserInfo(UserDTO user) {
-        redisTemplate.opsForValue().set(CACHE_PREFIX + user.getUsername(), user, CACHE_TTL, TimeUnit.MINUTES);
+    public void createUserInfo(UserDTO userDTO) {
+        redisTemplate.opsForValue().set(CACHE_PREFIX + userDTO.email(), userDTO, CACHE_TTL, TimeUnit.MINUTES);
     }
 
-    // 사용자 정보 조회
-    public Optional<UserDTO> getUserInfo(String username) {
-        return Optional.ofNullable(redisTemplate.opsForValue().get(CACHE_PREFIX + username));
+    public Optional<UserDTO> getUserInfo(String email) {
+        return Optional.ofNullable(redisTemplate.opsForValue().get(CACHE_PREFIX + email));
     }
 
-    // 특정 유저 캐시 삭제
-    public void deleteUserCache(String username) {
-        redisTemplate.delete(CACHE_PREFIX + username);
+    public void deleteUserInfo(String email) {
+        redisTemplate.delete(CACHE_PREFIX + email);
     }
 }
