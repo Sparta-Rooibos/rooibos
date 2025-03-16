@@ -9,6 +9,8 @@ import com.sparta.rooibos.client.application.dto.res.CreateClientApplicationResp
 import com.sparta.rooibos.client.application.dto.res.GetClientApplicationResponse;
 import com.sparta.rooibos.client.application.dto.res.SearchClientApplicationListResponse;
 import com.sparta.rooibos.client.application.dto.res.SearchClientApplicationResponse;
+import com.sparta.rooibos.client.application.exception.BusinessClientException;
+import com.sparta.rooibos.client.application.exception.ClientErrorCode;
 import com.sparta.rooibos.client.domain.entity.Client;
 import com.sparta.rooibos.client.domain.entity.ClientType;
 import com.sparta.rooibos.client.domain.repository.ClientRepository;
@@ -59,7 +61,7 @@ public class ClientService {
 
     public CreateClientApplicationResponse createClient(CreateClientApplicationRequest createClientRequest) {
         if (clientRepository.findByNameAndDeleteByIsNull(createClientRequest.name()).isPresent()) {
-            throw new IllegalArgumentException("이미 존재하는 업체입니다.");
+            throw new BusinessClientException(ClientErrorCode.NOT_FOUND_CLIENT);
         }
 
         //TODO 계정 아이디를 등록해주면 된다.
@@ -78,16 +80,16 @@ public class ClientService {
         UUID id = request.clientId();
         if (clientRepository.findByNameAndDeleteByIsNull(request.name())
                 .filter(client -> !client.getId().equals(request.clientId())).isPresent()) {
-            throw new IllegalArgumentException("이미 존재하는 업체입니다.");
+            throw new BusinessClientException(ClientErrorCode.NOT_FOUND_CLIENT);
         }
-        Client client = clientRepository.findByIdAndDeleteByIsNull(id).orElseThrow(() -> new IllegalArgumentException("해당 하는 업체가 존재하지 않습니다."));
+        Client client = clientRepository.findByIdAndDeleteByIsNull(id).orElseThrow(() -> new BusinessClientException(ClientErrorCode.NOT_EXITS_CLIENT));
         client.update(request.name(), request.address(), "계정아이디");
         return true;
     }
 
     @Transactional
     public boolean deleteClient(UUID id) {
-        Client client = clientRepository.findByIdAndDeleteByIsNull(id).orElseThrow(() -> new IllegalArgumentException("해당 하는 업체가 존재하지 않습니다."));
+        Client client = clientRepository.findByIdAndDeleteByIsNull(id).orElseThrow(() -> new BusinessClientException(ClientErrorCode.NOT_EXITS_CLIENT));
         //TODO 삭제시 계정 ID를 가져온다.
         return client.delete("계정아이디");
     }
@@ -95,7 +97,7 @@ public class ClientService {
     @Transactional
     public boolean changeUsedHub(UpdateHubIdApplicationRequest request) {
         UUID id = request.clientId();
-        Client client = clientRepository.findByIdAndDeleteByIsNull(id).orElseThrow(() -> new IllegalArgumentException("해당 하는 업체가 존재하지 않습니다."));
+        Client client = clientRepository.findByIdAndDeleteByIsNull(id).orElseThrow(() -> new BusinessClientException(ClientErrorCode.NOT_EXITS_CLIENT));
         return client.changeUsedHub(request.hubId());
     }
 }
