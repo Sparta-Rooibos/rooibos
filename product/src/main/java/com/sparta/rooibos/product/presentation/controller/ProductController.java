@@ -4,6 +4,7 @@ import com.sparta.rooibos.product.application.service.ProductService;
 import com.sparta.rooibos.product.presentation.dto.request.CreateProductRequest;
 import com.sparta.rooibos.product.presentation.dto.response.CreateProductResponse;
 import com.sparta.rooibos.product.presentation.dto.response.GetProductResponse;
+import com.sparta.rooibos.product.presentation.dto.response.SearchProductResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,9 +16,10 @@ import java.util.UUID;
 public class ProductController {
     private final ProductService productService;
 
+
     @GetMapping
-    public void getProductList() {
-        productService.getProductList();
+    public SearchProductResponse getProductList() {
+        return new SearchProductResponse(productService.getProductList());
     }
 
     @GetMapping("/{productId}")
