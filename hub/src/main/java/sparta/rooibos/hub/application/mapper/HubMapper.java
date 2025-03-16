@@ -5,7 +5,7 @@ import org.mapstruct.Mapping;
 import sparta.rooibos.hub.application.dto.HubResponseDto;
 import sparta.rooibos.hub.domain.model.Hub;
 import sparta.rooibos.hub.presentation.dto.CreateHubRequestDto;
-import sparta.rooibos.hub.presentation.dto.UpdateRequestDto;
+import sparta.rooibos.hub.presentation.dto.UpdateHubRequestDto;
 
 @Mapper(componentModel = "spring")
 public interface HubMapper {
@@ -14,7 +14,7 @@ public interface HubMapper {
     @Mapping(target = "hubId", ignore = true)
     Hub toHub(CreateHubRequestDto createHubRequestDto);
 
-    Hub toHub(UpdateRequestDto updateRequestDto);
+    Hub toHub(UpdateHubRequestDto updateHubRequestDto);
 
     HubResponseDto toHubResponseDto(Hub hub);
 }

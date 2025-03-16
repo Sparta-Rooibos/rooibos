@@ -2,7 +2,7 @@ package sparta.rooibos.hub.presentation.dto;
 
 import java.util.UUID;
 
-public record UpdateRequestDto(
+public record UpdateHubRequestDto(
         UUID hubId,
         String name,
         String region,

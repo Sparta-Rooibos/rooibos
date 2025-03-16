@@ -9,7 +9,7 @@ import sparta.rooibos.hub.application.service.port.HubService;
 import sparta.rooibos.hub.domain.model.Hub;
 import sparta.rooibos.hub.domain.respository.HubRepository;
 import sparta.rooibos.hub.presentation.dto.CreateHubRequestDto;
-import sparta.rooibos.hub.presentation.dto.UpdateRequestDto;
+import sparta.rooibos.hub.presentation.dto.UpdateHubRequestDto;
 
 import java.util.UUID;
 
@@ -36,9 +36,9 @@ public class HubServiceImpl implements HubService {
     @Override
     @Transactional
     // TODO 필요한 필드만 수정되게 리팩토링 필요
-    public HubResponseDto updateHub(UpdateRequestDto updateRequestDto) {
-        Hub targetHub = getHubForServer(updateRequestDto.hubId());
-        Hub sourceHub = hubMapper.toHub(updateRequestDto);
+    public HubResponseDto updateHub(UpdateHubRequestDto updateHubRequestDto) {
+        Hub targetHub = getHubForServer(updateHubRequestDto.hubId());
+        Hub sourceHub = hubMapper.toHub(updateHubRequestDto);
 
         return hubMapper.toHubResponseDto(targetHub.update(sourceHub));
     }
