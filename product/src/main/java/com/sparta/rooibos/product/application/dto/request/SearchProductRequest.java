@@ -4,5 +4,5 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.UUID;
 
-public record SearchProductRequest(UUID id, String name, Pageable pageable) {
+public record SearchProductRequest(UUID id, String name, Boolean isDeleted, Pageable pageable) {
 }
