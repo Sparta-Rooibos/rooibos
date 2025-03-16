@@ -1,7 +1,7 @@
 package com.sparta.rooibos.product.application.service;
 
-import com.sparta.rooibos.product.application.dto.req.CreateProductApplicationRequest;
-import com.sparta.rooibos.product.application.dto.res.CreateProductApplicationResponse;
+import com.sparta.rooibos.product.application.dto.request.CreateProductApplicationRequest;
+import com.sparta.rooibos.product.application.dto.response.CreateProductApplicationResponse;
 import com.sparta.rooibos.product.domain.entity.Product;
 import com.sparta.rooibos.product.domain.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
