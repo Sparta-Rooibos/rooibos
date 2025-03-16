@@ -56,7 +56,10 @@ public class ProductService {
         return true;
     }
 
-    public void deleteProduct(String productId) {
-
+    @Transactional
+    public boolean deleteProduct(UUID id) {
+        final Product product = productRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("제공하는 상품이 존재하지 않습니다."));
+        product.delete("계정아이디");
+        return true;
     }
 }
