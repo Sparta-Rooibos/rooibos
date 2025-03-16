@@ -6,6 +6,6 @@ import org.springframework.stereotype.Component;
 
 @Component
 public interface DeliveryService {
-    // 주문 생성
+
     CreateOrderResponseDTO createDelivery(DeliveryRequestDTO request);
 }

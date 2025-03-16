@@ -27,60 +27,59 @@ public class Order {
     @Id
     @GeneratedValue
     @Column(name = "order_id", nullable = false)
-    private UUID id;  // 주문 ID
+    private UUID id;
 
     @Column(name = "request_client_id")
-    private UUID requestClientId;  // 공급업체 ID
+    private UUID requestClientId;
 
     @Column(name = "response_client_id")
-    private UUID responseClientId;  // 수령업체 ID
+    private UUID responseClientId;
 
     @Column(name = "product_id")
-    private UUID productId;  // 상품 ID
+    private UUID productId;
 
     @Column(name = "quantity")
-    private int quantity;  // 수량
+    private int quantity;
 
     @Column(name = "delivery_id")
-    private UUID deliveryId;  // 배송 ID
+    private UUID deliveryId;
 
     @Column(name = "requirement", length = 255)
-    private String requirement;  // 요청사항
+    private String requirement;
 
     @Column(name = "status", length = 50)
     @Enumerated(EnumType.STRING)
-    private OrderStatus status;  // 주문상태
+    private OrderStatus status;
 
     @Column(name = "created_at", nullable = false)
-    private LocalDateTime createdAt;  // 생성일
+    private LocalDateTime createdAt;
 
     @Column(name = "created_by", length = 50)
-    private String createdBy;  // 생성자
+    private String createdBy;
 
     @Column(name = "updated_at")
-    private LocalDateTime updatedAt;  // 수정일
+    private LocalDateTime updatedAt;
 
     @Column(name = "updated_by", length = 50)
-    private String updatedBy;  // 수정자
+    private String updatedBy;
 
     @Column(name = "deleted_at")
-    private LocalDateTime deletedAt;  // 삭제일
+    private LocalDateTime deletedAt;
 
     @Column(name = "deleted_by", length = 50)
-    private String deletedBy;  // 삭제자
+    private String deletedBy;
 
-    // TODO : 저장,수정,삭제할때 user값 넣기
+    // TODO : user값 넣기
 
     @PrePersist
     public void prePersist() {
         if (this.id == null) {
-            this.id = UUID.randomUUID();  // UUID가 없는 경우 자동 생성
+            this.id = UUID.randomUUID();
         }
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
     }
 
-    // 주문 수정 시 수정 일시 업데이트
     @PreUpdate
     public void preUpdate() {
         this.updatedAt = LocalDateTime.now();

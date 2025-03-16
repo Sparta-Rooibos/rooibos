@@ -33,11 +33,10 @@ public class OrderService {
 
     @Transactional
     public CreateOrderResponseDTO createOrder(@Valid CreateOrderRequestDTO request) {
-//      1. 주문 생성
+
         Order order = new Order(request);   // 주문 객체 생성
         orderRepository.save(order);        // DB에 저장
 
-//      2. 배달 서비스 호출
         DeliveryRequestDTO deliveryRequest = new DeliveryRequestDTO(order);
         CreateOrderResponseDTO response = deliveryService.createDelivery(deliveryRequest);
         return response;
@@ -45,12 +44,10 @@ public class OrderService {
 
     @Transactional
     public UpdateOrderResponseDTO updateOrder(UpdateOrderRequestDTO request) {
-//      1. 목표 주문 찾기
         Order targetOrder = orderRepository.findById(request.id()).orElseThrow(
             ()-> new IllegalArgumentException("수정할 주문이 없습니다.")
         );
 
-//      2. 주문 수정
         targetOrder.update(request);
 
         UpdateOrderResponseDTO response = new UpdateOrderResponseDTO(targetOrder);
@@ -59,12 +56,12 @@ public class OrderService {
 
     @Transactional
     public DeleteOrderResponseDTO deleteOrder(UUID orderId) {
-//      1. 목표 주문 찾기
+
         Order targetOrder = orderRepository.findById(orderId).orElseThrow(
             ()-> new IllegalArgumentException("삭제할 주문이 없습니다.")
         );
 
-//      2. 주문 삭제
+
         targetOrder.delete();
 
         DeleteOrderResponseDTO response = new DeleteOrderResponseDTO(targetOrder);
@@ -73,7 +70,7 @@ public class OrderService {
 
     @Transactional(readOnly = true)
     public GetOrderResponseDTO getOrder(UUID orderId) {
-//      1. 목표 주문 찾기
+
         Order targetOrder = orderRepository.findById(orderId).orElseThrow(
             ()-> new IllegalArgumentException("해당 주문이 없습니다.")
         );
