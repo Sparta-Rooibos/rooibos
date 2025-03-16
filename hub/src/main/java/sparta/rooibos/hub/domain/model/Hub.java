@@ -33,4 +33,23 @@ public class Hub {
 
     // TODO Point 사용할지 고민 -> 지도 라이브러리에 따라 다를듯?
     private String longitude;
+
+    public Hub update(Hub hub) {
+        if (!isSameHub(hubId)) {
+            // TODO 커스텀 예외로 전환
+            throw new IllegalArgumentException("Hub IDs do not match");
+        }
+
+        this.name = hub.getName();
+        this.region = hub.getRegion();
+        this.address = hub.getAddress();
+        this.latitude = hub.getLatitude();
+        this.longitude = hub.getLongitude();
+
+        return this;
+    }
+
+    private boolean isSameHub(UUID hubId) {
+        return this.hubId.equals(hubId);
+    }
 }

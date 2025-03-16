@@ -9,4 +9,6 @@ public interface HubRepository {
     Hub createHub(Hub hub);
 
     Optional<Hub> getHub(UUID hubId);
+
+    // TODO 동적 쿼리 조회 추가
 }
