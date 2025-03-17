@@ -3,15 +3,19 @@ package sparta.rooibos.hub.application.service.adapter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import sparta.rooibos.hub.application.dto.response.CreateHubResponseDto;
 import sparta.rooibos.hub.application.dto.response.GetHubResponseDto;
+import sparta.rooibos.hub.application.dto.response.SearchHubResponseDto;
 import sparta.rooibos.hub.application.dto.response.UpdateHubResponseDto;
 import sparta.rooibos.hub.application.mapper.HubMapper;
 import sparta.rooibos.hub.application.service.port.HubService;
 import sparta.rooibos.hub.domain.model.Hub;
+import sparta.rooibos.hub.domain.model.Pagination;
 import sparta.rooibos.hub.domain.respository.HubRepository;
 import sparta.rooibos.hub.application.dto.request.CreateHubRequestDto;
 import sparta.rooibos.hub.application.dto.request.UpdateHubRequestDto;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -23,7 +27,7 @@ public class HubServiceImpl implements HubService {
 
     @Override
     @Transactional
-    public CreateHubRequestDto createHub(CreateHubRequestDto createHubRequestDto) {
+    public CreateHubResponseDto createHub(CreateHubRequestDto createHubRequestDto) {
         Hub newHub = hubMapper.toHub(createHubRequestDto);
 
         return hubMapper.toCreateHubResponseDto(hubRepository.createHub(newHub));
@@ -32,6 +36,18 @@ public class HubServiceImpl implements HubService {
     @Override
     public GetHubResponseDto getHub(UUID hubId) {
         return hubMapper.toGetHubResponseDto(getHubForServer(hubId));
+    }
+
+    @Override
+    public SearchHubResponseDto searchHub(String name, String region, int page, int size) {
+        Pagination<Hub> hubPagination = hubRepository.searchHub(name, region, page, size);
+
+        return SearchHubResponseDto.of(
+                hubPagination.getPage(),
+                hubPagination.getSize(),
+                hubPagination.getTotal(),
+                hubPagination.getContent()
+        );
     }
 
     @Override

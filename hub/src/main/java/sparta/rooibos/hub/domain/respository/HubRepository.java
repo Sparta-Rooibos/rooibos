@@ -1,7 +1,9 @@
 package sparta.rooibos.hub.domain.respository;
 
 import sparta.rooibos.hub.domain.model.Hub;
+import sparta.rooibos.hub.domain.model.Pagination;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -10,5 +12,5 @@ public interface HubRepository {
 
     Optional<Hub> getHub(UUID hubId);
 
-    // TODO 동적 쿼리 조회 추가
+    Pagination<Hub> searchHub(String name, String region, int page, int size);
 }
