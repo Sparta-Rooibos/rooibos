@@ -50,7 +50,7 @@ public class ClientService {
     }
 
     public GetClientResponse getClient(UUID clientId) {
-        Client client = clientRepository.findByIdAndDeleteByIsNull(clientId).orElseThrow(() -> new IllegalArgumentException("해당 하는 업체가 존재하지 않습니다."));
+        Client client = clientRepository.findByIdAndDeleteByIsNull(clientId).orElseThrow(() -> new BusinessClientException(ClientErrorCode.NOT_EXITS_CLIENT));
         return new GetClientResponse(client.getId().toString(),
                 client.getName(),
                 client.getClientAddress(),
