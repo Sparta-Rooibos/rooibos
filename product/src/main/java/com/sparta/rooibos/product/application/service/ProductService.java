@@ -13,6 +13,7 @@ import com.sparta.rooibos.product.domain.repository.QueryProductRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -24,8 +25,8 @@ public class ProductService {
     private final QueryProductRepository queryProductRepository;
 
 
-    public SearchProductResponse getProductList(SearchProductRequest request) {
-        Page<Product> products = queryProductRepository.getProductList(request.pageable(), request.id(), request.name(), request.isDeleted());
+    public SearchProductResponse getProductList(SearchProductRequest request, Pageable pageable) {
+        Page<Product> products = queryProductRepository.getProductList(pageable, request.id(), request.name(), request.isDeleted());
 
         return new SearchProductResponse(products.getContent().stream().map(
                 p -> new SearchProductListResponse(p.getId(), p.getName(), p.getClientId(), p.getManagedHubId(), p.getDeleteBy() != null)).toList(),
@@ -54,8 +55,7 @@ public class ProductService {
     }
 
     @Transactional
-    public boolean updateProduct(UpdateProductRequest request) {
-        UUID id = request.productId();
+    public boolean updateProduct(UUID id, UpdateProductRequest request) {
         //아이디가 같은 경우에는 무시한다.
         if (productRepository.findByNameAndDeleteByIsNull(request.name()).filter(
                 product -> !product.getId().equals(id)
