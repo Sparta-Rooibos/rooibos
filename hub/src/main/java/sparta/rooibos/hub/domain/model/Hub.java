@@ -1,12 +1,14 @@
 package sparta.rooibos.hub.domain.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.UuidGenerator;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -34,6 +36,28 @@ public class Hub {
     // TODO Point 사용할지 고민 -> 지도 라이브러리에 따라 다를듯?
     private String longitude;
 
+    @CreatedDate
+    @Column(updatable = false, nullable = false)
+    private LocalDateTime createAt;
+
+    @CreatedBy
+    @Column(updatable = false, nullable = false)
+    private String createBy;
+
+    @LastModifiedDate
+    @Column
+    private LocalDateTime updateAt;
+
+    @LastModifiedBy
+    @Column
+    private String updateBy;
+
+    @Column
+    private LocalDateTime deleteAt;
+
+    @Column
+    private String deleteBy;
+
     public Hub update(Hub hub) {
         if (!isSameHub(hubId)) {
             // TODO 커스텀 예외로 전환
@@ -51,5 +75,9 @@ public class Hub {
 
     private boolean isSameHub(UUID hubId) {
         return this.hubId.equals(hubId);
+    }
+
+    public void delete() {
+        this.deleteAt = LocalDateTime.now();
     }
 }
