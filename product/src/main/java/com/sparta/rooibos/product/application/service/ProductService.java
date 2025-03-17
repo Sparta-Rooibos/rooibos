@@ -7,6 +7,8 @@ import com.sparta.rooibos.product.application.dto.response.CreateProductResponse
 import com.sparta.rooibos.product.application.dto.response.GetProductResponse;
 import com.sparta.rooibos.product.application.dto.response.SearchProductListResponse;
 import com.sparta.rooibos.product.application.dto.response.SearchProductResponse;
+import com.sparta.rooibos.product.application.exception.BusinessProductException;
+import com.sparta.rooibos.product.application.exception.ProductErrorCode;
 import com.sparta.rooibos.product.domain.entity.Product;
 import com.sparta.rooibos.product.domain.repository.ProductRepository;
 import com.sparta.rooibos.product.domain.repository.QueryProductRepository;
@@ -34,13 +36,13 @@ public class ProductService {
     }
 
     public GetProductResponse getProduct(UUID productId) {
-        Product product = productRepository.findByIdAndDeleteByIsNull(productId).orElseThrow(() -> new IllegalArgumentException("제공하는 상품이 존재하지 않습니다."));
+        Product product = productRepository.findByIdAndDeleteByIsNull(productId).orElseThrow(() -> new BusinessProductException(ProductErrorCode.NOT_FOUND_PRODUCT));
         return new GetProductResponse(product);
     }
 
     public CreateProductResponse createProduct(CreateProductRequest request) {
         if (productRepository.findByNameAndDeleteByIsNull(request.name()).isPresent()) {
-            throw new IllegalArgumentException("이미 존재하는 상품입니다.");
+            throw new BusinessProductException(ProductErrorCode.NOT_EXITS_PRODUCT);
         }
         // 상품 등록
         Product product = productRepository.save(new Product(
@@ -49,7 +51,6 @@ public class ProductService {
                 request.managedHubId(),
                 "계정 아이디"
         ));
-
 
         return new CreateProductResponse(product.getId(), request.name());
     }
@@ -60,10 +61,10 @@ public class ProductService {
         if (productRepository.findByNameAndDeleteByIsNull(request.name()).filter(
                 product -> !product.getId().equals(id)
         ).isPresent()) {
-            throw new IllegalArgumentException("이미 존재하는 상품입니다.");
+            throw new BusinessProductException(ProductErrorCode.NOT_EXITS_PRODUCT);
         }
 
-        final Product product = productRepository.findByIdAndDeleteByIsNull(id).orElseThrow(() -> new IllegalArgumentException("제공하는 상품이 존재하지 않습니다."));
+        final Product product = productRepository.findByIdAndDeleteByIsNull(id).orElseThrow(() -> new BusinessProductException(ProductErrorCode.NOT_FOUND_PRODUCT));
         // 상품 수정
         product.update(request.name());
         return true;
@@ -71,7 +72,7 @@ public class ProductService {
 
     @Transactional
     public boolean deleteProduct(UUID id) {
-        final Product product = productRepository.findByIdAndDeleteByIsNull(id).orElseThrow(() -> new IllegalArgumentException("제공하는 상품이 존재하지 않습니다."));
+        final Product product = productRepository.findByIdAndDeleteByIsNull(id).orElseThrow(() -> new BusinessProductException(ProductErrorCode.NOT_FOUND_PRODUCT));
         product.delete("계정아이디");
         return true;
     }
