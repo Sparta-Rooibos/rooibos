@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Where;
 
 @Entity
-@Table(name = "p_order")  // DB 테이블 이름 p_order와 매핑
+@Table(name = "p_delivery")
 @Where(clause = "deleted_at IS NULL")
 @Getter
 @NoArgsConstructor
@@ -73,6 +73,7 @@ public class Delivery {
         this.orderId = orderId;
         this.slackAccount = slackAccount;
         this.deliverId = deliverId;
+        this.status = DeliveryStatus.PENDING;
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
     }
