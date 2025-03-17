@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -23,29 +24,29 @@ public class ProductController {
 
 
     @GetMapping
-    public SearchProductResponse getProductList(@ModelAttribute SearchProductRequest request) {
+    public ResponseEntity<SearchProductResponse> getProductList(@ModelAttribute SearchProductRequest request) {
         Pageable pageable = PageRequest.of(request.page() - 1, request.size(), Sort.by(Sort.Direction.DESC, request.sort()));
-        return productService.getProductList(request, pageable);
+        return ResponseEntity.ok(productService.getProductList(request, pageable));
     }
 
     @GetMapping("/{productId}")
-    public GetProductResponse getProduct(@PathVariable UUID productId) {
-        return productService.getProduct(productId);
+    public ResponseEntity<GetProductResponse> getProduct(@PathVariable UUID productId) {
+        return ResponseEntity.ok(productService.getProduct(productId));
     }
 
     @PostMapping
-    public CreateProductResponse createProduct(@RequestBody CreateProductRequest request) {
-        return productService.createProduct(request);
+    public ResponseEntity<CreateProductResponse> createProduct(@RequestBody CreateProductRequest request) {
+        return ResponseEntity.ok(productService.createProduct(request));
     }
 
     @PutMapping("/{productId}")
-    public boolean updateProduct(@PathVariable UUID productId, @RequestBody UpdateProductRequest request) {
-        return productService.updateProduct(productId, request);
+    public ResponseEntity<Boolean> updateProduct(@PathVariable UUID productId, @RequestBody UpdateProductRequest request) {
+        return ResponseEntity.ok(productService.updateProduct(productId, request));
     }
 
     @PatchMapping("/{productId}")
-    public boolean deleteProduct(@PathVariable UUID productId) {
-        return productService.deleteProduct(productId);
+    public ResponseEntity<Boolean> deleteProduct(@PathVariable UUID productId) {
+        return ResponseEntity.ok(productService.deleteProduct(productId));
     }
 
 }
