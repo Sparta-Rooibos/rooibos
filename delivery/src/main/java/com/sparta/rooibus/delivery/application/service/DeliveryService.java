@@ -2,8 +2,10 @@ package com.sparta.rooibus.delivery.application.service;
 
 import com.sparta.rooibus.delivery.application.dto.request.CreateDeliveryRequest;
 import com.sparta.rooibus.delivery.application.dto.response.CreateDeliveryResponse;
+import com.sparta.rooibus.delivery.application.dto.response.GetDeliveryResponse;
 import com.sparta.rooibus.delivery.domain.entity.Delivery;
 import com.sparta.rooibus.delivery.domain.repository.DeliveryRepository;
+import jakarta.persistence.EntityNotFoundException;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,8 +25,14 @@ public class DeliveryService {
         Delivery delivery = request.toCommand(slackAccount,deliverId).toDelivery();
         deliveryRepository.save(delivery);
 
-        CreateDeliveryResponse response = CreateDeliveryResponse.from(delivery);
+        return CreateDeliveryResponse.from(delivery);
+    }
 
-        return response;
+    @Transactional(readOnly = true)
+    public GetDeliveryResponse getDelivery(UUID deliveryId) {
+        Delivery delivery = deliveryRepository.findById(deliveryId).orElseThrow(
+            ()-> new EntityNotFoundException("찾으시는 데이터가 올바르지 않습니다.")
+        );
+        return GetDeliveryResponse.from(delivery);
     }
 }
