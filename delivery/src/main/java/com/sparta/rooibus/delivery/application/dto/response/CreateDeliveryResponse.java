@@ -1,12 +1,12 @@
 package com.sparta.rooibus.delivery.application.dto.response;
 
 import com.sparta.rooibus.delivery.domain.entity.Delivery;
+import java.util.UUID;
 
 public record CreateDeliveryResponse(
-    String message
+    UUID deliveryID
 ) {
-
     public static CreateDeliveryResponse from(Delivery delivery) {
-        return new CreateDeliveryResponse("배송(" + delivery.getId() + ")이 생성되었습니다.");
+        return new CreateDeliveryResponse(delivery.getId());
     }
 }
