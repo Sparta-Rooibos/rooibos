@@ -44,6 +44,13 @@ public class HubServiceImpl implements HubService {
         return hubMapper.toUpdateHubResponseDto(targetHub.update(sourceHub));
     }
 
+    @Override
+    @Transactional
+    public void deleteHub(UUID hubId) {
+        Hub targetHub = getHubForServer(hubId);
+        targetHub.delete();
+    }
+
     /**
      * 서버에서만 사용하는 단일 조회 로직
      */

@@ -15,4 +15,6 @@ public interface HubService {
     // TODO 동적 쿼리 로직 추가
 
     UpdateHubResponseDto updateHub(UpdateHubRequestDto updateHubRequestDto);
+
+    void deleteHub(UUID hubId);
 }
