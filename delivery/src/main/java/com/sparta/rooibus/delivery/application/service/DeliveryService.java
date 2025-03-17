@@ -7,11 +7,14 @@ import com.sparta.rooibus.delivery.domain.repository.DeliveryRepository;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 public class DeliveryService {
     private final DeliveryRepository deliveryRepository;
+
+    @Transactional
     public CreateDeliveryResponse createDelivery(CreateDeliveryRequest request) {
 //       업체 배송담당자 요청해서 받아서 넣기
         String slackAccount = "feign client로 받아올 슬랙 어카운트";
