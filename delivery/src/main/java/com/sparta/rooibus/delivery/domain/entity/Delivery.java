@@ -3,6 +3,8 @@ package com.sparta.rooibus.delivery.domain.entity;
 import com.sparta.rooibus.delivery.domain.model.DeliveryStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
@@ -27,6 +29,7 @@ public class Delivery {
     private UUID orderId;
 
     @Column(name = "status" )
+    @Enumerated(EnumType.STRING)
     private DeliveryStatus status;
 
     @Column(name = "departure" )
