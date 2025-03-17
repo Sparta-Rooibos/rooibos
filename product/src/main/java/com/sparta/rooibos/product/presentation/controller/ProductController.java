@@ -1,12 +1,12 @@
 package com.sparta.rooibos.product.presentation.controller;
 
+import com.sparta.rooibos.product.application.dto.request.CreateProductRequest;
+import com.sparta.rooibos.product.application.dto.request.SearchProductRequest;
+import com.sparta.rooibos.product.application.dto.request.UpdateProductRequest;
+import com.sparta.rooibos.product.application.dto.response.CreateProductResponse;
+import com.sparta.rooibos.product.application.dto.response.GetProductResponse;
+import com.sparta.rooibos.product.application.dto.response.SearchProductResponse;
 import com.sparta.rooibos.product.application.service.ProductService;
-import com.sparta.rooibos.product.presentation.dto.request.CreateProductRequestDto;
-import com.sparta.rooibos.product.presentation.dto.request.SearchProductRequestDto;
-import com.sparta.rooibos.product.presentation.dto.request.UpdateProductRequestDto;
-import com.sparta.rooibos.product.presentation.dto.response.CreateProductResponseDto;
-import com.sparta.rooibos.product.presentation.dto.response.GetProductResponseDto;
-import com.sparta.rooibos.product.presentation.dto.response.SearchProductResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -23,24 +23,24 @@ public class ProductController {
 
 
     @GetMapping
-    public SearchProductResponseDto getProductList(@ModelAttribute SearchProductRequestDto request) {
+    public SearchProductResponse getProductList(@ModelAttribute SearchProductRequest request) {
         Pageable pageable = PageRequest.of(request.page() - 1, request.size(), Sort.by(Sort.Direction.DESC, request.sort()));
-        return new SearchProductResponseDto(productService.getProductList(request.toApplication(pageable)));
+        return productService.getProductList(request, pageable);
     }
 
     @GetMapping("/{productId}")
-    public GetProductResponseDto getProduct(@PathVariable UUID productId) {
-        return new GetProductResponseDto(productService.getProduct(productId));
+    public GetProductResponse getProduct(@PathVariable UUID productId) {
+        return productService.getProduct(productId);
     }
 
     @PostMapping
-    public CreateProductResponseDto createProduct(@RequestBody CreateProductRequestDto request) {
-        return new CreateProductResponseDto(productService.createProduct(request.toApplication()));
+    public CreateProductResponse createProduct(@RequestBody CreateProductRequest request) {
+        return productService.createProduct(request);
     }
 
     @PutMapping("/{productId}")
-    public boolean updateProduct(@PathVariable UUID productId, @RequestBody UpdateProductRequestDto request) {
-        return productService.updateProduct(request.toApplication(productId));
+    public boolean updateProduct(@PathVariable UUID productId, @RequestBody UpdateProductRequest request) {
+        return productService.updateProduct(productId, request);
     }
 
     @PatchMapping("/{productId}")
