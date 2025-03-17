@@ -1,4 +1,4 @@
-package com.sparta.rooibos.client.application.dto.req;
+package com.sparta.rooibos.client.application.dto.request;
 
 public record SearchClientRequest(String name, String address, String type, Boolean isDeleted, Integer page,
                                   Integer size, String sort) {
