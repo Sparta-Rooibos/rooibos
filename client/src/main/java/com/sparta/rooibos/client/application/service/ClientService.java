@@ -95,9 +95,8 @@ public class ClientService {
     }
 
     @Transactional
-    public boolean changeUsedHub(UpdateHubIdRequest request) {
-        UUID id = request.clientId();
-        Client client = clientRepository.findByIdAndDeleteByIsNull(id).orElseThrow(() -> new BusinessClientException(ClientErrorCode.NOT_EXITS_CLIENT));
+    public boolean changeUsedHub(UUID clientId, UpdateHubIdRequest request) {
+        Client client = clientRepository.findByIdAndDeleteByIsNull(clientId).orElseThrow(() -> new BusinessClientException(ClientErrorCode.NOT_EXITS_CLIENT));
         return client.changeUsedHub(request.hubId());
     }
 }

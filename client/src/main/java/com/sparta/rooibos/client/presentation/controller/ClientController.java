@@ -54,6 +54,6 @@ public class ClientController {
     //사용 허브 변경
     @PatchMapping("/change/hub/{clientId}")
     public ResponseEntity<Boolean> changeUsedHub(@PathVariable UUID clientId, @RequestBody UpdateHubIdRequest request) {
-        return ResponseEntity.ok(clientService.changeUsedHub(request));
+        return ResponseEntity.ok(clientService.changeUsedHub(clientId, request));
     }
 }
