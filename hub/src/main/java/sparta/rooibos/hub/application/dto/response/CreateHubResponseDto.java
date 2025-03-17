@@ -1,8 +1,8 @@
-package sparta.rooibos.hub.application.dto;
+package sparta.rooibos.hub.application.dto.response;
 
 import java.util.UUID;
 
-public record HubResponseDto(
+public record CreateHubResponseDto(
         UUID hubId,
         String name,
         String region,

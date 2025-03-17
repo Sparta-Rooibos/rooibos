@@ -1,4 +1,4 @@
-package sparta.rooibos.hub.presentation.dto;
+package sparta.rooibos.hub.application.dto.request;
 
 public record CreateHubRequestDto(
         String name,

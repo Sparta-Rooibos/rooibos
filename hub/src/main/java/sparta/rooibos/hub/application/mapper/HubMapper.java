@@ -2,10 +2,11 @@ package sparta.rooibos.hub.application.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import sparta.rooibos.hub.application.dto.HubResponseDto;
+import sparta.rooibos.hub.application.dto.response.GetHubResponseDto;
+import sparta.rooibos.hub.application.dto.response.UpdateHubResponseDto;
 import sparta.rooibos.hub.domain.model.Hub;
-import sparta.rooibos.hub.presentation.dto.CreateHubRequestDto;
-import sparta.rooibos.hub.presentation.dto.UpdateHubRequestDto;
+import sparta.rooibos.hub.application.dto.request.CreateHubRequestDto;
+import sparta.rooibos.hub.application.dto.request.UpdateHubRequestDto;
 
 @Mapper(componentModel = "spring")
 public interface HubMapper {
@@ -16,5 +17,9 @@ public interface HubMapper {
 
     Hub toHub(UpdateHubRequestDto updateHubRequestDto);
 
-    HubResponseDto toHubResponseDto(Hub hub);
+    CreateHubRequestDto toCreateHubResponseDto(Hub hub);
+
+    GetHubResponseDto toGetHubResponseDto(Hub hub);
+
+    UpdateHubResponseDto toUpdateHubResponseDto(Hub hub);
 }

@@ -1,17 +1,18 @@
 package sparta.rooibos.hub.application.service.port;
 
-import sparta.rooibos.hub.application.dto.HubResponseDto;
-import sparta.rooibos.hub.presentation.dto.CreateHubRequestDto;
-import sparta.rooibos.hub.presentation.dto.UpdateHubRequestDto;
+import sparta.rooibos.hub.application.dto.response.GetHubResponseDto;
+import sparta.rooibos.hub.application.dto.response.UpdateHubResponseDto;
+import sparta.rooibos.hub.application.dto.request.CreateHubRequestDto;
+import sparta.rooibos.hub.application.dto.request.UpdateHubRequestDto;
 
 import java.util.UUID;
 
 public interface HubService {
-    HubResponseDto createHub(CreateHubRequestDto createHubRequestDto);
+    CreateHubRequestDto createHub(CreateHubRequestDto createHubRequestDto);
 
-    HubResponseDto getHub(UUID hubId);
+    GetHubResponseDto getHub(UUID hubId);
 
     // TODO 동적 쿼리 로직 추가
 
-    HubResponseDto updateHub(UpdateHubRequestDto updateHubRequestDto);
+    UpdateHubResponseDto updateHub(UpdateHubRequestDto updateHubRequestDto);
 }
