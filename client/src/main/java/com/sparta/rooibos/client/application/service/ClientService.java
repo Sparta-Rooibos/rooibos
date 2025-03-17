@@ -1,14 +1,14 @@
 package com.sparta.rooibos.client.application.service;
 
 
-import com.sparta.rooibos.client.application.dto.req.CreateClientApplicationRequest;
-import com.sparta.rooibos.client.application.dto.req.SearchClientApplicationRequest;
-import com.sparta.rooibos.client.application.dto.req.UpdateClientApplicationRequest;
-import com.sparta.rooibos.client.application.dto.req.UpdateHubIdApplicationRequest;
-import com.sparta.rooibos.client.application.dto.res.CreateClientApplicationResponse;
-import com.sparta.rooibos.client.application.dto.res.GetClientApplicationResponse;
-import com.sparta.rooibos.client.application.dto.res.SearchClientApplicationListResponse;
-import com.sparta.rooibos.client.application.dto.res.SearchClientApplicationResponse;
+import com.sparta.rooibos.client.application.dto.req.CreateClientRequest;
+import com.sparta.rooibos.client.application.dto.req.SearchClientRequest;
+import com.sparta.rooibos.client.application.dto.req.UpdateClientRequest;
+import com.sparta.rooibos.client.application.dto.req.UpdateHubIdRequest;
+import com.sparta.rooibos.client.application.dto.res.CreateClientResponse;
+import com.sparta.rooibos.client.application.dto.res.GetClientResponse;
+import com.sparta.rooibos.client.application.dto.res.SearchClientListResponse;
+import com.sparta.rooibos.client.application.dto.res.SearchClientResponse;
 import com.sparta.rooibos.client.application.exception.BusinessClientException;
 import com.sparta.rooibos.client.application.exception.ClientErrorCode;
 import com.sparta.rooibos.client.domain.entity.Client;
@@ -17,6 +17,7 @@ import com.sparta.rooibos.client.domain.repository.ClientRepository;
 import com.sparta.rooibos.client.domain.repository.QueryClientRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,15 +29,15 @@ public class ClientService {
     private final ClientRepository clientRepository;
     private final QueryClientRepository queryClientRepository;
 
-    public SearchClientApplicationResponse getClientList(SearchClientApplicationRequest condition) {
-        Page<Client> clients = queryClientRepository.getClientList(condition.pageable(),
+    public SearchClientResponse getClientList(SearchClientRequest condition, Pageable pageable) {
+        Page<Client> clients = queryClientRepository.getClientList(pageable,
                 condition.name(),
                 condition.address(),
                 condition.type(),
                 condition.isDeleted());
-        return new SearchClientApplicationResponse(
+        return new SearchClientResponse(
                 clients.getContent().stream()
-                        .map(client -> new SearchClientApplicationListResponse(
+                        .map(client -> new SearchClientListResponse(
                                 client.getId(),
                                 client.getName(),
                                 client.getType().name(),
@@ -48,9 +49,9 @@ public class ClientService {
                 clients.getSize());
     }
 
-    public GetClientApplicationResponse getClient(UUID clientId) {
+    public GetClientResponse getClient(UUID clientId) {
         Client client = clientRepository.findByIdAndDeleteByIsNull(clientId).orElseThrow(() -> new IllegalArgumentException("해당 하는 업체가 존재하지 않습니다."));
-        return new GetClientApplicationResponse(client.getId().toString(),
+        return new GetClientResponse(client.getId().toString(),
                 client.getName(),
                 client.getClientAddress(),
                 client.getType().name(),
@@ -59,7 +60,7 @@ public class ClientService {
                 client.getUpdateAt());
     }
 
-    public CreateClientApplicationResponse createClient(CreateClientApplicationRequest createClientRequest) {
+    public CreateClientResponse createClient(CreateClientRequest createClientRequest) {
         if (clientRepository.findByNameAndDeleteByIsNull(createClientRequest.name()).isPresent()) {
             throw new BusinessClientException(ClientErrorCode.NOT_FOUND_CLIENT);
         }
@@ -72,17 +73,16 @@ public class ClientService {
                 createClientRequest.managedHubId(),
                 createClientRequest.address(),
                 "계정아이디"));
-        return new CreateClientApplicationResponse(client);
+        return new CreateClientResponse(client);
     }
 
     @Transactional
-    public boolean updateClient(UpdateClientApplicationRequest request) {
-        UUID id = request.clientId();
+    public boolean updateClient(UUID clientId, UpdateClientRequest request) {
         if (clientRepository.findByNameAndDeleteByIsNull(request.name())
-                .filter(client -> !client.getId().equals(request.clientId())).isPresent()) {
+                .filter(client -> !client.getId().equals(clientId)).isPresent()) {
             throw new BusinessClientException(ClientErrorCode.NOT_FOUND_CLIENT);
         }
-        Client client = clientRepository.findByIdAndDeleteByIsNull(id).orElseThrow(() -> new BusinessClientException(ClientErrorCode.NOT_EXITS_CLIENT));
+        Client client = clientRepository.findByIdAndDeleteByIsNull(clientId).orElseThrow(() -> new BusinessClientException(ClientErrorCode.NOT_EXITS_CLIENT));
         client.update(request.name(), request.address(), "계정아이디");
         return true;
     }
@@ -95,7 +95,7 @@ public class ClientService {
     }
 
     @Transactional
-    public boolean changeUsedHub(UpdateHubIdApplicationRequest request) {
+    public boolean changeUsedHub(UpdateHubIdRequest request) {
         UUID id = request.clientId();
         Client client = clientRepository.findByIdAndDeleteByIsNull(id).orElseThrow(() -> new BusinessClientException(ClientErrorCode.NOT_EXITS_CLIENT));
         return client.changeUsedHub(request.hubId());

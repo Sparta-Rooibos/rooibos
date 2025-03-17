@@ -4,9 +4,9 @@ import com.sparta.rooibos.client.domain.entity.Client;
 
 import java.util.UUID;
 
-public record CreateClientApplicationResponse(UUID id, String name) {
+public record CreateClientResponse(UUID id, String name) {
 
-    public CreateClientApplicationResponse(Client client) {
+    public CreateClientResponse(Client client) {
         this(client.getId(), client.getName());
     }
 }
