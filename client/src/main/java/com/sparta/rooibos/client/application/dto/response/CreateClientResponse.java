@@ -1,4 +1,4 @@
-package com.sparta.rooibos.client.application.dto.res;
+package com.sparta.rooibos.client.application.dto.response;
 
 import com.sparta.rooibos.client.domain.entity.Client;
 

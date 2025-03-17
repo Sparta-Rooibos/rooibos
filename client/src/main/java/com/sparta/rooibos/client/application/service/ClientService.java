@@ -1,14 +1,14 @@
 package com.sparta.rooibos.client.application.service;
 
 
-import com.sparta.rooibos.client.application.dto.req.CreateClientRequest;
-import com.sparta.rooibos.client.application.dto.req.SearchClientRequest;
-import com.sparta.rooibos.client.application.dto.req.UpdateClientRequest;
-import com.sparta.rooibos.client.application.dto.req.UpdateHubIdRequest;
-import com.sparta.rooibos.client.application.dto.res.CreateClientResponse;
-import com.sparta.rooibos.client.application.dto.res.GetClientResponse;
-import com.sparta.rooibos.client.application.dto.res.SearchClientListResponse;
-import com.sparta.rooibos.client.application.dto.res.SearchClientResponse;
+import com.sparta.rooibos.client.application.dto.request.CreateClientRequest;
+import com.sparta.rooibos.client.application.dto.request.SearchClientRequest;
+import com.sparta.rooibos.client.application.dto.request.UpdateClientRequest;
+import com.sparta.rooibos.client.application.dto.request.UpdateHubIdRequest;
+import com.sparta.rooibos.client.application.dto.response.CreateClientResponse;
+import com.sparta.rooibos.client.application.dto.response.GetClientResponse;
+import com.sparta.rooibos.client.application.dto.response.SearchClientListResponse;
+import com.sparta.rooibos.client.application.dto.response.SearchClientResponse;
 import com.sparta.rooibos.client.application.exception.BusinessClientException;
 import com.sparta.rooibos.client.application.exception.ClientErrorCode;
 import com.sparta.rooibos.client.domain.entity.Client;
