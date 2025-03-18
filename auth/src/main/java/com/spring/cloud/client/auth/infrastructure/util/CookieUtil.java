@@ -1,6 +1,6 @@
 package com.spring.cloud.client.auth.infrastructure.util;
 
-import com.spring.cloud.client.auth.application.service.CookieProvider;
+import com.spring.cloud.client.auth.application.service.port.CookieProvider;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

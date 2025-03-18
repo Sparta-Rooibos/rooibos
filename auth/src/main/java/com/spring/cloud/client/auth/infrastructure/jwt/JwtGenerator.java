@@ -17,10 +17,10 @@ public class JwtGenerator {
         this.secretKey = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), Jwts.SIG.HS256.key().build().getAlgorithm());
     }
 
-    public String createJwt(String category, String username, String role, Long expiredMs) {
+    public String createJwt(String category, String email, String role, Long expiredMs) {
         return Jwts.builder()
                 .claim("category", category)
-                .claim("username", username)
+                .claim("email", email)
                 .claim("role", role)
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + expiredMs))
