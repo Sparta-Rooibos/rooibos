@@ -1,8 +1,10 @@
 package com.sparta.rooibus.delivery.application.service;
 
 import com.sparta.rooibus.delivery.application.dto.request.CreateDeliveryRequest;
+import com.sparta.rooibus.delivery.application.dto.request.UpdateDeliveryRequest;
 import com.sparta.rooibus.delivery.application.dto.response.CreateDeliveryResponse;
 import com.sparta.rooibus.delivery.application.dto.response.GetDeliveryResponse;
+import com.sparta.rooibus.delivery.application.dto.response.UpdateDeliveryResponse;
 import com.sparta.rooibus.delivery.domain.entity.Delivery;
 import com.sparta.rooibus.delivery.domain.repository.DeliveryRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -34,5 +36,14 @@ public class DeliveryService {
             ()-> new EntityNotFoundException("찾으시는 데이터가 올바르지 않습니다.")
         );
         return GetDeliveryResponse.from(delivery);
+    }
+
+    @Transactional
+    public UpdateDeliveryResponse updateDelivery(UpdateDeliveryRequest request) {
+        Delivery delivery = deliveryRepository.findById(request.deliveryId()).orElseThrow(
+            ()-> new EntityNotFoundException("찾으시는 데이터가 올바르지 않습니다.")
+        );
+        delivery.update(request);
+        return UpdateDeliveryResponse.from(delivery);
     }
 }
