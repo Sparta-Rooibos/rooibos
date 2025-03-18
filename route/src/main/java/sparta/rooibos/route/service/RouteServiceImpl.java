@@ -6,8 +6,10 @@ import org.springframework.transaction.annotation.Transactional;
 import sparta.rooibos.route.domain.model.Route;
 import sparta.rooibos.route.domain.repository.RouteRepository;
 import sparta.rooibos.route.presentation.dto.request.CreateRouteRequest;
+import sparta.rooibos.route.presentation.dto.request.UpdateRouteRequest;
 import sparta.rooibos.route.presentation.dto.response.CreateRouteResponse;
 import sparta.rooibos.route.presentation.dto.response.GetRouteResponse;
+import sparta.rooibos.route.presentation.dto.response.UpdateRouteResponse;
 
 import java.util.UUID;
 
@@ -34,6 +36,20 @@ public class RouteServiceImpl implements RouteService {
     @Override
     public GetRouteResponse getRoute(UUID routeId) {
         return GetRouteResponse.from(getRouteForServer(routeId));
+    }
+
+    @Override
+    @Transactional
+    public UpdateRouteResponse updateRoute(UUID routeId, UpdateRouteRequest updateRouteRequest) {
+        Route targetRoute = getRouteForServer(routeId);
+        Route sourceRoute = Route.of(
+                updateRouteRequest.fromHubId(),
+                updateRouteRequest.toHubId(),
+                updateRouteRequest.distance(),
+                updateRouteRequest.timeCost()
+        );
+        Route updatedRoute = targetRoute.update(sourceRoute);
+        return UpdateRouteResponse.from(updatedRoute);
     }
 
     /**

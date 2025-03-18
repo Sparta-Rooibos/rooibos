@@ -62,6 +62,15 @@ public class Route {
                 .build();
     }
 
+    public Route update(Route route) {
+        this.fromHubId = route.getFromHubId();
+        this.toHubId = route.getToHubId();
+        this.distance = route.getDistance();
+        this.timeCost = route.getTimeCost();
+
+        return this;
+    }
+
     public void delete() {
         this.deleteAt = LocalDateTime.now();
     }
