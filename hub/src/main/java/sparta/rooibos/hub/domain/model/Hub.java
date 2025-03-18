@@ -2,11 +2,11 @@ package sparta.rooibos.hub.domain.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.UuidGenerator;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -16,12 +16,13 @@ import java.util.UUID;
 @Getter @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
+@EntityListeners(AuditingEntityListener.class)
 // TODO base entity 상속
 public class Hub {
 
     @Id
     @GeneratedValue
-    @UuidGenerator
+    @Column(columnDefinition = "UUID DEFAULT gen_random_uuid()")
     private UUID hubId;
 
     private String name;

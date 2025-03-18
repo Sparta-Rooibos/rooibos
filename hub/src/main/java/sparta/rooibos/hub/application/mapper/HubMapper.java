@@ -13,8 +13,20 @@ import sparta.rooibos.hub.application.dto.request.UpdateHubRequestDto;
 public interface HubMapper {
 
     @Mapping(target = "hubId", ignore = true)
+    @Mapping(target = "createAt", expression = "java(null)")
+    @Mapping(target = "updateAt", expression = "java(null)")
+    @Mapping(target = "createBy", expression = "java(null)")
+    @Mapping(target = "updateBy", expression = "java(null)")
+    @Mapping(target = "deleteAt", expression = "java(null)")
+    @Mapping(target = "deleteBy", expression = "java(null)")
     Hub toHub(CreateHubRequestDto createHubRequestDto);
 
+    @Mapping(target = "createAt", expression = "java(null)")
+    @Mapping(target = "updateAt", expression = "java(null)")
+    @Mapping(target = "createBy", expression = "java(null)")
+    @Mapping(target = "updateBy", expression = "java(null)")
+    @Mapping(target = "deleteAt", expression = "java(null)")
+    @Mapping(target = "deleteBy", expression = "java(null)")
     Hub toHub(UpdateHubRequestDto updateHubRequestDto);
 
     CreateHubResponseDto toCreateHubResponseDto(Hub hub);
