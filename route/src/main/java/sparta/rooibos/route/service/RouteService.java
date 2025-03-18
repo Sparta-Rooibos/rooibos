@@ -15,4 +15,6 @@ public interface RouteService {
     GetRouteResponse getRoute(UUID routeId);
 
     UpdateRouteResponse updateRoute(UUID routeId, UpdateRouteRequest updateRouteRequest);
+
+    void deleteRoute(UUID routeId);
 }

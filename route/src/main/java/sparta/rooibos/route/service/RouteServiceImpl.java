@@ -52,6 +52,13 @@ public class RouteServiceImpl implements RouteService {
         return UpdateRouteResponse.from(updatedRoute);
     }
 
+    @Override
+    @Transactional
+    public void deleteRoute(UUID routeId) {
+        Route targetRoute = getRouteForServer(routeId);
+        targetRoute.delete();
+    }
+
     /**
      * 서버에서만 사용하는 단건 조회 메서드
      */
