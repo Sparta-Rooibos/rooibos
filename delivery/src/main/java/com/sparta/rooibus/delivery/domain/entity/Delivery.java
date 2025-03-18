@@ -1,5 +1,6 @@
 package com.sparta.rooibus.delivery.domain.entity;
 
+import com.sparta.rooibus.delivery.application.dto.request.UpdateDeliveryRequest;
 import com.sparta.rooibus.delivery.domain.model.DeliveryStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -10,6 +11,7 @@ import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.UUID;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -95,4 +97,13 @@ public class Delivery {
         this.updatedAt = LocalDateTime.now();
     }
 
+    public void update(UpdateDeliveryRequest request) {
+        Optional.ofNullable(request.departure()).ifPresent(dep -> this.departure = dep);
+        Optional.ofNullable(request.arrival()).ifPresent(arr -> this.arrival = arr);
+        Optional.ofNullable(request.address()).ifPresent(addr -> this.address = addr);
+        Optional.ofNullable(request.recipient()).ifPresent(rec -> this.recipient = rec);
+        Optional.ofNullable(request.slackAccount()).ifPresent(slack -> this.slackAccount = slack);
+        Optional.ofNullable(request.deliverId()).ifPresent(deliver -> this.deliverId = deliver);
+//      TODO : status 변경하는 로직 ???하는게 맞다하면 만들기
+    }
 }
