@@ -17,6 +17,9 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -43,6 +46,7 @@ public class OrderService {
     }
 
     @Transactional
+    @CachePut(value = "orderCache", key = "#request.id()")
     public UpdateOrderResponseDTO updateOrder(UpdateOrderRequestDTO request) {
         Order targetOrder = orderRepository.findById(request.id()).orElseThrow(
             ()-> new IllegalArgumentException("수정할 주문이 없습니다.")
@@ -55,6 +59,7 @@ public class OrderService {
     }
 
     @Transactional
+    @CacheEvict(value = "orderCache", key = "#orderId")
     public DeleteOrderResponseDTO deleteOrder(UUID orderId) {
 
         Order targetOrder = orderRepository.findById(orderId).orElseThrow(
@@ -69,6 +74,7 @@ public class OrderService {
     }
 
     @Transactional(readOnly = true)
+    @Cacheable(value = "orderCache", key = "#orderId")
     public GetOrderResponseDTO getOrder(UUID orderId) {
 
         Order targetOrder = orderRepository.findById(orderId).orElseThrow(
@@ -79,9 +85,10 @@ public class OrderService {
         return response;
     }
 
-    public Page<SearchOrderResponseDTO> searchOrders(SearchOrderRequestDTO requestDTO) {
-        PageRequest pageRequest = PageRequest.of(requestDTO.page(), requestDTO.size());
-        Page<Order> ordersPage = orderQueryRepository.searchOrders(requestDTO, pageRequest);
+    @Cacheable(value = "searchOrderCache", key = "#request.page() + '-' + #request.size()")
+    public Page<SearchOrderResponseDTO> searchOrders(SearchOrderRequestDTO request) {
+        PageRequest pageRequest = PageRequest.of(request.page(), request.size());
+        Page<Order> ordersPage = orderQueryRepository.searchOrders(request, pageRequest);
 
         List<SearchOrderResponseDTO> orderResponseDTOs = ordersPage.getContent()
             .stream()
