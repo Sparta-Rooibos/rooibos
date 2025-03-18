@@ -1,15 +1,23 @@
 package com.sparta.rooibus.delivery.application.service;
 
 import com.sparta.rooibus.delivery.application.dto.request.CreateDeliveryRequest;
+import com.sparta.rooibus.delivery.application.dto.request.SearchDeliveryRequestDTO;
 import com.sparta.rooibus.delivery.application.dto.request.UpdateDeliveryRequest;
 import com.sparta.rooibus.delivery.application.dto.response.CreateDeliveryResponse;
 import com.sparta.rooibus.delivery.application.dto.response.GetDeliveryResponse;
+import com.sparta.rooibus.delivery.application.dto.response.SearchDeliveryResponse;
 import com.sparta.rooibus.delivery.application.dto.response.UpdateDeliveryResponse;
 import com.sparta.rooibus.delivery.domain.entity.Delivery;
+import com.sparta.rooibus.delivery.domain.repository.DeliveryQueryRepository;
 import com.sparta.rooibus.delivery.domain.repository.DeliveryRepository;
 import jakarta.persistence.EntityNotFoundException;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class DeliveryService {
     private final DeliveryRepository deliveryRepository;
+    private final DeliveryQueryRepository deliveryQueryRepository;
 
     @Transactional
     public CreateDeliveryResponse createDelivery(CreateDeliveryRequest request) {
@@ -55,5 +64,18 @@ public class DeliveryService {
         delivery.validateDeletable();
         delivery.delete();
         return delivery.getId();
+    }
+
+
+    public Page<SearchDeliveryResponse> searchOrders(SearchDeliveryRequestDTO request) {
+        PageRequest pageRequest = PageRequest.of(request.page(), request.size());
+        Page<Delivery> deliveryPage = deliveryQueryRepository.searchOrders(request, pageRequest);
+
+        List<SearchDeliveryResponse> deliverySearchList = deliveryPage.getContent()
+            .stream()
+            .map(SearchDeliveryResponse::new)
+            .toList();
+
+        return new PageImpl<>(deliverySearchList,pageRequest,deliveryPage.getTotalElements());
     }
 }
