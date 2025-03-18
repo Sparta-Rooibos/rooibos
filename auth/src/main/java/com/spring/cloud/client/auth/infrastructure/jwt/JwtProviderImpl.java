@@ -1,6 +1,6 @@
 package com.spring.cloud.client.auth.infrastructure.jwt;
 
-import com.spring.cloud.client.auth.application.service.JwtProvider;
+import com.spring.cloud.client.auth.application.service.port.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -11,8 +11,8 @@ public class JwtProviderImpl implements JwtProvider {
     private final JwtValidator jwtValidator;
 
     @Override
-    public String createJwt(String type, String username, String role, long expiration) {
-        return jwtGenerator.createJwt(type, username, role, expiration);
+    public String createJwt(String type, String email, String role, long expiration) {
+        return jwtGenerator.createJwt(type, email, role, expiration);
     }
 
     @Override
@@ -26,8 +26,8 @@ public class JwtProviderImpl implements JwtProvider {
     }
 
     @Override
-    public String getUsername(String token) {
-        return jwtValidator.getUsername(token);
+    public String getEmail(String token) {
+        return jwtValidator.getEmail(token);
     }
 
     @Override

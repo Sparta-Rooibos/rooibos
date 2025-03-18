@@ -20,7 +20,7 @@ public class Refresh {
     private Long id;
 
     @Column(nullable = false, unique = true)
-    private String username;
+    private String email;
 
     @Column(nullable = false, unique = true)
     private String refresh;
@@ -28,8 +28,8 @@ public class Refresh {
     @Column(nullable = false)
     private Date expiration;
 
-    public static Refresh create(String username, String refreshToken, Long expiredMs) {
+    public static Refresh create(String email, String refreshToken, Long expiredMs) {
         Date expiration = new Date(System.currentTimeMillis() + expiredMs);
-        return new Refresh(null, username, refreshToken, expiration);
+        return new Refresh(null, email, refreshToken, expiration);
     }
 }

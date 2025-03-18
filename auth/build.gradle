@@ -13,6 +13,11 @@ java {
     }
 }
 
+bootJar {
+    enabled = true
+    mainClass = 'com.spring.cloud.client.auth.AuthApplication'
+}
+
 configurations {
     compileOnly {
         extendsFrom annotationProcessor
