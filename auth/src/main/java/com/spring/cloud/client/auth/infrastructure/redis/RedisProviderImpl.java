@@ -1,7 +1,7 @@
 package com.spring.cloud.client.auth.infrastructure.redis;
 
 import com.spring.cloud.client.auth.application.dto.UserDTO;
-import com.spring.cloud.client.auth.application.service.RedisProvider;
+import com.spring.cloud.client.auth.application.service.port.RedisProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -29,12 +29,12 @@ public class RedisProviderImpl implements RedisProvider {
     }
 
     @Override
-    public void addToBlacklist(String token) {
-        blacklistService.addToBlacklist(token);
+    public void addToBlacklist(String email) {
+        blacklistService.addToBlacklist(email);
     }
 
     @Override
-    public boolean isTokenBlacklisted(String token) {
-        return blacklistService.isTokenBlacklisted(token);
+    public boolean isTokenBlacklisted(String email) {
+        return blacklistService.isTokenBlacklisted(email);
     }
 }
