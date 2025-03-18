@@ -1,4 +1,4 @@
-package com.spring.cloud.client.auth.application.service;
+package com.spring.cloud.client.auth.application.service.port;
 
 import com.spring.cloud.client.auth.application.dto.UserDTO;
 
@@ -8,6 +8,6 @@ public interface RedisProvider {
     void createUserInfo(UserDTO userDTO);
     Optional<UserDTO> getUserInfo(String email);
     void deleteUserInfo(String email);
-    void addToBlacklist(String token);
-    boolean isTokenBlacklisted(String token);
+    void addToBlacklist(String email);
+    boolean isTokenBlacklisted(String email);
 }

@@ -1,4 +1,4 @@
-package com.spring.cloud.client.auth.application.service;
+package com.spring.cloud.client.auth.application.service.port;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
