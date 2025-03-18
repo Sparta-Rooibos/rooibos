@@ -15,6 +15,9 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -40,6 +43,7 @@ public class DeliveryService {
     }
 
     @Transactional(readOnly = true)
+    @Cacheable(value = "deliveryCache", key = "#deliveryId")
     public GetDeliveryResponse getDelivery(UUID deliveryId) {
         Delivery delivery = deliveryRepository.findById(deliveryId).orElseThrow(
             ()-> new EntityNotFoundException("찾으시는 데이터가 올바르지 않습니다.")
@@ -48,6 +52,7 @@ public class DeliveryService {
     }
 
     @Transactional
+    @CachePut(value = "deliveryCache", key = "#request.deliveryId()")
     public UpdateDeliveryResponse updateDelivery(UpdateDeliveryRequest request) {
         Delivery delivery = deliveryRepository.findById(request.deliveryId()).orElseThrow(
             ()-> new EntityNotFoundException("찾으시는 데이터가 올바르지 않습니다.")
@@ -57,6 +62,7 @@ public class DeliveryService {
     }
 
     @Transactional
+    @CacheEvict(value = "deliveryCache", key = "#deliveryId")
     public UUID deleteDelivery(UUID deliveryId) {
         Delivery delivery = deliveryRepository.findById(deliveryId).orElseThrow(
             ()-> new EntityNotFoundException("찾으시는 데이터가 올바르지 않습니다.")
@@ -66,7 +72,7 @@ public class DeliveryService {
         return delivery.getId();
     }
 
-
+    @Cacheable(value = "searchDeliveryCache", key = "#request.page() + '-' + #request.size()")
     public Page<SearchDeliveryResponse> searchOrders(SearchDeliveryRequestDTO request) {
         PageRequest pageRequest = PageRequest.of(request.page(), request.size());
         Page<Delivery> deliveryPage = deliveryQueryRepository.searchOrders(request, pageRequest);
