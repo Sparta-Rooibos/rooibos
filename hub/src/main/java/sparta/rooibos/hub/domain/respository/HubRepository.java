@@ -3,7 +3,6 @@ package sparta.rooibos.hub.domain.respository;
 import sparta.rooibos.hub.domain.model.Hub;
 import sparta.rooibos.hub.domain.model.Pagination;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 

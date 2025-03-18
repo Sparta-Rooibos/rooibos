@@ -32,6 +32,8 @@ public class HubController {
 
     @GetMapping
     public ResponseEntity<SearchHubResponseDto> searchHub(
+            // TODO @ModelAttribute 로 리팩토링
+            // TODO 기본 값 넣어야 함
             @RequestParam(required = false) String name,
             @RequestParam(required = false) String region,
             @RequestParam int page,

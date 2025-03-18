@@ -3,6 +3,8 @@ package sparta.rooibos.hub.application.service.adapter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import sparta.rooibos.hub.application.dto.request.CreateHubRequestDto;
+import sparta.rooibos.hub.application.dto.request.UpdateHubRequestDto;
 import sparta.rooibos.hub.application.dto.response.CreateHubResponseDto;
 import sparta.rooibos.hub.application.dto.response.GetHubResponseDto;
 import sparta.rooibos.hub.application.dto.response.SearchHubResponseDto;
@@ -12,10 +14,7 @@ import sparta.rooibos.hub.application.service.port.HubService;
 import sparta.rooibos.hub.domain.model.Hub;
 import sparta.rooibos.hub.domain.model.Pagination;
 import sparta.rooibos.hub.domain.respository.HubRepository;
-import sparta.rooibos.hub.application.dto.request.CreateHubRequestDto;
-import sparta.rooibos.hub.application.dto.request.UpdateHubRequestDto;
 
-import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -52,7 +51,6 @@ public class HubServiceImpl implements HubService {
 
     @Override
     @Transactional
-    // TODO 필요한 필드만 수정되게 리팩토링 필요
     public UpdateHubResponseDto updateHub(UpdateHubRequestDto updateHubRequestDto) {
         Hub targetHub = getHubForServer(updateHubRequestDto.hubId());
         Hub sourceHub = hubMapper.toHub(updateHubRequestDto);
