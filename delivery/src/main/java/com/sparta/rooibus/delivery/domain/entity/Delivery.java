@@ -70,19 +70,6 @@ public class Delivery {
     @Column(name = "deleted_by", length = 50)
     private String deletedBy;
 
-    public Delivery(UUID departure, UUID arrival, String address, UUID recipient, UUID orderId, String slackAccount, UUID deliverId) {
-        this.departure = departure;
-        this.arrival = arrival;
-        this.address = address;
-        this.recipient = recipient;
-        this.orderId = orderId;
-        this.slackAccount = slackAccount;
-        this.deliverId = deliverId;
-        this.status = DeliveryStatus.PENDING;
-        this.createdAt = LocalDateTime.now();
-        this.updatedAt = LocalDateTime.now();
-    }
-
     @PrePersist
     public void prePersist() {
         if (this.id == null) {
@@ -97,6 +84,19 @@ public class Delivery {
         this.updatedAt = LocalDateTime.now();
     }
 
+    public Delivery(UUID departure, UUID arrival, String address, UUID recipient, UUID orderId, String slackAccount, UUID deliverId) {
+        this.departure = departure;
+        this.arrival = arrival;
+        this.address = address;
+        this.recipient = recipient;
+        this.orderId = orderId;
+        this.slackAccount = slackAccount;
+        this.deliverId = deliverId;
+        this.status = DeliveryStatus.PENDING;
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+    }
+
     public void update(UpdateDeliveryRequest request) {
         Optional.ofNullable(request.departure()).ifPresent(dep -> this.departure = dep);
         Optional.ofNullable(request.arrival()).ifPresent(arr -> this.arrival = arr);
@@ -106,4 +106,17 @@ public class Delivery {
         Optional.ofNullable(request.deliverId()).ifPresent(deliver -> this.deliverId = deliver);
 //      TODO : status 변경하는 로직 ???하는게 맞다하면 만들기
     }
+
+    public void delete(){
+        this.status = DeliveryStatus.CANCELED;
+        this.deletedAt = LocalDateTime.now();
+        this.deletedBy = "취소한 사람";// TODO: 로그인한 사람
+    }
+
+    public void validateDeletable() {
+        if (this.status == DeliveryStatus.IN_PROGRESS || this.status == DeliveryStatus.COMPLETED) {
+            throw new IllegalStateException("배송 중이거나 완료된 주문은 삭제할 수 없습니다.");
+        }
+    }
+
 }

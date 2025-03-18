@@ -46,4 +46,14 @@ public class DeliveryService {
         delivery.update(request);
         return UpdateDeliveryResponse.from(delivery);
     }
+
+    @Transactional
+    public UUID deleteDelivery(UUID deliveryId) {
+        Delivery delivery = deliveryRepository.findById(deliveryId).orElseThrow(
+            ()-> new EntityNotFoundException("찾으시는 데이터가 올바르지 않습니다.")
+        );
+        delivery.validateDeletable();
+        delivery.delete();
+        return delivery.getId();
+    }
 }
