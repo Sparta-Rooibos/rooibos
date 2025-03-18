@@ -1,0 +1,26 @@
+spring:
+  application:
+    name: route-service
+
+  datasource:
+    url: jdbc:postgresql://localhost:5433/rooibos-route
+    username: root
+    password: 1234
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:19090/eureka
+
+server:
+  port: 0
+
