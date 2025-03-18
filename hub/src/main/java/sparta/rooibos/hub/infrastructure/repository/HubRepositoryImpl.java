@@ -1,7 +1,6 @@
 package sparta.rooibos.hub.infrastructure.repository;
 
 import com.querydsl.core.BooleanBuilder;
-import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -45,6 +44,8 @@ public class HubRepositoryImpl implements HubRepository {
         if (region != null) {
             builder.and(hub.region.contains(region));
         }
+
+        builder.and(hub.deleteAt.isNull());
 
         List<Hub> result = queryFactory
                 .select(hub)
