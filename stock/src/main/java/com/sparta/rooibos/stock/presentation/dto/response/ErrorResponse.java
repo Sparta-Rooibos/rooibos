@@ -15,4 +15,10 @@ public record ErrorResponse(String errorCode, String message) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(new ErrorResponse(CommonErrorCode.INTERNAL_SERVER_ERROR.getCode(), e.getMessage()));
     }
+
+    public static ResponseEntity<ErrorResponse> toResponseEntity(IllegalArgumentException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new ErrorResponse(CommonErrorCode.DOMAIN_VALIDATE_ERROR.getCode(), e.getMessage()));
+    }
+
 }

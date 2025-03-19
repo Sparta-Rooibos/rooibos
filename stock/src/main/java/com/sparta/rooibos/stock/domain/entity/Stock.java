@@ -25,9 +25,6 @@ public class Stock extends BaseEntity {
     private int productQuantity;
 
 
-
-
-
     public static Stock create(String hubId, String productId, int productQuantity) {
         return new Stock(hubId, productId, productQuantity);
     }
@@ -43,7 +40,13 @@ public class Stock extends BaseEntity {
     public void update(int quantity) {
         this.productQuantity = quantity;
         this.updateBy = "수정된 계정 아이디";
+        validateQuantity();
     }
 
 
+    public void validateQuantity() {
+        if(productQuantity < 0){
+            throw new IllegalArgumentException("수량은 0보다 작을 수 없습니다.");
+        }
+    }
 }

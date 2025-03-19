@@ -35,8 +35,11 @@ public class StockService {
     }
 
 
+    @Transactional
     public CreateStockResponse createStock(CreateStockRequest request) {
-        return CreateStockResponse.from(repository.save(request.toEntity()));
+        Stock stock = repository.save(request.toEntity());
+        stock.validateQuantity();
+        return CreateStockResponse.from(stock);
     }
 
     @Transactional

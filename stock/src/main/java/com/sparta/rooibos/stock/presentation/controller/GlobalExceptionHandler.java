@@ -46,7 +46,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<ErrorResponse> domainErrorException(IllegalArgumentException e) {
         log.warn("warn :", e);
-        return ErrorResponse.toResponseEntity(CommonErrorCode.DOMAIN_VALIDATE_ERROR);
+        return ErrorResponse.toResponseEntity(e);
     }
 
 
