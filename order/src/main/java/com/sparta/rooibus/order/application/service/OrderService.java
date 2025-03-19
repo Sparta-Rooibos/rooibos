@@ -1,14 +1,12 @@
 package com.sparta.rooibus.order.application.service;
 
 import com.sparta.rooibus.order.application.dto.request.CreateOrderRequest;
-import com.sparta.rooibus.order.application.dto.request.SearchOrderRequestDTO;
 import com.sparta.rooibus.order.application.dto.request.UpdateOrderRequest;
 import com.sparta.rooibus.order.application.dto.response.CreateOrderResponse;
 import com.sparta.rooibus.order.application.dto.response.DeleteOrderResponse;
 import com.sparta.rooibus.order.application.dto.response.GetOrderResponse;
-import com.sparta.rooibus.order.application.dto.response.SearchOrderResponseDTO;
+import com.sparta.rooibus.order.application.dto.response.SearchOrderResponse;
 import com.sparta.rooibus.order.application.dto.response.UpdateOrderResponse;
-import com.sparta.rooibus.order.domain.model.Pagination;
 import java.util.UUID;
 
 public interface OrderService {
@@ -16,5 +14,5 @@ public interface OrderService {
     UpdateOrderResponse updateOrder(UpdateOrderRequest request);
     DeleteOrderResponse deleteOrder(UUID orderId);
     GetOrderResponse getOrder(UUID orderId);
-    Pagination<SearchOrderResponseDTO> searchOrders(SearchOrderRequestDTO request);
+    SearchOrderResponse searchOrders(String keyword, String filterKey, String filterValue, String sort, int page, int size);
 }

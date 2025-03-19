@@ -1,10 +1,9 @@
 package com.sparta.rooibus.order.presentation.controller;
 
 import com.sparta.rooibus.order.application.dto.request.CreateOrderRequest;
-import com.sparta.rooibus.order.application.dto.request.SearchOrderRequestDTO;
 import com.sparta.rooibus.order.application.dto.response.CreateOrderResponse;
 import com.sparta.rooibus.order.application.dto.response.GetOrderResponse;
-import com.sparta.rooibus.order.application.dto.response.SearchOrderResponseDTO;
+import com.sparta.rooibus.order.application.dto.response.SearchOrderResponse;
 
 import com.sparta.rooibus.order.application.dto.request.UpdateOrderRequest;
 import com.sparta.rooibus.order.application.dto.response.UpdateOrderResponse;
@@ -14,7 +13,6 @@ import com.sparta.rooibus.order.presentation.factory.OrderServiceFactory;
 import jakarta.validation.Valid;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -67,7 +65,7 @@ public class OrderController {
     }
 
     @GetMapping("/search")
-    public Page<SearchOrderResponseDTO> searchOrder(
+    public ResponseEntity<SearchOrderResponse> searchOrder(
         @RequestParam(required = false, defaultValue = "") String keyword,
         @RequestParam(required = false, defaultValue = "") String filterKey,
         @RequestParam(required = false, defaultValue = "") String filterValue,
@@ -76,9 +74,6 @@ public class OrderController {
         @RequestParam(required = false, defaultValue = "10") int size,@RequestHeader String role
     ) {
         OrderService orderService = orderServiceFactory.getService(role);
-        SearchOrderRequestDTO requestDTO = new SearchOrderRequestDTO(
-            keyword, filterKey, filterValue, sort, page, size
-        );
-        return null;
+        return ResponseEntity.ok(orderService.searchOrders(keyword,filterKey,filterValue,sort,page,size));
     }
 }

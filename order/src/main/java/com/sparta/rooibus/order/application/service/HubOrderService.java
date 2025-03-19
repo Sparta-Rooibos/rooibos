@@ -2,28 +2,22 @@ package com.sparta.rooibus.order.application.service;
 
 import com.sparta.rooibus.order.application.dto.request.CreateDeliveryRequest;
 import com.sparta.rooibus.order.application.dto.request.CreateOrderRequest;
-import com.sparta.rooibus.order.application.dto.request.SearchOrderRequestDTO;
 import com.sparta.rooibus.order.application.dto.request.UpdateOrderRequest;
 import com.sparta.rooibus.order.application.dto.response.CreateDeliveryResponse;
 import com.sparta.rooibus.order.application.dto.response.CreateOrderResponse;
 import com.sparta.rooibus.order.application.dto.response.DeleteOrderResponse;
 import com.sparta.rooibus.order.application.dto.response.GetOrderResponse;
-import com.sparta.rooibus.order.application.dto.response.SearchOrderResponseDTO;
+import com.sparta.rooibus.order.application.dto.response.SearchOrderResponse;
 import com.sparta.rooibus.order.application.dto.response.UpdateOrderResponse;
 import com.sparta.rooibus.order.domain.entity.Order;
 import com.sparta.rooibus.order.domain.model.Pagination;
-import com.sparta.rooibus.order.domain.repository.OrderQueryRepository;
 import com.sparta.rooibus.order.domain.repository.OrderRepository;
 import jakarta.validation.Valid;
-import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,7 +27,6 @@ public class HubOrderService implements OrderService {
 
     private final OrderRepository orderRepository;
     private final DeliveryService deliveryService;
-    private final OrderQueryRepository orderQueryRepository;
 
     @Transactional
     public CreateOrderResponse createOrder(@Valid CreateOrderRequest request) {
@@ -98,17 +91,16 @@ public class HubOrderService implements OrderService {
         return GetOrderResponse.from(targetOrder);
     }
 
+    @Override
     @Cacheable(value = "searchOrderCache", key = "#request.page() + '-' + #request.size()")
-    public Pagination<SearchOrderResponseDTO> searchOrders(SearchOrderRequestDTO request) {
-        PageRequest pageRequest = PageRequest.of(request.page(), request.size());
-        Page<Order> ordersPage = orderQueryRepository.searchOrders(request, pageRequest);
-
-        List<SearchOrderResponseDTO> orderResponseDTOs = ordersPage.getContent()
-            .stream()
-            .map(SearchOrderResponseDTO::new)
-            .collect(Collectors.toList());
-
-//        return new Pagination<>(orderResponseDTOs, pageRequest, ordersPage.getTotalElements());
-        return null;
+    public SearchOrderResponse searchOrders(String keyword, String filterKey, String filterValue,
+        String sort, int page, int size) {
+        Pagination<Order> orderPagination = orderRepository.searchOrders(keyword,filterKey,filterValue,sort,page,size);
+        return SearchOrderResponse.of(
+            orderPagination.getPage(),
+            orderPagination.getSize(),
+            orderPagination.getTotal(),
+            orderPagination.getContent()
+        );
     }
 }
