@@ -6,12 +6,10 @@ import org.springframework.transaction.annotation.Transactional;
 import sparta.rooibos.route.domain.model.Route;
 import sparta.rooibos.route.domain.repository.RouteRepository;
 import sparta.rooibos.route.presentation.dto.request.CreateRouteRequest;
+import sparta.rooibos.route.presentation.dto.request.GetOptimizedRouteRequest;
 import sparta.rooibos.route.presentation.dto.request.SearchRouteRequest;
 import sparta.rooibos.route.presentation.dto.request.UpdateRouteRequest;
-import sparta.rooibos.route.presentation.dto.response.CreateRouteResponse;
-import sparta.rooibos.route.presentation.dto.response.GetRouteResponse;
-import sparta.rooibos.route.presentation.dto.response.SearchRouteResponse;
-import sparta.rooibos.route.presentation.dto.response.UpdateRouteResponse;
+import sparta.rooibos.route.presentation.dto.response.*;
 
 import java.util.List;
 import java.util.UUID;
@@ -21,6 +19,7 @@ import java.util.UUID;
 public class RouteServiceImpl implements RouteService {
 
     private final RouteRepository routeRepository;
+    private final DijkstraAlgorithm dijkstraAlgorithm;
 
     @Override
     @Transactional
@@ -78,11 +77,26 @@ public class RouteServiceImpl implements RouteService {
     }
 
     /**
-     * 서버에서만 사용하는 단건 조회 메서드
+     * 서버에서만 사용하는 단건 및 전체 조회 메서드
      */
     // TODO 도메인 커스텀 예외로 전환
     private Route getRouteForServer(UUID routeId) {
         return routeRepository.getRoute(routeId)
                 .orElseThrow(() -> new IllegalArgumentException("Route not found"));
+    }
+
+    private List<Route> getAllRoutesForServer() {
+        return routeRepository.getAllRoutes();
+    }
+
+    public GetOptimizedRouteResponse getOptimizedRoute(GetOptimizedRouteRequest getOptimizedRouteRequest) {
+        DijkstraAlgorithm.Result result = dijkstraAlgorithm.getOptimizedRoutes(
+                getOptimizedRouteRequest.fromHubId(),
+                getOptimizedRouteRequest.toHubID(),
+                getOptimizedRouteRequest.priorityType(),
+                getAllRoutesForServer()
+        );
+
+        return GetOptimizedRouteResponse.from(result);
     }
 }

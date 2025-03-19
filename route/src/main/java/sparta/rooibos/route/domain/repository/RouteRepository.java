@@ -13,6 +13,8 @@ public interface RouteRepository {
 
     Optional<Route> getRoute(UUID routeId);
 
+    List<Route> getAllRoutes();
+
     List<Route> searchRoute(
             UUID fromHubId,
             UUID toHubId,
