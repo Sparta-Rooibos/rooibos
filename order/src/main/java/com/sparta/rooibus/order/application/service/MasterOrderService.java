@@ -2,6 +2,7 @@ package com.sparta.rooibus.order.application.service;
 
 import com.sparta.rooibus.order.application.dto.request.CreateOrderRequest;
 import com.sparta.rooibus.order.application.dto.request.SearchOrderRequestDTO;
+import com.sparta.rooibus.order.application.dto.response.CreateDeliveryResponse;
 import com.sparta.rooibus.order.application.dto.response.DeleteOrderResponseDTO;
 import com.sparta.rooibus.order.application.dto.request.CreateDeliveryRequest;
 import com.sparta.rooibus.order.application.dto.request.UpdateOrderRequest;
@@ -47,9 +48,10 @@ public class MasterOrderService implements OrderService {
         orderRepository.save(order);
 
 //      TODO : feign client로 배송 ID 받아와서 order에 넣기 지금은 랜덤으로 넣음.
-        UUID deliveryId = deliveryService.createDelivery(CreateDeliveryRequest.from(order),"Role_Master").deliveryId();
-
-        order.setDeliveryID(deliveryId);
+        CreateDeliveryResponse deliveryFeignResult = deliveryService.createDelivery(CreateDeliveryRequest.from(order),"Role_Master");
+        UUID deliveryId = deliveryFeignResult.deliveryId();
+        UUID departureId = deliveryFeignResult.departure();
+        order.setDeliveryInfo(deliveryId,departureId);
         return CreateOrderResponse.from(order);
     }
 
@@ -57,13 +59,18 @@ public class MasterOrderService implements OrderService {
     @CachePut(value = "orderCache", key = "#request.id()")
     public UpdateOrderResponse updateOrder(UpdateOrderRequest request) {
         Order targetOrder = orderRepository.findById(request.id()).orElseThrow(
-            ()-> new IllegalArgumentException("수정할 주문이 없습니다.")
+            ()-> new IllegalArgumentException("수정할 주문을 찾을 수 없습니다.")
         );
 
-        targetOrder.update(request);
+        targetOrder.update(
+            request.requestClientId(),
+            request.receiveClientId(),
+            request.productId(),
+            request.quantity(),
+            request.requirement()
+        );
 
-        UpdateOrderResponse response = new UpdateOrderResponse(targetOrder);
-        return response;
+        return UpdateOrderResponse.from(targetOrder);
     }
 
     @Transactional

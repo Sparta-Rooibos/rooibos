@@ -4,6 +4,7 @@ import com.sparta.rooibus.order.application.dto.request.CreateDeliveryRequest;
 import com.sparta.rooibus.order.application.dto.request.CreateOrderRequest;
 import com.sparta.rooibus.order.application.dto.request.SearchOrderRequestDTO;
 import com.sparta.rooibus.order.application.dto.request.UpdateOrderRequest;
+import com.sparta.rooibus.order.application.dto.response.CreateDeliveryResponse;
 import com.sparta.rooibus.order.application.dto.response.CreateOrderResponse;
 import com.sparta.rooibus.order.application.dto.response.DeleteOrderResponseDTO;
 import com.sparta.rooibus.order.application.dto.response.GetOrderResponseDTO;
@@ -47,23 +48,17 @@ public class DeliveryOrderService implements OrderService {
         orderRepository.save(order);
 
 //      TODO : feign client로 배송 ID 받아와서 order에 넣기 지금은 랜덤으로 넣음.
-        UUID deliveryId = deliveryService.createDelivery(CreateDeliveryRequest.from(order),"Role_Master").deliveryId();
-
-        order.setDeliveryID(deliveryId);
+        CreateDeliveryResponse deliveryFeignResult = deliveryService.createDelivery(CreateDeliveryRequest.from(order),"Role_Master");
+        UUID deliveryId = deliveryFeignResult.deliveryId();
+        UUID departureId = deliveryFeignResult.departure();
+        order.setDeliveryInfo(deliveryId,departureId);
         return CreateOrderResponse.from(order);
     }
 
     @Transactional
     @CachePut(value = "orderCache", key = "#request.id()")
     public UpdateOrderResponse updateOrder(UpdateOrderRequest request) {
-        Order targetOrder = orderRepository.findById(request.id()).orElseThrow(
-            ()-> new IllegalArgumentException("수정할 주문이 없습니다.")
-        );
-
-        targetOrder.update(request);
-
-        UpdateOrderResponse response = new UpdateOrderResponse(targetOrder);
-        return response;
+        throw new RuntimeException("주문을 수정하는데에는 권한이 필요합니다.");
     }
 
     @Transactional
