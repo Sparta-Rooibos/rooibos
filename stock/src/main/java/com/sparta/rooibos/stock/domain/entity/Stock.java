@@ -58,7 +58,4 @@ public class Stock extends BaseEntity {
         }
     }
 
-    public void timeSet() {
-        this.createAt = LocalDateTime.now();
-    }
 }
