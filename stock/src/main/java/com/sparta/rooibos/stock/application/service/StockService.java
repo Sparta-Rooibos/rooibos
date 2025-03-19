@@ -23,7 +23,7 @@ public class StockService {
     private final StockRepositoryCustom queryRepository;
 
     public SearchStockResponse searchStock(SearchStockRequest request) {
-        Pagination<Stock> stock = queryRepository.searchStock(request.toCommand());
+        Pagination<Stock> stock = queryRepository.searchStock(request.toCriteria());
         return SearchStockResponse.from(stock);
     }
 

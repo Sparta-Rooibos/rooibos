@@ -2,7 +2,7 @@ package com.sparta.rooibos.stock.infrastructure.repository;
 
 import com.querydsl.core.types.Predicate;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.sparta.rooibos.stock.domain.dto.criteria.StockPageCriteria;
+import com.sparta.rooibos.stock.domain.criteria.StockPageCriteria;
 import com.sparta.rooibos.stock.domain.entity.Pagination;
 import com.sparta.rooibos.stock.domain.entity.QStock;
 import com.sparta.rooibos.stock.domain.entity.Stock;

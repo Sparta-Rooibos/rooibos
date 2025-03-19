@@ -1,4 +1,4 @@
-package com.sparta.rooibos.stock.domain.dto.criteria;
+package com.sparta.rooibos.stock.domain.criteria;
 
 import java.util.UUID;
 

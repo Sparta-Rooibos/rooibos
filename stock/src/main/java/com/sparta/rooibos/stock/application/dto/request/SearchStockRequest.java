@@ -1,7 +1,7 @@
 package com.sparta.rooibos.stock.application.dto.request;
 
 
-import com.sparta.rooibos.stock.domain.dto.criteria.StockPageCriteria;
+import com.sparta.rooibos.stock.domain.criteria.StockPageCriteria;
 
 import java.util.UUID;
 
@@ -13,7 +13,7 @@ public record SearchStockRequest(UUID id, String productId, String hubId, Boolea
         size = size == null || size == 10 || size == 30 || size == 50 ? 10 : size;
     }
 
-    public StockPageCriteria toCommand() {
+    public StockPageCriteria toCriteria() {
         return new StockPageCriteria(id, productId, hubId, isDeleted,  sort, page, size);
     }
 }
