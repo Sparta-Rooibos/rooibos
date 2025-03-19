@@ -1,6 +1,7 @@
 package sparta.rooibos.route.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sparta.rooibos.route.domain.model.Route;
@@ -40,6 +41,10 @@ public class RouteServiceImpl implements RouteService {
         return GetRouteResponse.from(getRouteForServer(routeId));
     }
 
+    @Cacheable(
+            cacheNames = "searchRoute",
+            key = "'searchRoute' + (#searchRouteRequest.sort()) + ':' + (#searchRouteRequest.size())"
+    )
     @Override
     public SearchRouteResponse searchRoute(SearchRouteRequest searchRouteRequest) {
         List<Route> routes = routeRepository.searchRoute(
@@ -55,6 +60,10 @@ public class RouteServiceImpl implements RouteService {
         return SearchRouteResponse.from(routes, searchRouteRequest.sort());
     }
 
+    @Cacheable(
+            cacheNames = "gerOptimizedRoute",
+            key = "'getOptimizedRoute' + (#getOptimizedRouteRequest.priorityType())"
+    )
     @Override
     public GetOptimizedRouteResponse getOptimizedRoute(GetOptimizedRouteRequest getOptimizedRouteRequest) {
         DijkstraAlgorithm.Result result = dijkstraAlgorithm.getOptimizedRoutes(
