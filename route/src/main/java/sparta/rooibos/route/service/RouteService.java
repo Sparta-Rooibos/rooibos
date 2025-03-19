@@ -1,12 +1,10 @@
 package sparta.rooibos.route.service;
 
 import sparta.rooibos.route.presentation.dto.request.CreateRouteRequest;
+import sparta.rooibos.route.presentation.dto.request.GetOptimizedRouteRequest;
 import sparta.rooibos.route.presentation.dto.request.SearchRouteRequest;
 import sparta.rooibos.route.presentation.dto.request.UpdateRouteRequest;
-import sparta.rooibos.route.presentation.dto.response.CreateRouteResponse;
-import sparta.rooibos.route.presentation.dto.response.GetRouteResponse;
-import sparta.rooibos.route.presentation.dto.response.SearchRouteResponse;
-import sparta.rooibos.route.presentation.dto.response.UpdateRouteResponse;
+import sparta.rooibos.route.presentation.dto.response.*;
 
 import java.util.UUID;
 
@@ -17,6 +15,8 @@ public interface RouteService {
     GetRouteResponse getRoute(UUID routeId);
 
     SearchRouteResponse searchRoute(SearchRouteRequest searchRouteRequest);
+
+    GetOptimizedRouteResponse getOptimizedRoute(GetOptimizedRouteRequest getOptimizedRouteRequest);
 
     UpdateRouteResponse updateRoute(UUID routeId, UpdateRouteRequest updateRouteRequest);
 

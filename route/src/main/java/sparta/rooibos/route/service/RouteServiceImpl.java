@@ -56,6 +56,18 @@ public class RouteServiceImpl implements RouteService {
     }
 
     @Override
+    public GetOptimizedRouteResponse getOptimizedRoute(GetOptimizedRouteRequest getOptimizedRouteRequest) {
+        DijkstraAlgorithm.Result result = dijkstraAlgorithm.getOptimizedRoutes(
+                getOptimizedRouteRequest.fromHubId(),
+                getOptimizedRouteRequest.toHubID(),
+                getOptimizedRouteRequest.priorityType(),
+                getAllRoutesForServer()
+        );
+
+        return GetOptimizedRouteResponse.from(result);
+    }
+
+    @Override
     @Transactional
     public UpdateRouteResponse updateRoute(UUID routeId, UpdateRouteRequest updateRouteRequest) {
         Route targetRoute = getRouteForServer(routeId);
@@ -87,16 +99,5 @@ public class RouteServiceImpl implements RouteService {
 
     private List<Route> getAllRoutesForServer() {
         return routeRepository.getAllRoutes();
-    }
-
-    public GetOptimizedRouteResponse getOptimizedRoute(GetOptimizedRouteRequest getOptimizedRouteRequest) {
-        DijkstraAlgorithm.Result result = dijkstraAlgorithm.getOptimizedRoutes(
-                getOptimizedRouteRequest.fromHubId(),
-                getOptimizedRouteRequest.toHubID(),
-                getOptimizedRouteRequest.priorityType(),
-                getAllRoutesForServer()
-        );
-
-        return GetOptimizedRouteResponse.from(result);
     }
 }
