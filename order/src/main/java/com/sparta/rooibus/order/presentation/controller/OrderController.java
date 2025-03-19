@@ -37,8 +37,8 @@ public class OrderController {
 
     @PostMapping
     public ResponseEntity<String> createOrder(@Valid @RequestBody CreateOrderRequest request, @RequestHeader String role) {
-        OrderService orderService = orderServiceFactory.getService("Role_Master");
-        //TODO : 임시로 마스터 해놓음 - role로 해주기  확인은 해야하니까
+        OrderService orderService = orderServiceFactory.getService(role);
+        //TODO : 헤더의 'role' 로 권한 체크 하는거 맞는지 확인
         CreateOrderResponse response = orderService.createOrder(request);
         return ResponseEntity.ok(
             "Order(" + response.orderId() + ") " + ",Delivery(" +
@@ -48,21 +48,21 @@ public class OrderController {
 
     @PutMapping
     public ResponseEntity<UpdateOrderResponse> updateOrder(@Valid @RequestBody UpdateOrderRequest request,@RequestHeader String role){
-        OrderService orderService = orderServiceFactory.getService("Role_Master");
+        OrderService orderService = orderServiceFactory.getService(role);
         UpdateOrderResponse response = orderService.updateOrder(request);
         return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{orderId}")
     public ResponseEntity<DeleteOrderResponseDTO> deleteOrder(@PathVariable("orderId")UUID orderId,@RequestHeader String role){
-        OrderService orderService = orderServiceFactory.getService("Role_Master");
+        OrderService orderService = orderServiceFactory.getService(role);
         DeleteOrderResponseDTO response = orderService.deleteOrder(orderId);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{orderId}")
     public ResponseEntity<GetOrderResponseDTO> getOrder(@PathVariable("orderId")UUID orderId,@RequestHeader String role){
-        OrderService orderService = orderServiceFactory.getService("Role_Master");
+        OrderService orderService = orderServiceFactory.getService(role);
         GetOrderResponseDTO response = orderService.getOrder(orderId);
         return ResponseEntity.ok(response);
     }
@@ -76,7 +76,7 @@ public class OrderController {
         @RequestParam(required = false, defaultValue = "0") int page,
         @RequestParam(required = false, defaultValue = "10") int size,@RequestHeader String role
     ) {
-        OrderService orderService = orderServiceFactory.getService("Role_Master");
+        OrderService orderService = orderServiceFactory.getService(role);
         SearchOrderRequestDTO requestDTO = new SearchOrderRequestDTO(
             keyword, filterKey, filterValue, sort, page, size
         );
