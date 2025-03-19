@@ -60,7 +60,7 @@ public class OrderController {
     }
 
     @GetMapping("/{orderId}")
-    public ResponseEntity<GetOrderResponse> getOrder(@PathVariable("orderId")UUID orderId,@RequestHeader String role){
+    public ResponseEntity<GetOrderResponse> getOrder(@PathVariable UUID orderId,@RequestHeader String role){
         OrderService orderService = orderServiceFactory.getService(role);
         GetOrderResponse response = orderService.getOrder(orderId);
         return ResponseEntity.ok(response);
