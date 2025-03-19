@@ -26,10 +26,9 @@ public class Route {
 
     private UUID toHubId;
 
-    private String distance;
+    private Integer distance;
 
-    // hh:mm:ss
-    private String timeCost;
+    private Integer timeCost;
 
     @CreatedDate
     @Column(updatable = false, nullable = false)
@@ -53,7 +52,7 @@ public class Route {
     @Column
     private String deleteBy;
 
-    public static Route of(UUID fromHubId, UUID toHubId, String distance, String timeCost) {
+    public static Route of(UUID fromHubId, UUID toHubId, Integer distance, Integer timeCost) {
         return Route.builder()
                 .fromHubId(fromHubId)
                 .toHubId(toHubId)

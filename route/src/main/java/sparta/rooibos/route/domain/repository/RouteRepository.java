@@ -19,7 +19,7 @@ public interface RouteRepository {
             String sort,
             int size,
             LocalDateTime lastCreatedAt,
-            String lastDistance,
-            String lastTimeCost
+            Integer lastDistance,
+            Integer lastTimeCost
     );
 }

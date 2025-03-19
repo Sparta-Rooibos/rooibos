@@ -9,6 +9,6 @@ public record SearchRouteRequest(
         String sort, // default, distance, timeCost
         int size,
         LocalDateTime lastCreatedAt,
-        String lastDistance,
-        String lastTotalCost
+        Integer lastDistance,
+        Integer lastTotalCost
 ) {}

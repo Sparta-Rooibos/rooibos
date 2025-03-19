@@ -29,8 +29,8 @@ public record SearchRouteResponse(
     public record PaginationResult(
             String sort,
             LocalDateTime lastCreatedAt,
-            String lastDistance,
-            String lastTimeCost
+            Integer lastDistance,
+            Integer lastTimeCost
     ) {
         public static PaginationResult of(String sort, Route route) {
             return new PaginationResult(
@@ -45,8 +45,8 @@ public record SearchRouteResponse(
     public record RouteResponse(
             UUID fromHubId,
             UUID toHubId,
-            String distance,
-            String timeCost
+            Integer distance,
+            Integer timeCost
     ) {
         public static RouteResponse from(Route route) {
             return new RouteResponse(

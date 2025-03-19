@@ -7,8 +7,8 @@ import java.util.UUID;
 public record UpdateRouteResponse(
         UUID fromHubId,
         UUID toHubId,
-        String distance,
-        String timeCost
+        Integer distance,
+        Integer timeCost
 ) {
     public static UpdateRouteResponse from(Route route) {
         return new UpdateRouteResponse(

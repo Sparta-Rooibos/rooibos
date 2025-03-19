@@ -5,6 +5,6 @@ import java.util.UUID;
 public record CreateRouteRequest(
     UUID fromHubId,
     UUID toHubId,
-    String distance,
-    String timeCost
+    Integer distance,
+    Integer timeCost
 ) {}

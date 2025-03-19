@@ -46,8 +46,8 @@ public class RouteRepositoryImpl implements RouteRepository {
             String sort,
             int size,
             LocalDateTime lastCreatedAt,
-            String lastDistance,
-            String lastTimeCost
+            Integer lastDistance,
+            Integer lastTimeCost
     ) {
         QRoute route = QRoute.route;
         BooleanBuilder builder = new BooleanBuilder();
@@ -88,15 +88,15 @@ public class RouteRepositoryImpl implements RouteRepository {
     // TODO distance, timeCost 타입 숫자형으로 리팩토링 필요
     private BooleanExpression checkPaginationCriterion(
             LocalDateTime lastCreatedAt,
-            String lastDistance,
-            String lastTimeCost
+            Integer lastDistance,
+            Integer lastTimeCost
     ) {
         if (lastDistance != null) {
-            return QRoute.route.distance.gt(lastDistance);
+            return QRoute.route.distance.gt(lastDistance) ;
         }
 
         else if (lastTimeCost != null) {
-            return QRoute.route.timeCost.gt(lastTimeCost);
+            return QRoute.route.timeCost.gt(lastTimeCost) ;
         }
 
         else if (lastCreatedAt != null) {
