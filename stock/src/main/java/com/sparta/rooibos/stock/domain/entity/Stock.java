@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.UuidGenerator;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -14,7 +13,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-public class Stock {
+public class Stock extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -25,14 +24,7 @@ public class Stock {
     private String productId;
     private int productQuantity;
 
-    private String createdBy;
-    private LocalDateTime createdAt;
 
-    private String updatedBy;
-    private LocalDateTime updatedAt;
-
-    private String deletedBy;
-    private LocalDateTime deletedAt;
 
 
 
@@ -45,14 +37,13 @@ public class Stock {
         this.hubId = hubId;
         this.productId = productId;
         this.productQuantity = productQuantity;
+        this.createBy = "계정 아이디";
     }
 
     public void update(int quantity) {
         this.productQuantity = quantity;
+        this.updateBy = "수정된 계정 아이디";
     }
 
-    public void delete(String deletedBy) {
-        this.deletedBy = deletedBy;
-        this.deletedAt = LocalDateTime.now();
-    }
+
 }

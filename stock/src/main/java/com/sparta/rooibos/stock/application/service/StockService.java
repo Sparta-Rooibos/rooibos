@@ -8,7 +8,7 @@ import com.sparta.rooibos.stock.application.dto.response.CreateStockResponse;
 import com.sparta.rooibos.stock.application.dto.response.GetStockResponse;
 import com.sparta.rooibos.stock.application.dto.response.SearchStockResponse;
 import com.sparta.rooibos.stock.application.exception.BusinessStockException;
-import com.sparta.rooibos.stock.domain.entity.Pagination;
+import com.sparta.rooibos.stock.domain.model.Pagination;
 import com.sparta.rooibos.stock.domain.entity.Stock;
 import com.sparta.rooibos.stock.domain.repository.StockRepositoryCustom;
 import com.sparta.rooibos.stock.domain.repository.StockRepository;
@@ -30,7 +30,7 @@ public class StockService {
     }
 
     public GetStockResponse getStock(UUID stockId) {
-        Stock stock = repository.findByIdAndDeletedByIsNotNull(stockId).orElseThrow(() -> new BusinessStockException(StockErrorCode.STOCK_NOT_FOUND));
+        Stock stock = repository.findByIdAndDeleteByIsNull(stockId).orElseThrow(() -> new BusinessStockException(StockErrorCode.STOCK_NOT_FOUND));
         return GetStockResponse.from(stock);
     }
 
@@ -41,13 +41,13 @@ public class StockService {
 
     @Transactional
     public void updateStock(UUID stockId, UpdateStockRequest request) {
-        Stock stock = repository.findByIdAndDeletedByIsNotNull(stockId).orElseThrow(() -> new BusinessStockException(StockErrorCode.STOCK_NOT_FOUND));
+        Stock stock = repository.findByIdAndDeleteByIsNull(stockId).orElseThrow(() -> new BusinessStockException(StockErrorCode.STOCK_NOT_FOUND));
         stock.update(request.quantity());
     }
 
     @Transactional
     public void deleteStock(UUID stockId) {
-        Stock stock = repository.findByIdAndDeletedByIsNotNull(stockId).orElseThrow(() -> new BusinessStockException(StockErrorCode.STOCK_NOT_FOUND));
+        Stock stock = repository.findByIdAndDeleteByIsNull(stockId).orElseThrow(() -> new BusinessStockException(StockErrorCode.STOCK_NOT_FOUND));
         stock.delete("계정 아이디");
     }
 }

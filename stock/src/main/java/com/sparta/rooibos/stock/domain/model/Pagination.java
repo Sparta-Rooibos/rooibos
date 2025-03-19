@@ -1,4 +1,4 @@
-package com.sparta.rooibos.stock.domain.entity;
+package com.sparta.rooibos.stock.domain.model;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

@@ -7,5 +7,5 @@ import java.util.UUID;
 
 public interface StockRepository {
     Stock save(Stock stock);
-    Optional<Stock> findByIdAndDeletedByIsNotNull(UUID uuid);
+    Optional<Stock> findByIdAndDeleteByIsNull(UUID uuid);
 }

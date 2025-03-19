@@ -6,6 +6,6 @@ import java.util.UUID;
 
 public record SearchStockListResponse(UUID id, String hubId, String productId, boolean isDeleted) {
     public static SearchStockListResponse from(Stock stock) {
-        return new SearchStockListResponse(stock.getId(), stock.getHubId(), stock.getProductId(), stock.getDeletedBy() != null);
+        return new SearchStockListResponse(stock.getId(), stock.getHubId(), stock.getProductId(), stock.getDeleteBy() != null);
     }
 }

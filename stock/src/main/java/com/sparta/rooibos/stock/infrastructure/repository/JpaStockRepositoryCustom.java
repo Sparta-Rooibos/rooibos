@@ -2,8 +2,8 @@ package com.sparta.rooibos.stock.infrastructure.repository;
 
 import com.querydsl.core.types.Predicate;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.sparta.rooibos.stock.domain.criteria.StockPageCriteria;
-import com.sparta.rooibos.stock.domain.entity.Pagination;
+import com.sparta.rooibos.stock.domain.criteria.StockCriteria;
+import com.sparta.rooibos.stock.domain.model.Pagination;
 import com.sparta.rooibos.stock.domain.entity.QStock;
 import com.sparta.rooibos.stock.domain.entity.Stock;
 import com.sparta.rooibos.stock.domain.repository.StockRepositoryCustom;
@@ -20,7 +20,7 @@ public class JpaStockRepositoryCustom implements StockRepositoryCustom {
     private final QStock stock = QStock.stock;
 
     @Override
-    public Pagination<Stock> searchStock(StockPageCriteria command) {
+    public Pagination<Stock> searchStock(StockCriteria command) {
         List<Stock> content = query.select(stock)
                 .where(
                         nullIdCheck(command.id()),
@@ -60,7 +60,7 @@ public class JpaStockRepositoryCustom implements StockRepositoryCustom {
     }
 
     private Predicate nullCheckDeleted(Boolean deleted) {
-        return deleted == null ? null : deleted ? stock.deletedBy.isNotNull() : stock.deletedBy.isNull();
+        return deleted == null ? null : deleted ? stock.deleteBy.isNotNull() : stock.deleteBy.isNull();
     }
 
 
