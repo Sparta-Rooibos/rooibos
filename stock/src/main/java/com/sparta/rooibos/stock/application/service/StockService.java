@@ -1,11 +1,13 @@
 package com.sparta.rooibos.stock.application.service;
 
+import com.sparta.rooibos.stock.application.custom.StockErrorCode;
 import com.sparta.rooibos.stock.application.dto.request.CreateStockRequest;
 import com.sparta.rooibos.stock.application.dto.request.SearchStockRequest;
 import com.sparta.rooibos.stock.application.dto.request.UpdateStockRequest;
 import com.sparta.rooibos.stock.application.dto.response.CreateStockResponse;
 import com.sparta.rooibos.stock.application.dto.response.GetStockResponse;
 import com.sparta.rooibos.stock.application.dto.response.SearchStockResponse;
+import com.sparta.rooibos.stock.application.exception.BusinessStockException;
 import com.sparta.rooibos.stock.domain.entity.Pagination;
 import com.sparta.rooibos.stock.domain.entity.Stock;
 import com.sparta.rooibos.stock.domain.repository.StockRepositoryCustom;
@@ -28,7 +30,7 @@ public class StockService {
     }
 
     public GetStockResponse getStock(UUID stockId) {
-        Stock stock = repository.findByIdAndDeletedByIsNotNull(stockId).orElseThrow(() -> new IllegalArgumentException("Stock not found"));
+        Stock stock = repository.findByIdAndDeletedByIsNotNull(stockId).orElseThrow(() -> new BusinessStockException(StockErrorCode.STOCK_NOT_FOUND));
         return GetStockResponse.from(stock);
     }
 
@@ -39,13 +41,13 @@ public class StockService {
 
     @Transactional
     public void updateStock(UUID stockId, UpdateStockRequest request) {
-        Stock stock = repository.findByIdAndDeletedByIsNotNull(stockId).orElseThrow(() -> new IllegalArgumentException("Stock not found"));
+        Stock stock = repository.findByIdAndDeletedByIsNotNull(stockId).orElseThrow(() -> new BusinessStockException(StockErrorCode.STOCK_NOT_FOUND));
         stock.update(request.quantity());
     }
 
     @Transactional
     public void deleteStock(UUID stockId) {
-        Stock stock = repository.findByIdAndDeletedByIsNotNull(stockId).orElseThrow(() -> new IllegalArgumentException("Stock not found"));
+        Stock stock = repository.findByIdAndDeletedByIsNotNull(stockId).orElseThrow(() -> new BusinessStockException(StockErrorCode.STOCK_NOT_FOUND));
         stock.delete("계정 아이디");
     }
 }
