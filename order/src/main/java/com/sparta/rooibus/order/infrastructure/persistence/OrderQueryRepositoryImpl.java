@@ -6,7 +6,6 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.sparta.rooibus.order.application.dto.request.SearchOrderRequestDTO;
 import com.sparta.rooibus.order.domain.entity.Order;
-import com.sparta.rooibus.order.domain.model.OrderStatus;
 import com.sparta.rooibus.order.domain.repository.OrderQueryRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -51,12 +50,6 @@ public class OrderQueryRepositoryImpl implements OrderQueryRepository {
 
         // 필터링 키와 값에 따른 필터링
         if (request.filterKey() != null && request.filterValue() != null) {
-            switch (request.filterKey()) {
-                case "status":
-                    predicate = predicate.and(order.status.eq(OrderStatus.valueOf(request.filterValue())));
-                    break;
-                // 다른 필터 키에 대해서도 처리할 수 있음
-            }
         }
 
         return predicate;
