@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.UuidGenerator;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -29,6 +30,11 @@ public class Stock extends BaseEntity {
         return new Stock(hubId, productId, productQuantity);
     }
 
+    // 테스트 용
+    public Stock(UUID id, int productQuantity) {
+        this.id = id;
+        this.productQuantity = productQuantity;
+    }
 
     public Stock(String hubId, String productId, int productQuantity) {
         this.hubId = hubId;
@@ -37,8 +43,10 @@ public class Stock extends BaseEntity {
         this.createBy = "계정 아이디";
     }
 
+    // db락 비관락 -> 데드락 안걸리게
+    // 낙관락 select
     public void update(int quantity) {
-        this.productQuantity = quantity;
+        this.productQuantity += quantity;
         this.updateBy = "수정된 계정 아이디";
         validateQuantity();
     }
@@ -48,5 +56,9 @@ public class Stock extends BaseEntity {
         if(productQuantity < 0){
             throw new IllegalArgumentException("수량은 0보다 작을 수 없습니다.");
         }
+    }
+
+    public void timeSet() {
+        this.createAt = LocalDateTime.now();
     }
 }
