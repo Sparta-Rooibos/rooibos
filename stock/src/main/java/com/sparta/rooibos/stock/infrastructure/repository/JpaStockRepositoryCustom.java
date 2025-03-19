@@ -37,7 +37,8 @@ public class JpaStockRepositoryCustom implements StockRepositoryCustom {
                 .where(
                         nullIdCheck(command.id()),
                         nullProductIdCheck(command.productId()),
-                        nullHubIdCheck(command.hubId())
+                        nullHubIdCheck(command.hubId()),
+                        nullCheckDeleted(command.isDeleted())
                 )
                 .from(stock).fetchOne();
 
