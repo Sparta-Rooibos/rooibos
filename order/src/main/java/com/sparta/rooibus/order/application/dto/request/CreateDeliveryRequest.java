@@ -4,17 +4,18 @@ import com.sparta.rooibus.order.domain.entity.Order;
 import jakarta.validation.constraints.NotNull;
 import java.util.UUID;
 
-public record DeliveryRequestDTO(
+public record CreateDeliveryRequest(
     @NotNull UUID orderID,
     @NotNull UUID requestClientId,
-    @NotNull UUID responseClientId,
+    @NotNull UUID receiveClientId,
     @NotNull UUID productId
 ) {
-    public DeliveryRequestDTO(Order order) {
-        this(
+
+    public static CreateDeliveryRequest from(Order order) {
+        return new CreateDeliveryRequest(
             order.getId(),
             order.getRequestClientId(),
-            order.getResponseClientId(),
+            order.getReceiveClientId(),
             order.getProductId()
         );
     }
