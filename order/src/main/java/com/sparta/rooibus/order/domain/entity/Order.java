@@ -1,7 +1,7 @@
 package com.sparta.rooibus.order.domain.entity;
 
-import com.sparta.rooibus.order.application.dto.request.CreateOrderRequestDTO;
-import com.sparta.rooibus.order.application.dto.request.UpdateOrderRequestDTO;
+import com.sparta.rooibus.order.application.dto.request.CreateOrderRequest;
+import com.sparta.rooibus.order.application.dto.request.UpdateOrderRequest;
 import com.sparta.rooibus.order.domain.model.OrderStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -26,14 +26,14 @@ import org.hibernate.annotations.Where;
 public class Order {
     @Id
     @GeneratedValue
-    @Column(name = "order_id", nullable = false)
+    @Column(name = "order_id", nullable = false, columnDefinition = "UUID DEFAULT gen_random_uuid()")
     private UUID id;
 
     @Column(name = "request_client_id")
     private UUID requestClientId;
 
-    @Column(name = "response_client_id")
-    private UUID responseClientId;
+    @Column(name = "receive_client_id")
+    private UUID receiveClientId;
 
     @Column(name = "product_id")
     private UUID productId;
@@ -51,7 +51,7 @@ public class Order {
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
 
-    @Column(name = "created_at", nullable = false)
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
 
     @Column(name = "created_by", length = 50)
@@ -69,25 +69,37 @@ public class Order {
     @Column(name = "deleted_by", length = 50)
     private String deletedBy;
 
-    // TODO : user값 넣기
-
-    @PrePersist
-    public void prePersist() {
-        if (this.id == null) {
-            this.id = UUID.randomUUID();
-        }
-        this.createdAt = LocalDateTime.now();
-        this.updatedAt = LocalDateTime.now();
-    }
-
     @PreUpdate
     public void preUpdate() {
         this.updatedAt = LocalDateTime.now();
     }
 
-    public Order(CreateOrderRequestDTO requestDTO){
-        this.requestClientId = requestDTO.requestClientId();
-        this.responseClientId = requestDTO.responseClientId();
+    @PrePersist
+    public void prePersist() {
+        if (createdAt == null) {
+            createdAt = LocalDateTime.now();  // 현재 시간으로 설정
+        }
+    }
+
+    public static Order create(UUID receiveClientId, UUID requestClientId,UUID productId, int quantity,
+        String requirement) {
+        Order order = new Order();
+        order.receiveClientId = receiveClientId;
+        order.requestClientId = requestClientId;
+        order.productId = productId;
+        order.quantity = quantity;
+        order.requirement = requirement;
+
+        order.status = OrderStatus.PENDING; // 기본값 설정
+//        TODO : 생성일과 생성자 추가
+        return order;
+    }
+
+    public void setDeliveryID(UUID deliveryID){
+        this.deliveryId = deliveryID;
+    }
+
+    public Order(CreateOrderRequest requestDTO){
         this.productId = requestDTO.productId();
         this.quantity = requestDTO.quantity();
         this.requirement = requestDTO.requirement();
@@ -96,11 +108,9 @@ public class Order {
         this.updatedAt = LocalDateTime.now();
     }
 
-    public void update(UpdateOrderRequestDTO requestDTO) {
+    public void update(UpdateOrderRequest requestDTO) {
         if(requestDTO.requestClientId()!=null)
             this.requestClientId = requestDTO.requestClientId();
-        if(requestDTO.responseClientId()!=null)
-            this.responseClientId = requestDTO.responseClientId();
         if(requestDTO.productId()!=null)
             this.productId = requestDTO.productId();
         if(requestDTO.quantity()!=null)
