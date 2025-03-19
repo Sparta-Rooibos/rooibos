@@ -89,10 +89,6 @@ public class Order {
         return order;
     }
 
-    public void setDeliveryID(UUID deliveryID){
-        this.deliveryId = deliveryID;
-    }
-
     public void update(
         UUID requestClientId,
         UUID receiveClientId,
@@ -115,5 +111,10 @@ public class Order {
 
     public void delete() {
         this.deletedAt = LocalDateTime.now();
+    }
+
+    public void setDeliveryInfo(UUID deliveryId, UUID departureId) {
+        this.deliveryId = deliveryId;
+        this.manageHubID = departureId;
     }
 }
