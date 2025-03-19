@@ -1,6 +1,7 @@
 package sparta.rooibos.hub.application.service.port;
 
 import sparta.rooibos.hub.application.dto.request.CreateHubRequestDto;
+import sparta.rooibos.hub.application.dto.request.SearchHubRequestDto;
 import sparta.rooibos.hub.application.dto.request.UpdateHubRequestDto;
 import sparta.rooibos.hub.application.dto.response.CreateHubResponseDto;
 import sparta.rooibos.hub.application.dto.response.GetHubResponseDto;
@@ -14,9 +15,9 @@ public interface HubService {
 
     GetHubResponseDto getHub(UUID hubId);
 
-    SearchHubResponseDto searchHub(String name, String region, int page, int size);
+    SearchHubResponseDto searchHub(SearchHubRequestDto searchHubRequestDto);
 
-    UpdateHubResponseDto updateHub(UpdateHubRequestDto updateHubRequestDto);
+    UpdateHubResponseDto updateHub(UUID hubId, UpdateHubRequestDto updateHubRequestDto);
 
     void deleteHub(UUID hubId);
 }

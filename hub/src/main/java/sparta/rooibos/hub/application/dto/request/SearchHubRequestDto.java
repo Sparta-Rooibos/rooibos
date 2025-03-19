@@ -6,10 +6,8 @@ import org.springframework.data.domain.Pageable;
 import java.util.Optional;
 
 public record SearchHubRequestDto(
-        Optional<String> name,
-        Optional<String> region,
-        Optional<String> latitude,
-        Optional<String> longitude,
+        String name,
+        String region,
         int page,
         int size
 ) {

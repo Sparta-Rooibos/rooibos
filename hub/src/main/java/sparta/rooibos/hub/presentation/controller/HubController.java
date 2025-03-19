@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import sparta.rooibos.hub.application.dto.request.CreateHubRequestDto;
+import sparta.rooibos.hub.application.dto.request.SearchHubRequestDto;
 import sparta.rooibos.hub.application.dto.request.UpdateHubRequestDto;
 import sparta.rooibos.hub.application.dto.response.CreateHubResponseDto;
 import sparta.rooibos.hub.application.dto.response.GetHubResponseDto;
@@ -31,21 +32,16 @@ public class HubController {
     }
 
     @GetMapping
-    public ResponseEntity<SearchHubResponseDto> searchHub(
-            // TODO @ModelAttribute 로 리팩토링
-            // TODO 기본 값 넣어야 함
-            @RequestParam(required = false) String name,
-            @RequestParam(required = false) String region,
-            @RequestParam int page,
-            @RequestParam int size
-    ) {
-        return ResponseEntity.ok(hubService.searchHub(name, region, page, size));
+    public ResponseEntity<SearchHubResponseDto> searchHub(@ModelAttribute SearchHubRequestDto searchHubRequestDto) {
+        return ResponseEntity.ok(hubService.searchHub(searchHubRequestDto));
     }
 
     // TODO 멱등성 고려하면 PUT 쓰는 게 낫지 않나?
     @PatchMapping("/{hubId}")
-    public ResponseEntity<UpdateHubResponseDto> updateHub(@RequestParam UpdateHubRequestDto updateHubRequestDto) {
-        return ResponseEntity.ok(hubService.updateHub(updateHubRequestDto));
+    public ResponseEntity<UpdateHubResponseDto> updateHub(
+            @PathVariable UUID hubId,
+            @RequestBody UpdateHubRequestDto updateHubRequestDto) {
+        return ResponseEntity.ok(hubService.updateHub(hubId, updateHubRequestDto));
     }
 
     @PatchMapping("/{hubId}/delete")

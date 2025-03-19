@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sparta.rooibos.hub.application.dto.request.CreateHubRequestDto;
+import sparta.rooibos.hub.application.dto.request.SearchHubRequestDto;
 import sparta.rooibos.hub.application.dto.request.UpdateHubRequestDto;
 import sparta.rooibos.hub.application.dto.response.CreateHubResponseDto;
 import sparta.rooibos.hub.application.dto.response.GetHubResponseDto;
@@ -38,8 +39,13 @@ public class HubServiceImpl implements HubService {
     }
 
     @Override
-    public SearchHubResponseDto searchHub(String name, String region, int page, int size) {
-        Pagination<Hub> hubPagination = hubRepository.searchHub(name, region, page, size);
+    public SearchHubResponseDto searchHub(SearchHubRequestDto searchHubRequestDto) {
+        Pagination<Hub> hubPagination = hubRepository.searchHub(
+                searchHubRequestDto.name(),
+                searchHubRequestDto.region(),
+                searchHubRequestDto.page(),
+                searchHubRequestDto.page()
+        );
 
         return SearchHubResponseDto.of(
                 hubPagination.getPage(),
@@ -51,8 +57,8 @@ public class HubServiceImpl implements HubService {
 
     @Override
     @Transactional
-    public UpdateHubResponseDto updateHub(UpdateHubRequestDto updateHubRequestDto) {
-        Hub targetHub = getHubForServer(updateHubRequestDto.hubId());
+    public UpdateHubResponseDto updateHub(UUID hubId, UpdateHubRequestDto updateHubRequestDto) {
+        Hub targetHub = getHubForServer(hubId);
         Hub sourceHub = hubMapper.toHub(updateHubRequestDto);
 
         return hubMapper.toUpdateHubResponseDto(targetHub.update(sourceHub));
