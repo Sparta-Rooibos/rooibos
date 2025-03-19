@@ -4,9 +4,9 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.UuidGenerator;
 
 import java.time.LocalDateTime;
-import java.util.Locale;
 import java.util.UUID;
 
 @Entity
@@ -17,12 +17,13 @@ import java.util.UUID;
 public class Stock {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @UuidGenerator
     @Column(columnDefinition = "UUID DEFAULT gen_random_uuid()")
     private UUID id;
     private String hubId;
     private String productId;
-    private String productQuantity;
+    private int productQuantity;
 
     private String createdBy;
     private LocalDateTime createdAt;
@@ -33,4 +34,25 @@ public class Stock {
     private String deletedBy;
     private LocalDateTime deletedAt;
 
+
+
+    public static Stock create(String hubId, String productId, int productQuantity) {
+        return new Stock(hubId, productId, productQuantity);
+    }
+
+
+    public Stock(String hubId, String productId, int productQuantity) {
+        this.hubId = hubId;
+        this.productId = productId;
+        this.productQuantity = productQuantity;
+    }
+
+    public void update(int quantity) {
+        this.productQuantity = quantity;
+    }
+
+    public void delete(String deletedBy) {
+        this.deletedBy = deletedBy;
+        this.deletedAt = LocalDateTime.now();
+    }
 }
