@@ -4,7 +4,7 @@ import com.sparta.rooibus.order.domain.entity.Order;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-public record UpdateOrderResponseDTO(
+public record UpdateOrderResponse(
     UUID order_id,
     UUID request_client_id,
     UUID response_client_id,
@@ -14,11 +14,12 @@ public record UpdateOrderResponseDTO(
     String requirement,
     LocalDateTime updated_at
 ) {
-    public UpdateOrderResponseDTO(Order order){
-        this(
+    public static UpdateOrderResponse from(Order order) {
+
+        return new UpdateOrderResponse(
             order.getId(),
             order.getRequestClientId(),
-            order.getResponseClientId(),
+            order.getReceiveClientId(),
             order.getProductId(),
             order.getDeliveryId(),
             order.getQuantity(),
