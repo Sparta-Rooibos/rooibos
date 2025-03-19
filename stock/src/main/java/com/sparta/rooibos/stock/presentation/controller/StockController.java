@@ -8,6 +8,7 @@ import com.sparta.rooibos.stock.application.dto.response.GetStockResponse;
 import com.sparta.rooibos.stock.application.dto.response.SearchStockResponse;
 import com.sparta.rooibos.stock.application.service.StockService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -19,27 +20,29 @@ public class StockController {
     private final StockService stockService;
 
     @GetMapping
-    public SearchStockResponse searchStock(@ModelAttribute SearchStockRequest request) {
-        return stockService.searchStock(request);
+    public ResponseEntity<SearchStockResponse> searchStock(@ModelAttribute SearchStockRequest request) {
+        return ResponseEntity.ok(stockService.searchStock(request));
     }
 
     @GetMapping("/{stockId}")
-    public GetStockResponse getStock(@PathVariable UUID stockId) {
-        return stockService.getStock(stockId);
+    public ResponseEntity<GetStockResponse> getStock(@PathVariable UUID stockId) {
+        return ResponseEntity.ok(stockService.getStock(stockId));
     }
 
     @PostMapping
-    public CreateStockResponse createStock(@RequestBody CreateStockRequest request) {
-        return stockService.createStock(request);
+    public ResponseEntity<CreateStockResponse> createStock(@RequestBody CreateStockRequest request) {
+        return ResponseEntity.ok(stockService.createStock(request));
     }
 
     @PutMapping("/{stockId}")
-    public void updateStock(@PathVariable UUID stockId, @RequestBody UpdateStockRequest request) {
+    public ResponseEntity<Void> updateStock(@PathVariable UUID stockId, @RequestBody UpdateStockRequest request) {
         stockService.updateStock(stockId, request);
+        return ResponseEntity.ok().build();
     }
 
     @PatchMapping("/{stockId}")
-    public void deleteStock(@PathVariable UUID stockId) {
+    public ResponseEntity<Void> deleteStock(@PathVariable UUID stockId) {
         stockService.deleteStock(stockId);
+        return ResponseEntity.ok().build();
     }
 }
