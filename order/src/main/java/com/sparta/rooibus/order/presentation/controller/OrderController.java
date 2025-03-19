@@ -5,11 +5,10 @@ import com.sparta.rooibus.order.application.dto.request.SearchOrderRequestDTO;
 import com.sparta.rooibus.order.application.dto.response.CreateOrderResponse;
 import com.sparta.rooibus.order.application.dto.response.GetOrderResponseDTO;
 import com.sparta.rooibus.order.application.dto.response.SearchOrderResponseDTO;
-import com.sparta.rooibus.order.application.service.MasterOrderService;
 
 import com.sparta.rooibus.order.application.dto.request.UpdateOrderRequest;
 import com.sparta.rooibus.order.application.dto.response.UpdateOrderResponse;
-import com.sparta.rooibus.order.application.dto.response.DeleteOrderResponseDTO;
+import com.sparta.rooibus.order.application.dto.response.DeleteOrderResponse;
 import com.sparta.rooibus.order.application.service.OrderService;
 import com.sparta.rooibus.order.presentation.factory.OrderServiceFactory;
 import jakarta.validation.Valid;
@@ -19,6 +18,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -53,10 +53,10 @@ public class OrderController {
         return ResponseEntity.ok(response);
     }
 
-    @DeleteMapping("/{orderId}")
-    public ResponseEntity<DeleteOrderResponseDTO> deleteOrder(@PathVariable("orderId")UUID orderId,@RequestHeader String role){
+    @PatchMapping("/{orderId}")
+    public ResponseEntity<DeleteOrderResponse> deleteOrder(@PathVariable UUID orderId,@RequestHeader String role){
         OrderService orderService = orderServiceFactory.getService(role);
-        DeleteOrderResponseDTO response = orderService.deleteOrder(orderId);
+        DeleteOrderResponse response = orderService.deleteOrder(orderId);
         return ResponseEntity.ok(response);
     }
 

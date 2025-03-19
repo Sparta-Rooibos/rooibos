@@ -6,7 +6,7 @@ import com.sparta.rooibus.order.application.dto.request.SearchOrderRequestDTO;
 import com.sparta.rooibus.order.application.dto.request.UpdateOrderRequest;
 import com.sparta.rooibus.order.application.dto.response.CreateDeliveryResponse;
 import com.sparta.rooibus.order.application.dto.response.CreateOrderResponse;
-import com.sparta.rooibus.order.application.dto.response.DeleteOrderResponseDTO;
+import com.sparta.rooibus.order.application.dto.response.DeleteOrderResponse;
 import com.sparta.rooibus.order.application.dto.response.GetOrderResponseDTO;
 import com.sparta.rooibus.order.application.dto.response.SearchOrderResponseDTO;
 import com.sparta.rooibus.order.application.dto.response.UpdateOrderResponse;
@@ -76,17 +76,15 @@ public class HubOrderService implements OrderService {
 
     @Transactional
     @CacheEvict(value = "orderCache", key = "#orderId")
-    public DeleteOrderResponseDTO deleteOrder(UUID orderId) {
-
+    public DeleteOrderResponse deleteOrder(UUID orderId) {
         Order targetOrder = orderRepository.findById(orderId).orElseThrow(
             ()-> new IllegalArgumentException("삭제할 주문이 없습니다.")
         );
-
+//        TODO : 로그인한 사람의 담당 허브를 확인(feign client)하고 그에 등록된 주문인지 확인 하는 부분 추가해야함.어디다 요청해야할지 논의
 
         targetOrder.delete();
 
-        DeleteOrderResponseDTO response = new DeleteOrderResponseDTO(targetOrder);
-        return response;
+        return DeleteOrderResponse.from(targetOrder);
     }
 
     @Transactional(readOnly = true)

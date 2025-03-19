@@ -3,7 +3,7 @@ package com.sparta.rooibus.order.application.service;
 import com.sparta.rooibus.order.application.dto.request.CreateOrderRequest;
 import com.sparta.rooibus.order.application.dto.request.SearchOrderRequestDTO;
 import com.sparta.rooibus.order.application.dto.response.CreateDeliveryResponse;
-import com.sparta.rooibus.order.application.dto.response.DeleteOrderResponseDTO;
+import com.sparta.rooibus.order.application.dto.response.DeleteOrderResponse;
 import com.sparta.rooibus.order.application.dto.request.CreateDeliveryRequest;
 import com.sparta.rooibus.order.application.dto.request.UpdateOrderRequest;
 import com.sparta.rooibus.order.application.dto.response.CreateOrderResponse;
@@ -75,17 +75,14 @@ public class MasterOrderService implements OrderService {
 
     @Transactional
     @CacheEvict(value = "orderCache", key = "#orderId")
-    public DeleteOrderResponseDTO deleteOrder(UUID orderId) {
-
+    public DeleteOrderResponse deleteOrder(UUID orderId) {
         Order targetOrder = orderRepository.findById(orderId).orElseThrow(
             ()-> new IllegalArgumentException("삭제할 주문이 없습니다.")
         );
 
-
         targetOrder.delete();
 
-        DeleteOrderResponseDTO response = new DeleteOrderResponseDTO(targetOrder);
-        return response;
+        return DeleteOrderResponse.from(targetOrder);
     }
 
     @Transactional(readOnly = true)

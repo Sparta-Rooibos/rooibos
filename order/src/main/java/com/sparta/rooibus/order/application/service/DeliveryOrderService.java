@@ -6,7 +6,7 @@ import com.sparta.rooibus.order.application.dto.request.SearchOrderRequestDTO;
 import com.sparta.rooibus.order.application.dto.request.UpdateOrderRequest;
 import com.sparta.rooibus.order.application.dto.response.CreateDeliveryResponse;
 import com.sparta.rooibus.order.application.dto.response.CreateOrderResponse;
-import com.sparta.rooibus.order.application.dto.response.DeleteOrderResponseDTO;
+import com.sparta.rooibus.order.application.dto.response.DeleteOrderResponse;
 import com.sparta.rooibus.order.application.dto.response.GetOrderResponseDTO;
 import com.sparta.rooibus.order.application.dto.response.SearchOrderResponseDTO;
 import com.sparta.rooibus.order.application.dto.response.UpdateOrderResponse;
@@ -63,17 +63,8 @@ public class DeliveryOrderService implements OrderService {
 
     @Transactional
     @CacheEvict(value = "orderCache", key = "#orderId")
-    public DeleteOrderResponseDTO deleteOrder(UUID orderId) {
-
-        Order targetOrder = orderRepository.findById(orderId).orElseThrow(
-            ()-> new IllegalArgumentException("삭제할 주문이 없습니다.")
-        );
-
-
-        targetOrder.delete();
-
-        DeleteOrderResponseDTO response = new DeleteOrderResponseDTO(targetOrder);
-        return response;
+    public DeleteOrderResponse deleteOrder(UUID orderId) {
+        throw new RuntimeException("주문을 삭제하는데에는 권한이 필요합니다.");
     }
 
     @Transactional(readOnly = true)
