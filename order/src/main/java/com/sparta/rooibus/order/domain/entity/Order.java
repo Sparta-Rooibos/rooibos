@@ -1,12 +1,7 @@
 package com.sparta.rooibus.order.domain.entity;
 
-import com.sparta.rooibus.order.application.dto.request.CreateOrderRequest;
-import com.sparta.rooibus.order.application.dto.request.UpdateOrderRequest;
-import com.sparta.rooibus.order.domain.model.OrderStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
@@ -47,9 +42,9 @@ public class Order {
     @Column(name = "requirement", length = 255)
     private String requirement;
 
-    @Column(name = "status", length = 50)
-    @Enumerated(EnumType.STRING)
-    private OrderStatus status;
+    @Column(name = "managed_hub_id")
+    private UUID manageHubID;
+
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
@@ -90,7 +85,6 @@ public class Order {
         order.quantity = quantity;
         order.requirement = requirement;
 
-        order.status = OrderStatus.PENDING; // 기본값 설정
 //        TODO : 생성일과 생성자 추가
         return order;
     }
@@ -99,46 +93,27 @@ public class Order {
         this.deliveryId = deliveryID;
     }
 
-    public Order(CreateOrderRequest requestDTO){
-        this.productId = requestDTO.productId();
-        this.quantity = requestDTO.quantity();
-        this.requirement = requestDTO.requirement();
-        this.status = OrderStatus.PENDING;
-
+    public void update(
+        UUID requestClientId,
+        UUID receiveClientId,
+        UUID productId,
+        Integer quantity,
+        String requirement) {
+        if(requestClientId!=null)
+            this.requestClientId = requestClientId;
+        if(receiveClientId!=null)
+            this.receiveClientId = receiveClientId;
+        if(productId!=null)
+            this.productId = productId;
+        if(quantity!=null)
+            this.quantity = quantity;
+        if(requirement!=null)
+            this.requirement = requirement;
         this.updatedAt = LocalDateTime.now();
     }
 
-    public void update(UpdateOrderRequest requestDTO) {
-        if(requestDTO.requestClientId()!=null)
-            this.requestClientId = requestDTO.requestClientId();
-        if(requestDTO.productId()!=null)
-            this.productId = requestDTO.productId();
-        if(requestDTO.quantity()!=null)
-            this.quantity = requestDTO.quantity();
-        if(requestDTO.requirement()!=null)
-            this.requirement = requestDTO.requirement();
-    }
-
-    public void updateStatus(String status){
-        switch (status){
-            case "주문 접수":
-                this.status = OrderStatus.PENDING;
-                break;
-            case "주문 처리중":
-                this.status = OrderStatus.PROCESSING;
-                break;
-            case "배송 중":
-                this.status = OrderStatus.DELIVERING;
-                break;
-            case "배송 완료":
-                this.status = OrderStatus.DELIVERED;
-                break;
-        }
-    this.updatedAt = LocalDateTime.now();
-    }
 
     public void delete() {
-        this.status = OrderStatus.CANCELLED;
         this.deletedAt = LocalDateTime.now();
     }
 }

@@ -11,18 +11,16 @@ public record SearchOrderResponseDTO(
     UUID productId,
     int quantity,
     String requirement,
-    String status,
     LocalDateTime createdAt,
     LocalDateTime updatedAt
 ) {
     public SearchOrderResponseDTO(Order order) {
         this(order.getId(),
         order.getRequestClientId(),
-        order.getResponseClientId(),
+        order.getReceiveClientId(),
         order.getProductId(),
         order.getQuantity(),
         order.getRequirement(),
-        order.getStatus().toString(),
         order.getCreatedAt(),
         order.getUpdatedAt()
         );
