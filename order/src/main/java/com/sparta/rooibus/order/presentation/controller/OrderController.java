@@ -3,7 +3,7 @@ package com.sparta.rooibus.order.presentation.controller;
 import com.sparta.rooibus.order.application.dto.request.CreateOrderRequest;
 import com.sparta.rooibus.order.application.dto.request.SearchOrderRequestDTO;
 import com.sparta.rooibus.order.application.dto.response.CreateOrderResponse;
-import com.sparta.rooibus.order.application.dto.response.GetOrderResponseDTO;
+import com.sparta.rooibus.order.application.dto.response.GetOrderResponse;
 import com.sparta.rooibus.order.application.dto.response.SearchOrderResponseDTO;
 
 import com.sparta.rooibus.order.application.dto.request.UpdateOrderRequest;
@@ -16,7 +16,6 @@ import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -61,9 +60,9 @@ public class OrderController {
     }
 
     @GetMapping("/{orderId}")
-    public ResponseEntity<GetOrderResponseDTO> getOrder(@PathVariable("orderId")UUID orderId,@RequestHeader String role){
+    public ResponseEntity<GetOrderResponse> getOrder(@PathVariable("orderId")UUID orderId,@RequestHeader String role){
         OrderService orderService = orderServiceFactory.getService(role);
-        GetOrderResponseDTO response = orderService.getOrder(orderId);
+        GetOrderResponse response = orderService.getOrder(orderId);
         return ResponseEntity.ok(response);
     }
 

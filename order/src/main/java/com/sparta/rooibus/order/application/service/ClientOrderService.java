@@ -7,7 +7,7 @@ import com.sparta.rooibus.order.application.dto.request.UpdateOrderRequest;
 import com.sparta.rooibus.order.application.dto.response.CreateDeliveryResponse;
 import com.sparta.rooibus.order.application.dto.response.CreateOrderResponse;
 import com.sparta.rooibus.order.application.dto.response.DeleteOrderResponse;
-import com.sparta.rooibus.order.application.dto.response.GetOrderResponseDTO;
+import com.sparta.rooibus.order.application.dto.response.GetOrderResponse;
 import com.sparta.rooibus.order.application.dto.response.SearchOrderResponseDTO;
 import com.sparta.rooibus.order.application.dto.response.UpdateOrderResponse;
 import com.sparta.rooibus.order.domain.entity.Order;
@@ -69,14 +69,13 @@ public class ClientOrderService implements OrderService {
 
     @Transactional(readOnly = true)
     @Cacheable(value = "orderCache", key = "#orderId")
-    public GetOrderResponseDTO getOrder(UUID orderId) {
+    public GetOrderResponse getOrder(UUID orderId) {
 
         Order targetOrder = orderRepository.findById(orderId).orElseThrow(
             ()-> new IllegalArgumentException("해당 주문이 없습니다.")
         );
-
-        GetOrderResponseDTO response = new GetOrderResponseDTO(targetOrder);
-        return response;
+//        TODO : 로그인한 사람의 Id??와 createdAt이 같다면 응답 아니면 에러
+        return GetOrderResponse.from(targetOrder);
     }
 
     @Cacheable(value = "searchOrderCache", key = "#request.page() + '-' + #request.size()")

@@ -7,7 +7,7 @@ import com.sparta.rooibus.order.application.dto.request.UpdateOrderRequest;
 import com.sparta.rooibus.order.application.dto.response.CreateDeliveryResponse;
 import com.sparta.rooibus.order.application.dto.response.CreateOrderResponse;
 import com.sparta.rooibus.order.application.dto.response.DeleteOrderResponse;
-import com.sparta.rooibus.order.application.dto.response.GetOrderResponseDTO;
+import com.sparta.rooibus.order.application.dto.response.GetOrderResponse;
 import com.sparta.rooibus.order.application.dto.response.SearchOrderResponseDTO;
 import com.sparta.rooibus.order.application.dto.response.UpdateOrderResponse;
 import com.sparta.rooibus.order.domain.entity.Order;
@@ -69,14 +69,15 @@ public class DeliveryOrderService implements OrderService {
 
     @Transactional(readOnly = true)
     @Cacheable(value = "orderCache", key = "#orderId")
-    public GetOrderResponseDTO getOrder(UUID orderId) {
+    public GetOrderResponse getOrder(UUID orderId) {
 
         Order targetOrder = orderRepository.findById(orderId).orElseThrow(
             ()-> new IllegalArgumentException("해당 주문이 없습니다.")
         );
+//        TODO : 배송 서비스에서 로그인한 사람이 담당한 주문인지 확인(feign client)
+//         -> 배송서비스에 orderId로 deliver가져와서 deliverId와 같은지 확인
 
-        GetOrderResponseDTO response = new GetOrderResponseDTO(targetOrder);
-        return response;
+        return GetOrderResponse.from(targetOrder);
     }
 
     @Cacheable(value = "searchOrderCache", key = "#request.page() + '-' + #request.size()")
