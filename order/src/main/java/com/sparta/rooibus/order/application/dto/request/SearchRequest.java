@@ -1,4 +1,4 @@
-package com.sparta.rooibus.order.domain.model;
+package com.sparta.rooibus.order.application.dto.request;
 
 public record SearchRequest(
     String keyword,
