@@ -12,4 +12,8 @@ public interface OrderRepository {
     Order save(Order order);
     Optional<Order> findById(UUID id);
     Pagination<Order> searchOrders(SearchRequest searchRequest);
+
+    Optional<Order> findByIdAndHub(UUID id,UUID hubId);
+
+    Pagination<Order> searchOrdersByHubId(SearchRequest searchRequest, UUID hubId);
 }

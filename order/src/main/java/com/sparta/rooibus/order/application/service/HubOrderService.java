@@ -1,5 +1,6 @@
 package com.sparta.rooibus.order.application.service;
 
+import com.sparta.rooibus.order.application.aop.UserContextRequestBean;
 import com.sparta.rooibus.order.application.dto.request.CreateDeliveryRequest;
 import com.sparta.rooibus.order.application.dto.request.CreateOrderRequest;
 import com.sparta.rooibus.order.domain.model.SearchRequest;
@@ -28,6 +29,8 @@ public class HubOrderService implements OrderService {
 
     private final OrderRepository orderRepository;
     private final DeliveryService deliveryService;
+    private final HubService hubService;
+    private final UserContextRequestBean userContext;
 
     @Transactional
     public CreateOrderResponse createOrder(@Valid CreateOrderRequest request) {
@@ -52,10 +55,12 @@ public class HubOrderService implements OrderService {
     @Transactional
     @CachePut(value = "orderCache", key = "#request.id()")
     public UpdateOrderResponse updateOrder(UpdateOrderRequest request) {
-        Order targetOrder = orderRepository.findById(request.id()).orElseThrow(
+//        TODO : 허브로 feign 요청
+        UUID hubId = hubService.getHubByUser(userContext.getUserId(),userContext.getRole());
+
+        Order targetOrder = orderRepository.findByIdAndHub(request.id(),hubId).orElseThrow(
             ()-> new IllegalArgumentException("주문을 찾을 수 없습니다.")
         );
-        //        TODO : 로그인한 사람의 담당 허브를 확인(feign client)하고 그에 등록된 주문인지 확인 하는 부분 추가해야함.어디다 요청해야할지 논의
 
         targetOrder.update(
             request.receiveClientId(),
@@ -69,10 +74,11 @@ public class HubOrderService implements OrderService {
     @Transactional
     @CacheEvict(value = "orderCache", key = "#orderId")
     public DeleteOrderResponse deleteOrder(UUID orderId) {
-        Order targetOrder = orderRepository.findById(orderId).orElseThrow(
+        UUID hubId = hubService.getHubByUser(userContext.getUserId(),userContext.getRole());
+
+        Order targetOrder = orderRepository.findByIdAndHub(orderId,hubId).orElseThrow(
             ()-> new IllegalArgumentException("삭제할 주문이 없습니다.")
         );
-//        TODO : 로그인한 사람의 담당 허브를 확인(feign client)하고 그에 등록된 주문인지 확인 하는 부분 추가해야함.어디다 요청해야할지 논의
 
         targetOrder.delete();
 
@@ -82,18 +88,21 @@ public class HubOrderService implements OrderService {
     @Transactional(readOnly = true)
     @Cacheable(value = "orderCache", key = "#orderId")
     public GetOrderResponse getOrder(UUID orderId) {
-        Order targetOrder = orderRepository.findById(orderId).orElseThrow(
+        UUID hubId = hubService.getHubByUser(userContext.getUserId(),userContext.getRole());
+
+        Order targetOrder = orderRepository.findByIdAndHub(orderId,hubId).orElseThrow(
             ()-> new IllegalArgumentException("해당 주문이 없습니다.")
         );
-//        TODO : 로그인한 사람의 담당 허브를 확인(feign client)하고 그에 등록된 주문인지 확인 하는 부분 추가해야함.어디다 요청해야할지 논의
 
         return GetOrderResponse.from(targetOrder);
     }
 
     @Override
-    @Cacheable(value = "searchOrderCache", key = "#request.page() + ':' + #request.size()")
+    @Cacheable(value = "searchOrderCache", key = "#searchRequest.keyword() + ':' + #searchRequest.filterKey() + ':' + #searchRequest.filterValue() + ':' + #searchRequest.sort() + ':' + #searchRequest.page() + ':' + #searchRequest.size()")
     public SearchOrderResponse searchOrders(SearchRequest searchRequest) {
-        Pagination<Order> orderPagination = orderRepository.searchOrders(searchRequest);
+        UUID hubId = hubService.getHubByUser(userContext.getUserId(),userContext.getRole());
+
+        Pagination<Order> orderPagination = orderRepository.searchOrdersByHubId(searchRequest,hubId);
         return SearchOrderResponse.from(orderPagination);
     }
 }
