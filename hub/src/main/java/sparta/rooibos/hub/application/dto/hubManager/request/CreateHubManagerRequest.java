@@ -6,5 +6,5 @@ import java.util.UUID;
 
 public record CreateHubManagerRequest(
         UUID userId,
-        Hub hub
+        UUID hubId
 ) {}

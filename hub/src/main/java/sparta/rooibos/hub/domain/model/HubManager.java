@@ -21,6 +21,8 @@ public class HubManager {
 
     private UUID userId;
 
+    private UUID hubId;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "hub_id")
     private Hub hub;

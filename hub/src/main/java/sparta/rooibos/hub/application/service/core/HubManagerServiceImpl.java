@@ -22,7 +22,7 @@ public class HubManagerServiceImpl implements HubManagerService {
     @Override
     public CreateHubManagerResponse createHubManager(CreateHubManagerRequest createHubManagerRequest) {
         HubManager savedHubManager =
-                hubManagerRepository.createHubManager(createHubManagerRequest.userId(), createHubManagerRequest.hub());
+                hubManagerRepository.createHubManager(createHubManagerRequest.userId(), createHubManagerRequest.hubId());
 
         return CreateHubManagerResponse.from(savedHubManager);
     }

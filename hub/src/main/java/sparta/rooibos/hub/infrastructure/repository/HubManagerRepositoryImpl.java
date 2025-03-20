@@ -1,9 +1,7 @@
 package sparta.rooibos.hub.infrastructure.repository;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
-import sparta.rooibos.hub.domain.model.Hub;
 import sparta.rooibos.hub.domain.model.HubManager;
 import sparta.rooibos.hub.domain.respository.HubManagerRepository;
 import sparta.rooibos.hub.infrastructure.jpa.JpaHubManagerRepository;
@@ -18,7 +16,7 @@ public class HubManagerRepositoryImpl implements HubManagerRepository {
     private final JpaHubManagerRepository jpaHubManagerRepository;
 
     @Override
-    public HubManager createHubManager(UUID userId, Hub hub) {
+    public HubManager createHubManager(UUID userId, UUID hubId) {
         return null;
     }
 
