@@ -56,7 +56,7 @@ public class Client {
     private String deleteBy;
 
     //생성
-    public Client(String name, ClientType type, String managedHubId, String address,String username) {
+    public Client(String name, ClientType type, String managedHubId, String address, String username) {
         this.name = name;
         this.type = type;
         this.managedHubId = managedHubId;
