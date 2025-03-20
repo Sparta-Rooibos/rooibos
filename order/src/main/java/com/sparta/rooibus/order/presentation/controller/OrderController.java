@@ -1,7 +1,7 @@
 package com.sparta.rooibus.order.presentation.controller;
 
 import com.sparta.rooibus.order.application.dto.request.CreateOrderRequest;
-import com.sparta.rooibus.order.application.dto.request.SearchRequest;
+import com.sparta.rooibus.order.domain.model.SearchRequest;
 import com.sparta.rooibus.order.application.dto.response.CreateOrderResponse;
 import com.sparta.rooibus.order.application.dto.response.GetOrderResponse;
 import com.sparta.rooibus.order.application.dto.response.SearchOrderResponse;
@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController

@@ -1,7 +1,7 @@
 package com.sparta.rooibus.order.application.service;
 
 import com.sparta.rooibus.order.application.dto.request.CreateOrderRequest;
-import com.sparta.rooibus.order.application.dto.request.SearchRequest;
+import com.sparta.rooibus.order.domain.model.SearchRequest;
 import com.sparta.rooibus.order.application.dto.response.CreateDeliveryResponse;
 import com.sparta.rooibus.order.application.dto.response.DeleteOrderResponse;
 import com.sparta.rooibus.order.application.dto.request.CreateDeliveryRequest;
