@@ -1,6 +1,6 @@
 package com.sparta.rooibus.order.domain.repository;
 
-import com.sparta.rooibus.order.domain.model.SearchRequest;
+import com.sparta.rooibus.order.application.dto.request.SearchRequest;
 import com.sparta.rooibus.order.domain.entity.Order;
 import com.sparta.rooibus.order.domain.model.Pagination;
 import java.util.Optional;

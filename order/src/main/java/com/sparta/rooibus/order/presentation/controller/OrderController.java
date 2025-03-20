@@ -2,7 +2,7 @@ package com.sparta.rooibus.order.presentation.controller;
 
 import com.sparta.rooibus.order.application.aop.UserContextRequestBean;
 import com.sparta.rooibus.order.application.dto.request.CreateOrderRequest;
-import com.sparta.rooibus.order.domain.model.SearchRequest;
+import com.sparta.rooibus.order.application.dto.request.SearchRequest;
 import com.sparta.rooibus.order.application.dto.response.CreateOrderResponse;
 import com.sparta.rooibus.order.application.dto.response.GetOrderResponse;
 import com.sparta.rooibus.order.application.dto.response.SearchOrderResponse;
