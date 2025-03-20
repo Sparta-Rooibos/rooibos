@@ -3,9 +3,7 @@ package sparta.rooibos.hub.application.dto.request;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
-import java.util.Optional;
-
-public record SearchHubRequestDto(
+public record SearchHubRequest(
         String name,
         String region,
         int page,

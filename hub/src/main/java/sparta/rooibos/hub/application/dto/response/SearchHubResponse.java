@@ -1,28 +1,29 @@
 package sparta.rooibos.hub.application.dto.response;
 
 import sparta.rooibos.hub.domain.model.Hub;
+import sparta.rooibos.hub.domain.model.Pagination;
 
 import java.util.List;
 import java.util.UUID;
 
-public record SearchHubResponseDto(
+public record SearchHubResponse(
         int page,
         int size,
         Long totalElements,
         Long totalPages,
         List<HubResponseDto> contents
 ) {
-    public static SearchHubResponseDto of(int page, int size, Long totalElements, List<Hub> rawContents) {
-        List<HubResponseDto> contents = rawContents.stream()
-                .map(HubResponseDto::from)
-                .toList();
+    public static SearchHubResponse from(Pagination<Hub> pagination) {
+        int size = pagination.getSize();
 
-        return new SearchHubResponseDto(
-                page,
+        return new SearchHubResponse(
+                pagination.getPage(),
                 size,
-                totalElements,
-                (totalElements + size - 1) / size,
-                contents
+                pagination.getTotal(),
+                (pagination.getTotal() + size - 1) / size,
+                pagination.getContent().stream()
+                        .map(HubResponseDto::from)
+                        .toList()
         );
     }
 

@@ -1,6 +1,6 @@
 package sparta.rooibos.hub.application.dto.request;
 
-public record CreateHubRequestDto(
+public record UpdateHubRequest(
         String name,
         String region,
         String address,

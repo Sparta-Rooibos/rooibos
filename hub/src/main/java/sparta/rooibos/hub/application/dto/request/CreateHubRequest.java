@@ -1,8 +1,6 @@
 package sparta.rooibos.hub.application.dto.request;
 
-import java.util.UUID;
-
-public record UpdateHubRequestDto(
+public record CreateHubRequest(
         String name,
         String region,
         String address,

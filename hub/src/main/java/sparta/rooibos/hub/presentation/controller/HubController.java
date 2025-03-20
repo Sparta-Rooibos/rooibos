@@ -3,13 +3,13 @@ package sparta.rooibos.hub.presentation.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import sparta.rooibos.hub.application.dto.request.CreateHubRequestDto;
-import sparta.rooibos.hub.application.dto.request.SearchHubRequestDto;
-import sparta.rooibos.hub.application.dto.request.UpdateHubRequestDto;
-import sparta.rooibos.hub.application.dto.response.CreateHubResponseDto;
-import sparta.rooibos.hub.application.dto.response.GetHubResponseDto;
-import sparta.rooibos.hub.application.dto.response.SearchHubResponseDto;
-import sparta.rooibos.hub.application.dto.response.UpdateHubResponseDto;
+import sparta.rooibos.hub.application.dto.request.CreateHubRequest;
+import sparta.rooibos.hub.application.dto.request.SearchHubRequest;
+import sparta.rooibos.hub.application.dto.request.UpdateHubRequest;
+import sparta.rooibos.hub.application.dto.response.CreateHubResponse;
+import sparta.rooibos.hub.application.dto.response.GetHubResponse;
+import sparta.rooibos.hub.application.dto.response.SearchHubResponse;
+import sparta.rooibos.hub.application.dto.response.UpdateHubResponse;
 import sparta.rooibos.hub.application.service.port.HubService;
 
 import java.util.UUID;
@@ -22,26 +22,25 @@ public class HubController {
     private final HubService hubService;
 
     @PostMapping
-    public ResponseEntity<CreateHubResponseDto> createHub(@RequestBody CreateHubRequestDto createHubRequestDto) {
-        return ResponseEntity.ok(hubService.createHub(createHubRequestDto));
+    public ResponseEntity<CreateHubResponse> createHub(@RequestBody CreateHubRequest createHubRequest) {
+        return ResponseEntity.ok(hubService.createHub(createHubRequest));
     }
 
     @GetMapping("/{hubId}")
-    public ResponseEntity<GetHubResponseDto> getHub(@PathVariable UUID hubId) {
+    public ResponseEntity<GetHubResponse> getHub(@PathVariable UUID hubId) {
         return ResponseEntity.ok(hubService.getHub(hubId));
     }
 
     @GetMapping
-    public ResponseEntity<SearchHubResponseDto> searchHub(@ModelAttribute SearchHubRequestDto searchHubRequestDto) {
-        return ResponseEntity.ok(hubService.searchHub(searchHubRequestDto));
+    public ResponseEntity<SearchHubResponse> searchHub(@ModelAttribute SearchHubRequest searchHubRequest) {
+        return ResponseEntity.ok(hubService.searchHub(searchHubRequest));
     }
 
-    // TODO 멱등성 고려하면 PUT 쓰는 게 낫지 않나?
     @PatchMapping("/{hubId}")
-    public ResponseEntity<UpdateHubResponseDto> updateHub(
+    public ResponseEntity<UpdateHubResponse> updateHub(
             @PathVariable UUID hubId,
-            @RequestBody UpdateHubRequestDto updateHubRequestDto) {
-        return ResponseEntity.ok(hubService.updateHub(hubId, updateHubRequestDto));
+            @RequestBody UpdateHubRequest updateHubRequest) {
+        return ResponseEntity.ok(hubService.updateHub(hubId, updateHubRequest));
     }
 
     @PatchMapping("/{hubId}/delete")

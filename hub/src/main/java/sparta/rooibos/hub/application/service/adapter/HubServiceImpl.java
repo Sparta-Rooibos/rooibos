@@ -3,14 +3,13 @@ package sparta.rooibos.hub.application.service.adapter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import sparta.rooibos.hub.application.dto.request.CreateHubRequestDto;
-import sparta.rooibos.hub.application.dto.request.SearchHubRequestDto;
-import sparta.rooibos.hub.application.dto.request.UpdateHubRequestDto;
-import sparta.rooibos.hub.application.dto.response.CreateHubResponseDto;
-import sparta.rooibos.hub.application.dto.response.GetHubResponseDto;
-import sparta.rooibos.hub.application.dto.response.SearchHubResponseDto;
-import sparta.rooibos.hub.application.dto.response.UpdateHubResponseDto;
-import sparta.rooibos.hub.application.mapper.HubMapper;
+import sparta.rooibos.hub.application.dto.request.CreateHubRequest;
+import sparta.rooibos.hub.application.dto.request.SearchHubRequest;
+import sparta.rooibos.hub.application.dto.request.UpdateHubRequest;
+import sparta.rooibos.hub.application.dto.response.CreateHubResponse;
+import sparta.rooibos.hub.application.dto.response.GetHubResponse;
+import sparta.rooibos.hub.application.dto.response.SearchHubResponse;
+import sparta.rooibos.hub.application.dto.response.UpdateHubResponse;
 import sparta.rooibos.hub.application.service.port.HubService;
 import sparta.rooibos.hub.domain.model.Hub;
 import sparta.rooibos.hub.domain.model.Pagination;
@@ -20,48 +19,55 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+// TODO 도메인에 VO 만들어서 하나씩 보내고 있는 거 정리하기
 public class HubServiceImpl implements HubService {
 
-    private final HubMapper hubMapper;
     private final HubRepository hubRepository;
 
     @Override
     @Transactional
-    public CreateHubResponseDto createHub(CreateHubRequestDto createHubRequestDto) {
-        Hub newHub = hubMapper.toHub(createHubRequestDto);
+    public CreateHubResponse createHub(CreateHubRequest createHubRequest) {
+        Hub newHub = Hub.of(
+                createHubRequest.name(),
+                createHubRequest.region(),
+                createHubRequest.address(),
+                createHubRequest.latitude(),
+                createHubRequest.longitude()
+        );
 
-        return hubMapper.toCreateHubResponseDto(hubRepository.createHub(newHub));
+        return CreateHubResponse.from(hubRepository.createHub(newHub));
     }
 
     @Override
-    public GetHubResponseDto getHub(UUID hubId) {
-        return hubMapper.toGetHubResponseDto(getHubForServer(hubId));
+    public GetHubResponse getHub(UUID hubId) {
+        return GetHubResponse.from(getHubForServer(hubId));
     }
 
     @Override
-    public SearchHubResponseDto searchHub(SearchHubRequestDto searchHubRequestDto) {
+    public SearchHubResponse searchHub(SearchHubRequest searchHubRequest) {
         Pagination<Hub> hubPagination = hubRepository.searchHub(
-                searchHubRequestDto.name(),
-                searchHubRequestDto.region(),
-                searchHubRequestDto.page(),
-                searchHubRequestDto.page()
+                searchHubRequest.name(),
+                searchHubRequest.region(),
+                searchHubRequest.page(),
+                searchHubRequest.page()
         );
 
-        return SearchHubResponseDto.of(
-                hubPagination.getPage(),
-                hubPagination.getSize(),
-                hubPagination.getTotal(),
-                hubPagination.getContent()
-        );
+        return SearchHubResponse.from(hubPagination);
     }
 
     @Override
     @Transactional
-    public UpdateHubResponseDto updateHub(UUID hubId, UpdateHubRequestDto updateHubRequestDto) {
+    public UpdateHubResponse updateHub(UUID hubId, UpdateHubRequest updateHubRequest) {
         Hub targetHub = getHubForServer(hubId);
-        Hub sourceHub = hubMapper.toHub(updateHubRequestDto);
+        Hub sourceHub = Hub.of(
+                updateHubRequest.name(),
+                updateHubRequest.region(),
+                updateHubRequest.address(),
+                updateHubRequest.latitude(),
+                updateHubRequest.longitude()
+        );
 
-        return hubMapper.toUpdateHubResponseDto(targetHub.update(sourceHub));
+        return UpdateHubResponse.from(targetHub.update(sourceHub));
     }
 
     @Override
