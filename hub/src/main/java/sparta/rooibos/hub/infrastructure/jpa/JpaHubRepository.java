@@ -12,7 +12,7 @@ public interface JpaHubRepository extends JpaRepository<Hub, UUID> {
     @Query(
             value = "SELECT h FROM Hub h " +
                     "WHERE h.hubId = :hubId " +
-                    "AND h.deleteAt IS NULL"
+                    "AND h.deletedAt IS NULL"
     )
     Optional<Hub> getActiveHub(@Param("hubId") UUID hubId);
 }

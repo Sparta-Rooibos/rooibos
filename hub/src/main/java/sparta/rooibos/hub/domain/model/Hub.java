@@ -2,6 +2,7 @@ package sparta.rooibos.hub.domain.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -11,6 +12,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+@Slf4j
 @Entity
 @Table(name = "p_hub")
 @Getter @Builder
@@ -39,25 +41,35 @@ public class Hub {
 
     @CreatedDate
     @Column(updatable = false, nullable = false)
-    private LocalDateTime createAt;
+    private LocalDateTime createdAt;
 
     @CreatedBy
     @Column(updatable = false, nullable = false)
-    private String createBy;
+    private String createdBy;
 
     @LastModifiedDate
     @Column
-    private LocalDateTime updateAt;
+    private LocalDateTime updatedAt;
 
     @LastModifiedBy
     @Column
-    private String updateBy;
+    private String updatedBy;
 
     @Column
-    private LocalDateTime deleteAt;
+    private LocalDateTime deletedAt;
 
     @Column
-    private String deleteBy;
+    private String deletedBy;
+
+    public static Hub of(String name, String region, String address, String latitude, String longitude) {
+        return Hub.builder()
+                .name(name)
+                .region(region)
+                .address(address)
+                .latitude(latitude)
+                .longitude(longitude)
+                .build();
+    }
 
     public Hub update(Hub hub) {
         if (!isSameHub(hubId)) {
@@ -79,6 +91,6 @@ public class Hub {
     }
 
     public void delete() {
-        this.deleteAt = LocalDateTime.now();
+        this.deletedAt = LocalDateTime.now();
     }
 }

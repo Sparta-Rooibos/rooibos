@@ -45,13 +45,13 @@ public class HubRepositoryImpl implements HubRepository {
             builder.and(hub.region.contains(region));
         }
 
-        builder.and(hub.deleteAt.isNull());
+        builder.and(hub.deletedAt.isNull());
 
         List<Hub> result = queryFactory
                 .select(hub)
                 .from(hub)
                 .where(builder)
-                .orderBy(hub.createAt.desc(), hub.updateAt.desc())
+                .orderBy(hub.createdAt.desc(), hub.updatedAt.desc())
                 .offset((long) page * size)
                 .limit(size)
                 .fetch();
