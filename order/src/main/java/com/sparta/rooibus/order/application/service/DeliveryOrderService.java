@@ -73,7 +73,7 @@ public class DeliveryOrderService implements OrderService {
         return GetOrderResponse.from(targetOrder);
     }
     @Override
-    @Cacheable(value = "searchOrderCache", key = "#request.page() + '-' + #request.size()")
+    @Cacheable(value = "searchOrderCache", key = "#request.page() + ':' + #request.size()")
     public SearchOrderResponse searchOrders(String keyword, String filterKey, String filterValue,
         String sort, int page, int size) {
         Pagination<Order> orderPagination = orderRepository.searchOrders(keyword,filterKey,filterValue,sort,page,size);

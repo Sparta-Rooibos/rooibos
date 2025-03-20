@@ -87,11 +87,12 @@ public class MasterOrderService implements OrderService {
 
         return GetOrderResponse.from(targetOrder);
     }
-
-//    TODO : 검색을 할때 담당허브, 본인 주문, 본인 주문 에 맞게 다른 로직을 해야하는데 쿼리 디에스엘 구현체를 만들까
+//      로그인한 사람의 Id? [ 주문 - 배송Id ]
+//    배송 서비스의 배송 테이블 - 배송담당자의 Id [List]
+//    TODO : 검색을 할때 담당허브, 담당하는 배송의 주문이 맞는지 확인, 본인 주문(로그인한 사람의 ID) 에 맞게 다른 로직을 해야하는데 쿼리 디에스엘 구현체를 만들까
 //     아니면 그냥 메서드에 role을 담아서 보낼까?
     @Override
-    @Cacheable(value = "searchOrderCache", key = "#request.page() + '-' + #request.size()")
+    @Cacheable(value = "searchOrderCache", key = "#request.page() + ':' + #request.size()")
     public SearchOrderResponse searchOrders(String keyword, String filterKey, String filterValue,
         String sort, int page, int size) {
         Pagination<Order> orderPagination = orderRepository.searchOrders(keyword,filterKey,filterValue,sort,page,size);
