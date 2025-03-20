@@ -31,11 +31,11 @@ public class MessageService {
 
     private void sendMessage(String content) {
         WebClient webClient = WebClient.builder()
-                .baseUrl("https://hooks.slack.com/services/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")
+                .baseUrl("https://hooks.slack.com/services/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")
                 .build();
 
         String payload = """
-                {"text": %s}
+                {"text": "%s"}
                 """.formatted(content);
 
         Mono<String> response = webClient.post()
