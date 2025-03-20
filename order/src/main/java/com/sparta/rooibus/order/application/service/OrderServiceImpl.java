@@ -13,6 +13,7 @@ import com.sparta.rooibus.order.application.dto.response.SearchOrderResponse;
 import com.sparta.rooibus.order.application.exception.BusinessOrderException;
 import com.sparta.rooibus.order.application.exception.custom.OrderErrorCode;
 import com.sparta.rooibus.order.application.service.feign.DeliveryService;
+import com.sparta.rooibus.order.application.service.feign.HubService;
 import com.sparta.rooibus.order.application.service.feign.StockService;
 import com.sparta.rooibus.order.domain.entity.Order;
 import com.sparta.rooibus.order.domain.model.OrderStatus;
@@ -34,6 +35,7 @@ public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
     private final DeliveryService deliveryService;
+    private final HubService hubService;
     private final StockService stockService;
     private final UserContextRequestBean userContext;
 
@@ -64,7 +66,8 @@ public class OrderServiceImpl implements OrderService {
 
         CreateDeliveryResponse deliveryFeignResult = null;
         try {
-            deliveryFeignResult = deliveryService.createDelivery(CreateDeliveryRequest.from(order),"Role_Master");
+            deliveryFeignResult = deliveryService.createDelivery(CreateDeliveryRequest.from(order),
+                userContext.getRole());
         } catch (Exception e) {
             throw new BusinessOrderException(OrderErrorCode.FEIGN_DELIVERY_ERROR);
         }
@@ -80,9 +83,10 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     @CachePut(value = "orderCache", key = "#request.id()")
     public UpdateOrderResponse updateOrder(UpdateOrderRequest request) {
-        Order targetOrder = orderRepository.findById(request.id()).orElseThrow(
-            ()-> new IllegalArgumentException("수정할 주문을 찾을 수 없습니다.")
-        );
+        UUID userId = userContext.getUserId();
+        String role = userContext.getRole();
+
+        Order targetOrder = getOrderByRole(userId,role,request.id());
 
         targetOrder.update(
             request.receiveClientId(),
@@ -91,6 +95,23 @@ public class OrderServiceImpl implements OrderService {
         );
 
         return UpdateOrderResponse.from(targetOrder);
+    }
+
+    private Order getOrderByRole(UUID userId,String role,UUID orderId){
+        if(role.equals("Role_Master")){
+            return  orderRepository.findById(orderId)
+                .orElseThrow(()->new BusinessOrderException(OrderErrorCode.ORDER_NOT_FOUND));
+        }else if(role.equals("Role_HubManager")){
+            UUID hubId = hubService.getHubByUser(userContext.getUserId(),userContext.getRole());
+            return orderRepository.findByIdAndHub(orderId,hubId)
+                .orElseThrow(()->new BusinessOrderException(OrderErrorCode.ORDER_NOT_FOUND));
+        }else if(role.equals("Role_Deliver")){
+            return orderRepository.findByUserId(userId,orderId)
+                .orElseThrow(()->new BusinessOrderException(OrderErrorCode.ORDER_NOT_FOUND));
+        }else{
+            return orderRepository.findByUserId(userId,orderId)
+                .orElseThrow(()->new BusinessOrderException(OrderErrorCode.ORDER_NOT_FOUND));
+        }
     }
 
     @Transactional
