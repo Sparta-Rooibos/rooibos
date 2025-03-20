@@ -1,6 +1,7 @@
 package com.sparta.rooibus.order.application.service;
 
 import com.sparta.rooibus.order.application.dto.request.CreateOrderRequest;
+import com.sparta.rooibus.order.application.dto.request.SearchRequest;
 import com.sparta.rooibus.order.application.dto.response.CreateDeliveryResponse;
 import com.sparta.rooibus.order.application.dto.response.DeleteOrderResponse;
 import com.sparta.rooibus.order.application.dto.request.CreateDeliveryRequest;
@@ -92,15 +93,9 @@ public class MasterOrderService implements OrderService {
 //    TODO : 검색을 할때 담당허브, 담당하는 배송의 주문이 맞는지 확인, 본인 주문(로그인한 사람의 ID) 에 맞게 다른 로직을 해야하는데 쿼리 디에스엘 구현체를 만들까
 //     아니면 그냥 메서드에 role을 담아서 보낼까?
     @Override
-    @Cacheable(value = "searchOrderCache", key = "#request.page() + ':' + #request.size()")
-    public SearchOrderResponse searchOrders(String keyword, String filterKey, String filterValue,
-        String sort, int page, int size) {
-        Pagination<Order> orderPagination = orderRepository.searchOrders(keyword,filterKey,filterValue,sort,page,size);
-        return SearchOrderResponse.of(
-            orderPagination.getPage(),
-            orderPagination.getSize(),
-            orderPagination.getTotal(),
-            orderPagination.getContent()
-        );
+    @Cacheable(value = "searchOrderCache", key = "#searchRequest.keyword() + ':' + #searchRequest.filterKey() + ':' + #searchRequest.filterValue() + ':' + #searchRequest.sort() + ':' + #searchRequest.page() + ':' + #searchRequest.size()")
+    public SearchOrderResponse searchOrders(SearchRequest searchRequest) {
+        Pagination<Order> orderPagination = orderRepository.searchOrders(searchRequest);
+        return SearchOrderResponse.from(orderPagination);
     }
 }

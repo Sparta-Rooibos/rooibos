@@ -2,7 +2,9 @@ package com.sparta.rooibus.order.infrastructure.persistence;
 
 
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.sparta.rooibus.order.application.dto.request.SearchRequest;
 import com.sparta.rooibus.order.domain.entity.Order;
 import com.sparta.rooibus.order.domain.entity.QOrder;
 import com.sparta.rooibus.order.domain.model.Pagination;
@@ -26,23 +28,37 @@ public class OrderRepositoryImpl implements OrderRepository {
     }
 
     @Override
-    public Optional<Order> findById(UUID id) {
-        return jpaRepository.findById(id);
-    }
+    public Pagination<Order> searchOrders(SearchRequest searchRequest) {
+        String keyword = searchRequest.keyword();
+        String filterKey = searchRequest.filterKey();
+        String filterValue = searchRequest.filterValue();
+        String sort = searchRequest.sort();
+        int page = searchRequest.page();
+        int size = searchRequest.size();
 
-    @Override
-    public Pagination<Order> searchOrders(String keyword, String filterKey, String filterValue, String sort, int page, int size) {
         BooleanBuilder builder = new BooleanBuilder();
         QOrder order = QOrder.order;
 
-        // 기본 조건: 삭제되지 않은 데이터 조회
+
         builder.and(order.deletedAt.isNull());
+
+        if (!keyword.isEmpty()) {
+            builder.and(order.requirement.containsIgnoreCase(keyword));
+        }
+
+        if ("productId".equalsIgnoreCase(filterKey) && !filterValue.isEmpty()) {
+            builder.and(order.productId.eq(UUID.fromString(filterValue)));
+        }
+
+        OrderSpecifier<?> sortOrder = sort.equalsIgnoreCase("desc")
+            ? order.createdAt.desc()
+            : order.createdAt.asc();
 
         List<Order> orders = queryFactory
             .select(order)
             .from(order)
             .where(builder)
-            .orderBy(order.createdAt.desc(),order.updatedAt.desc())
+            .orderBy(sortOrder,order.updatedAt.desc())
             .offset((long) page * size)
             .limit(size)
             .fetch();
@@ -54,5 +70,10 @@ public class OrderRepositoryImpl implements OrderRepository {
             .fetchOne();
 
         return Pagination.of(page,size,total,orders);
+    }
+
+    @Override
+    public Optional<Order> findById(UUID orderId) {
+        return jpaRepository.findById(orderId);
     }
 }

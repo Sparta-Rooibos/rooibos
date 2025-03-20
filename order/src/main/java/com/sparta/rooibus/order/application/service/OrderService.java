@@ -1,6 +1,7 @@
 package com.sparta.rooibus.order.application.service;
 
 import com.sparta.rooibus.order.application.dto.request.CreateOrderRequest;
+import com.sparta.rooibus.order.application.dto.request.SearchRequest;
 import com.sparta.rooibus.order.application.dto.request.UpdateOrderRequest;
 import com.sparta.rooibus.order.application.dto.response.CreateOrderResponse;
 import com.sparta.rooibus.order.application.dto.response.DeleteOrderResponse;
@@ -14,5 +15,5 @@ public interface OrderService {
     UpdateOrderResponse updateOrder(UpdateOrderRequest request);
     DeleteOrderResponse deleteOrder(UUID orderId);
     GetOrderResponse getOrder(UUID orderId);
-    SearchOrderResponse searchOrders(String keyword, String filterKey, String filterValue, String sort, int page, int size);
+    SearchOrderResponse searchOrders(SearchRequest searchRequest);
 }

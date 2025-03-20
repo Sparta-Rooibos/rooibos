@@ -1,6 +1,7 @@
 package com.sparta.rooibus.order.presentation.controller;
 
 import com.sparta.rooibus.order.application.dto.request.CreateOrderRequest;
+import com.sparta.rooibus.order.application.dto.request.SearchRequest;
 import com.sparta.rooibus.order.application.dto.response.CreateOrderResponse;
 import com.sparta.rooibus.order.application.dto.response.GetOrderResponse;
 import com.sparta.rooibus.order.application.dto.response.SearchOrderResponse;
@@ -15,6 +16,7 @@ import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -66,14 +68,10 @@ public class OrderController {
 
     @GetMapping("/search")
     public ResponseEntity<SearchOrderResponse> searchOrder(
-        @RequestParam(required = false, defaultValue = "") String keyword,
-        @RequestParam(required = false, defaultValue = "") String filterKey,
-        @RequestParam(required = false, defaultValue = "") String filterValue,
-        @RequestParam(required = false, defaultValue = "asc") String sort,
-        @RequestParam(required = false, defaultValue = "0") int page,
-        @RequestParam(required = false, defaultValue = "10") int size,@RequestHeader String role
+        @ModelAttribute SearchRequest request,
+        @RequestHeader String role
     ) {
         OrderService orderService = orderServiceFactory.getService(role);
-        return ResponseEntity.ok(orderService.searchOrders(keyword,filterKey,filterValue,sort,page,size));
+        return ResponseEntity.ok(orderService.searchOrders(request));
     }
 }

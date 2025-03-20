@@ -2,6 +2,7 @@ package com.sparta.rooibus.order.application.service;
 
 import com.sparta.rooibus.order.application.dto.request.CreateDeliveryRequest;
 import com.sparta.rooibus.order.application.dto.request.CreateOrderRequest;
+import com.sparta.rooibus.order.application.dto.request.SearchRequest;
 import com.sparta.rooibus.order.application.dto.request.UpdateOrderRequest;
 import com.sparta.rooibus.order.application.dto.response.CreateDeliveryResponse;
 import com.sparta.rooibus.order.application.dto.response.CreateOrderResponse;
@@ -93,14 +94,8 @@ public class HubOrderService implements OrderService {
 
     @Override
     @Cacheable(value = "searchOrderCache", key = "#request.page() + ':' + #request.size()")
-    public SearchOrderResponse searchOrders(String keyword, String filterKey, String filterValue,
-        String sort, int page, int size) {
-        Pagination<Order> orderPagination = orderRepository.searchOrders(keyword,filterKey,filterValue,sort,page,size);
-        return SearchOrderResponse.of(
-            orderPagination.getPage(),
-            orderPagination.getSize(),
-            orderPagination.getTotal(),
-            orderPagination.getContent()
-        );
+    public SearchOrderResponse searchOrders(SearchRequest searchRequest) {
+        Pagination<Order> orderPagination = orderRepository.searchOrders(searchRequest);
+        return SearchOrderResponse.from(orderPagination);
     }
 }
