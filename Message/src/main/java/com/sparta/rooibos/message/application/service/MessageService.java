@@ -1,8 +1,10 @@
 package com.sparta.rooibos.message.application.service;
 
+import com.sparta.rooibos.message.application.custom.MessageErrorCode;
 import com.sparta.rooibos.message.application.dto.request.CreateMessageRequest;
 import com.sparta.rooibos.message.application.dto.request.SearchMessageRequest;
 import com.sparta.rooibos.message.application.dto.response.*;
+import com.sparta.rooibos.message.application.exception.BusinessMessageException;
 import com.sparta.rooibos.message.domain.entity.Message;
 import com.sparta.rooibos.message.domain.model.Pagination;
 import com.sparta.rooibos.message.domain.repository.MessageRepository;
@@ -54,13 +56,13 @@ public class MessageService {
     }
 
     public GetMessageResponse getMessage(UUID messageId) {
-        Message message = repository.findById(messageId).orElseThrow(() -> new IllegalArgumentException("슬랙 메시지가 존재하지 않습니다."));
+        Message message = repository.findById(messageId).orElseThrow(() -> new BusinessMessageException(MessageErrorCode.MESSAGE_NOT_FOUND));
         return GetMessageResponse.get(message);
     }
 
 
     public void deleteMessage(UUID messageId) {
-        Message message = repository.findById(messageId).orElseThrow(() -> new IllegalArgumentException("슬랙 메시지가 존재하지 않습니다."));
+        Message message = repository.findById(messageId).orElseThrow(() -> new BusinessMessageException(MessageErrorCode.MESSAGE_NOT_FOUND));
         message.delete("계정 아이디");
     }
 
