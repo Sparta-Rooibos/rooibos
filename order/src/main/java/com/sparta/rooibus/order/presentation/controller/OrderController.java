@@ -1,5 +1,6 @@
 package com.sparta.rooibus.order.presentation.controller;
 
+import com.sparta.rooibus.order.application.aop.UserContextRequestBean;
 import com.sparta.rooibus.order.application.dto.request.CreateOrderRequest;
 import com.sparta.rooibus.order.domain.model.SearchRequest;
 import com.sparta.rooibus.order.application.dto.response.CreateOrderResponse;
@@ -22,7 +23,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -32,10 +32,10 @@ import org.springframework.web.bind.annotation.RestController;
 public class OrderController {
 
     private final OrderServiceFactory orderServiceFactory;
-
+    private final UserContextRequestBean userContext;
     @PostMapping
-    public ResponseEntity<String> createOrder(@Valid @RequestBody CreateOrderRequest request, @RequestHeader String role) {
-        OrderService orderService = orderServiceFactory.getService(role);
+    public ResponseEntity<String> createOrder(@Valid @RequestBody CreateOrderRequest request) {
+        OrderService orderService = orderServiceFactory.getService(userContext.getRole());
         //TODO : 헤더의 'role' 로 권한 체크 하는거 맞는지 확인
         CreateOrderResponse response = orderService.createOrder(request);
         return ResponseEntity.ok(
@@ -45,32 +45,31 @@ public class OrderController {
     }
 
     @PutMapping
-    public ResponseEntity<UpdateOrderResponse> updateOrder(@Valid @RequestBody UpdateOrderRequest request,@RequestHeader String role){
-        OrderService orderService = orderServiceFactory.getService(role);
+    public ResponseEntity<UpdateOrderResponse> updateOrder(@Valid @RequestBody UpdateOrderRequest request){
+        OrderService orderService = orderServiceFactory.getService(userContext.getRole());
         UpdateOrderResponse response = orderService.updateOrder(request);
         return ResponseEntity.ok(response);
     }
 
     @PatchMapping("/{orderId}")
-    public ResponseEntity<DeleteOrderResponse> deleteOrder(@PathVariable UUID orderId,@RequestHeader String role){
-        OrderService orderService = orderServiceFactory.getService(role);
+    public ResponseEntity<DeleteOrderResponse> deleteOrder(@PathVariable UUID orderId){
+        OrderService orderService = orderServiceFactory.getService(userContext.getRole());
         DeleteOrderResponse response = orderService.deleteOrder(orderId);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{orderId}")
-    public ResponseEntity<GetOrderResponse> getOrder(@PathVariable UUID orderId,@RequestHeader String role){
-        OrderService orderService = orderServiceFactory.getService(role);
+    public ResponseEntity<GetOrderResponse> getOrder(@PathVariable UUID orderId){
+        OrderService orderService = orderServiceFactory.getService(userContext.getRole());
         GetOrderResponse response = orderService.getOrder(orderId);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/search")
     public ResponseEntity<SearchOrderResponse> searchOrder(
-        @ModelAttribute SearchRequest request,
-        @RequestHeader String role
+        @ModelAttribute SearchRequest request
     ) {
-        OrderService orderService = orderServiceFactory.getService(role);
+        OrderService orderService = orderServiceFactory.getService(userContext.getRole());
         return ResponseEntity.ok(orderService.searchOrders(request));
     }
 }
