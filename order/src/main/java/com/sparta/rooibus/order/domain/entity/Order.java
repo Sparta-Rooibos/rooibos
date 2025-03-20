@@ -1,7 +1,10 @@
 package com.sparta.rooibus.order.domain.entity;
 
+import com.sparta.rooibus.order.domain.model.OrderStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
@@ -44,6 +47,9 @@ public class Order {
     @Column(name = "managed_hub_id")
     private UUID manageHubID;
 
+    @Column(name = "status")
+    @Enumerated(EnumType.STRING)
+    private OrderStatus status;
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
@@ -73,6 +79,10 @@ public class Order {
         if (createdAt == null) {
             createdAt = LocalDateTime.now();  // 현재 시간으로 설정
         }
+    }
+
+    public void setStatus(OrderStatus status) {
+        this.status = status;
     }
 
     public static Order create(UUID receiveClientId, UUID requestClientId,UUID productId, int quantity,

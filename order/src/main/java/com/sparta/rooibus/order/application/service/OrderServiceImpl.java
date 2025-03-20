@@ -1,5 +1,6 @@
 package com.sparta.rooibus.order.application.service;
 
+import com.sparta.rooibus.order.application.aop.UserContextRequestBean;
 import com.sparta.rooibus.order.application.dto.request.CreateOrderRequest;
 import com.sparta.rooibus.order.application.dto.request.SearchRequest;
 import com.sparta.rooibus.order.application.dto.response.CreateDeliveryResponse;
@@ -9,7 +10,12 @@ import com.sparta.rooibus.order.application.dto.request.UpdateOrderRequest;
 import com.sparta.rooibus.order.application.dto.response.CreateOrderResponse;
 import com.sparta.rooibus.order.application.dto.response.GetOrderResponse;
 import com.sparta.rooibus.order.application.dto.response.SearchOrderResponse;
+import com.sparta.rooibus.order.application.exception.BusinessOrderException;
+import com.sparta.rooibus.order.application.exception.custom.OrderErrorCode;
+import com.sparta.rooibus.order.application.service.feign.DeliveryService;
+import com.sparta.rooibus.order.application.service.feign.StockService;
 import com.sparta.rooibus.order.domain.entity.Order;
+import com.sparta.rooibus.order.domain.model.OrderStatus;
 import com.sparta.rooibus.order.domain.model.Pagination;
 import com.sparta.rooibus.order.domain.repository.OrderRepository;
 import com.sparta.rooibus.order.application.dto.response.UpdateOrderResponse;
@@ -24,10 +30,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class MasterOrderService implements OrderService {
+public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
     private final DeliveryService deliveryService;
+    private final StockService stockService;
+    private final UserContextRequestBean userContext;
 
     @Transactional
     public CreateOrderResponse createOrder(@Valid CreateOrderRequest request) {
@@ -38,14 +46,33 @@ public class MasterOrderService implements OrderService {
             request.quantity(),
             request.requirement()
             );
-
+        order.setStatus(OrderStatus.PENDING);
         orderRepository.save(order);
 
-//      TODO : feign client로 배송 ID 받아와서 order에 넣기 지금은 랜덤으로 넣음.
-        CreateDeliveryResponse deliveryFeignResult = deliveryService.createDelivery(CreateDeliveryRequest.from(order),"Role_Master");
+        boolean orderConfirmed = false;
+        try {
+            orderConfirmed = stockService.checkStock(request.productId(),request.quantity());
+        } catch (Exception e) {
+            throw new BusinessOrderException(OrderErrorCode.FEIGN_WORK_ERROR);
+        }
+        if (orderConfirmed) {
+            order.setStatus(OrderStatus.CONFIRMED);
+        } else {
+            order.setStatus(OrderStatus.CANCELED);
+            return null;
+        }
+
+        CreateDeliveryResponse deliveryFeignResult = null;
+        try {
+            deliveryFeignResult = deliveryService.createDelivery(CreateDeliveryRequest.from(order),"Role_Master");
+        } catch (Exception e) {
+            throw new BusinessOrderException(OrderErrorCode.FEIGN_WORK_ERROR);
+        }
         UUID deliveryId = deliveryFeignResult.deliveryId();
         UUID departureId = deliveryFeignResult.departure();
+        order.setStatus(OrderStatus.SHIPPED);
         order.setDeliveryInfo(deliveryId,departureId);
+
         return CreateOrderResponse.from(order);
     }
 
