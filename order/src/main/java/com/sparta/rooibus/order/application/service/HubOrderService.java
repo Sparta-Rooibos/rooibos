@@ -58,9 +58,7 @@ public class HubOrderService implements OrderService {
         //        TODO : 로그인한 사람의 담당 허브를 확인(feign client)하고 그에 등록된 주문인지 확인 하는 부분 추가해야함.어디다 요청해야할지 논의
 
         targetOrder.update(
-            request.requestClientId(),
             request.receiveClientId(),
-            request.productId(),
             request.quantity(),
             request.requirement()
         );

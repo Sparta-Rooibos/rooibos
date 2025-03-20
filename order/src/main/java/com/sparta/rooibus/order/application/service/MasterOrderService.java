@@ -57,9 +57,7 @@ public class MasterOrderService implements OrderService {
         );
 
         targetOrder.update(
-            request.requestClientId(),
             request.receiveClientId(),
-            request.productId(),
             request.quantity(),
             request.requirement()
         );
@@ -88,10 +86,7 @@ public class MasterOrderService implements OrderService {
 
         return GetOrderResponse.from(targetOrder);
     }
-//      로그인한 사람의 Id? [ 주문 - 배송Id ]
-//    배송 서비스의 배송 테이블 - 배송담당자의 Id [List]
-//    TODO : 검색을 할때 담당허브, 담당하는 배송의 주문이 맞는지 확인, 본인 주문(로그인한 사람의 ID) 에 맞게 다른 로직을 해야하는데 쿼리 디에스엘 구현체를 만들까
-//     아니면 그냥 메서드에 role을 담아서 보낼까?
+
     @Override
     @Cacheable(value = "searchOrderCache", key = "#searchRequest.keyword() + ':' + #searchRequest.filterKey() + ':' + #searchRequest.filterValue() + ':' + #searchRequest.sort() + ':' + #searchRequest.page() + ':' + #searchRequest.size()")
     public SearchOrderResponse searchOrders(SearchRequest searchRequest) {

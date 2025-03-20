@@ -89,17 +89,11 @@ public class Order {
     }
 
     public void update(
-        UUID requestClientId,
         UUID receiveClientId,
-        UUID productId,
         Integer quantity,
         String requirement) {
-        if(requestClientId!=null)
-            this.requestClientId = requestClientId;
         if(receiveClientId!=null)
             this.receiveClientId = receiveClientId;
-        if(productId!=null)
-            this.productId = productId;
         if(quantity!=null)
             this.quantity = quantity;
         if(requirement!=null)
