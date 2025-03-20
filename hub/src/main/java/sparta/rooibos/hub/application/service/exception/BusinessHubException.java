@@ -4,22 +4,22 @@ import org.springframework.http.HttpStatus;
 import sparta.rooibos.hub.application.service.exception.custom.HubErrorCode;
 
 public class BusinessHubException extends RuntimeException {
-    private final HubErrorCode hubErrorCodee;
+    private final HubErrorCode hubErrorCode;
 
-    public BusinessHubException(HubErrorCode hubErrorCodee) {
-        super(hubErrorCodee.getMessage());
-        this.hubErrorCodee = hubErrorCodee;
+    public BusinessHubException(HubErrorCode hubErrorCode) {
+        super(hubErrorCode.getMessage());
+        this.hubErrorCode = hubErrorCode;
     }
 
     public HttpStatus getStatus() {
-        return hubErrorCodee.getStatus();
+        return hubErrorCode.getStatus();
     }
 
     public String getErrorCode() {
-        return hubErrorCodee.getCode();
+        return hubErrorCode.getCode();
     }
 
     public String getMessage() {
-        return hubErrorCodee.getMessage();
+        return hubErrorCode.getMessage();
     }
 }
