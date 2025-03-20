@@ -10,4 +10,5 @@ import org.springframework.stereotype.Repository;
 public interface JpaOrderRepository extends JpaRepository<Order, UUID>{
     Optional<Order> findOrderByIdAndDeletedAtIsNull(UUID orderId);
     Optional<Order> findOrderByIdAndManageHubIDAndDeletedAtIsNull(UUID userId,UUID hubId);
+    Optional<Order> findOrderByIdAndAndCreatedByAndDeletedAtIsNull(UUID userId, UUID orderId);
 }

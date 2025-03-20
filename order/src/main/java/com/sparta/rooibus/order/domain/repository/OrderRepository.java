@@ -16,4 +16,8 @@ public interface OrderRepository {
     Optional<Order> findByIdAndHub(UUID id,UUID hubId);
 
     Pagination<Order> searchOrdersByHubId(SearchRequest searchRequest, UUID hubId);
+
+    Optional<Order> findByUserId(UUID orderId, UUID userId);
+
+    Pagination<Order> searchOrdersByUserId(SearchRequest searchRequest, UUID userId);
 }

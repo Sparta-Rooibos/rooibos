@@ -124,6 +124,57 @@ public class OrderRepositoryImpl implements OrderRepository {
     }
 
     @Override
+    public Optional<Order> findByUserId(UUID userId, UUID orderId) {
+        return jpaRepository.findOrderByIdAndAndCreatedByAndDeletedAtIsNull(userId,orderId);
+    }
+
+    @Override
+    public Pagination<Order> searchOrdersByUserId(SearchRequest searchRequest, UUID userId) {
+        String keyword = searchRequest.keyword();
+        String filterKey = searchRequest.filterKey();
+        String filterValue = searchRequest.filterValue();
+        String sort = searchRequest.sort();
+        int page = searchRequest.page();
+        int size = searchRequest.size();
+
+        BooleanBuilder builder = new BooleanBuilder();
+        QOrder order = QOrder.order;
+
+//      삭제된 데이터는 검색 내용에서 제외
+        builder.and(order.deletedAt.isNull());
+        builder.and(order.createdBy.eq(userId.toString()));
+
+        if (!keyword.isEmpty()) {
+            builder.and(order.requirement.containsIgnoreCase(keyword));
+        }
+
+        if ("productId".equalsIgnoreCase(filterKey) && !filterValue.isEmpty()) {
+            builder.and(order.productId.eq(UUID.fromString(filterValue)));
+        }
+
+        OrderSpecifier<?> sortOrder = sort.equalsIgnoreCase("desc")
+            ? order.createdAt.desc()
+            : order.createdAt.asc();
+
+        List<Order> orders = queryFactory
+            .select(order)
+            .from(order)
+            .where(builder)
+            .orderBy(sortOrder,order.updatedAt.desc())
+            .offset((long) page * size)
+            .limit(size)
+            .fetch();
+
+        Long total = queryFactory
+            .select(order.count())
+            .from(order)
+            .where(builder)
+            .fetchOne();
+
+        return Pagination.of(page,size,total,orders);
+    }
+
+    @Override
     public Optional<Order> findById(UUID orderId) {
         return jpaRepository.findOrderByIdAndDeletedAtIsNull(orderId);
     }
