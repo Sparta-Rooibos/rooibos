@@ -1,6 +1,7 @@
 package sparta.rooibos.hub.application.service.adapter;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sparta.rooibos.hub.application.dto.request.CreateHubRequest;
@@ -38,18 +39,26 @@ public class HubServiceImpl implements HubService {
         return CreateHubResponse.from(hubRepository.createHub(newHub));
     }
 
+    @Cacheable(
+            cacheNames = "getHub",
+            key = "'getHub:' + #hubId"
+    )
     @Override
     public GetHubResponse getHub(UUID hubId) {
         return GetHubResponse.from(getHubForServer(hubId));
     }
 
+    @Cacheable(
+            cacheNames = "searchHub",
+            key = "'searchHub:' + (#searchHubRequest.name() ?: '') + ':' + (#searchHubRequest.region() ?: '')"
+    )
     @Override
     public SearchHubResponse searchHub(SearchHubRequest searchHubRequest) {
         Pagination<Hub> hubPagination = hubRepository.searchHub(
                 searchHubRequest.name(),
                 searchHubRequest.region(),
                 searchHubRequest.page(),
-                searchHubRequest.page()
+                searchHubRequest.size()
         );
 
         return SearchHubResponse.from(hubPagination);
