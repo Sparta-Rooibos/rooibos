@@ -10,9 +10,6 @@ import com.sparta.rooibos.client.application.dto.response.GetClientResponse;
 import com.sparta.rooibos.client.application.dto.response.SearchClientResponse;
 import com.sparta.rooibos.client.application.service.ClientService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,8 +24,7 @@ public class ClientController {
     @GetMapping
     public ResponseEntity<SearchClientResponse> getClientList(
             @ModelAttribute SearchClientRequest request) {
-        Pageable pageable = PageRequest.of(request.page() - 1, request.size(), Sort.by(Sort.Direction.DESC, request.sort()));
-        return ResponseEntity.ok(clientService.getClientList(request, pageable));
+       return ResponseEntity.ok(clientService.getClientList(request));
     }
 
     @GetMapping("/{clientId}")
