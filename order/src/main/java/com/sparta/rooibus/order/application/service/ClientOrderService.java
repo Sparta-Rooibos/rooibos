@@ -1,5 +1,6 @@
 package com.sparta.rooibus.order.application.service;
 
+import com.sparta.rooibus.order.application.aop.UserContextRequestBean;
 import com.sparta.rooibus.order.application.dto.request.CreateDeliveryRequest;
 import com.sparta.rooibus.order.application.dto.request.CreateOrderRequest;
 import com.sparta.rooibus.order.domain.model.SearchRequest;
@@ -28,6 +29,7 @@ public class ClientOrderService implements OrderService {
 
     private final OrderRepository orderRepository;
     private final DeliveryService deliveryService;
+    private final UserContextRequestBean userContext;
 
     @Transactional
     public CreateOrderResponse createOrder(@Valid CreateOrderRequest request) {
@@ -64,8 +66,9 @@ public class ClientOrderService implements OrderService {
     @Transactional(readOnly = true)
     @Cacheable(value = "orderCache", key = "#orderId")
     public GetOrderResponse getOrder(UUID orderId) {
+        UUID userId = userContext.getUserId();
 
-        Order targetOrder = orderRepository.findById(orderId).orElseThrow(
+        Order targetOrder = orderRepository.findByUserId(userId,orderId).orElseThrow(
             ()-> new IllegalArgumentException("해당 주문이 없습니다.")
         );
 //        TODO : 로그인한 사람의 Id??와 createdAt이 같다면 응답 아니면 에러
@@ -73,9 +76,10 @@ public class ClientOrderService implements OrderService {
     }
 
     @Override
-    @Cacheable(value = "searchOrderCache", key = "#request.page() + ':' + #request.size()")
+    @Cacheable(value = "searchOrderCache", key = "#searchRequest.keyword() + ':' + #searchRequest.filterKey() + ':' + #searchRequest.filterValue() + ':' + #searchRequest.sort() + ':' + #searchRequest.page() + ':' + #searchRequest.size()")
     public SearchOrderResponse searchOrders(SearchRequest searchRequest) {
-        Pagination<Order> orderPagination = orderRepository.searchOrders(searchRequest);
+        UUID userId = userContext.getUserId();
+        Pagination<Order> orderPagination = orderRepository.searchOrdersByUserId(searchRequest,userId);
         return SearchOrderResponse.from(orderPagination);
     }
 }
