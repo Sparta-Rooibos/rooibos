@@ -1,4 +1,4 @@
-package sparta.rooibos.hub.application.service.adapter;
+package sparta.rooibos.hub.application.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
@@ -11,6 +11,8 @@ import sparta.rooibos.hub.application.dto.response.CreateHubResponse;
 import sparta.rooibos.hub.application.dto.response.GetHubResponse;
 import sparta.rooibos.hub.application.dto.response.SearchHubResponse;
 import sparta.rooibos.hub.application.dto.response.UpdateHubResponse;
+import sparta.rooibos.hub.application.service.exception.BusinessHubException;
+import sparta.rooibos.hub.application.service.exception.custom.HubErrorCode;
 import sparta.rooibos.hub.application.service.port.HubService;
 import sparta.rooibos.hub.domain.model.Hub;
 import sparta.rooibos.hub.domain.model.Pagination;
@@ -91,7 +93,6 @@ public class HubServiceImpl implements HubService {
      */
     private Hub getHubForServer(UUID hubId) {
         return hubRepository.getHub(hubId)
-                // TODO 커스텀 예외 추가
-                .orElseThrow(() -> new IllegalArgumentException("Hub not found"));
+                .orElseThrow(() -> new BusinessHubException(HubErrorCode.HUB_NOT_FOUND));
     }
 }

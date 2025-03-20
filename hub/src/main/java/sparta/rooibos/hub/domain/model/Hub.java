@@ -72,11 +72,6 @@ public class Hub {
     }
 
     public Hub update(Hub hub) {
-        if (!isSameHub(hubId)) {
-            // TODO 커스텀 예외로 전환
-            throw new IllegalArgumentException("Hub IDs do not match");
-        }
-
         this.name = hub.getName();
         this.region = hub.getRegion();
         this.address = hub.getAddress();
@@ -84,10 +79,6 @@ public class Hub {
         this.longitude = hub.getLongitude();
 
         return this;
-    }
-
-    private boolean isSameHub(UUID hubId) {
-        return this.hubId.equals(hubId);
     }
 
     public void delete() {
