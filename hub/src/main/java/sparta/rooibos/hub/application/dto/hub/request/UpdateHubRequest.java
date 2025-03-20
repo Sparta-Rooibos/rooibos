@@ -1,4 +1,4 @@
-package sparta.rooibos.hub.application.dto.request;
+package sparta.rooibos.hub.application.dto.hub.request;
 
 public record UpdateHubRequest(
         String name,

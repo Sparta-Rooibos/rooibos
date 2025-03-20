@@ -1,4 +1,4 @@
-package sparta.rooibos.hub.application.dto.response;
+package sparta.rooibos.hub.application.dto.hub.response;
 
 import sparta.rooibos.hub.domain.model.Hub;
 import sparta.rooibos.hub.domain.model.Pagination;

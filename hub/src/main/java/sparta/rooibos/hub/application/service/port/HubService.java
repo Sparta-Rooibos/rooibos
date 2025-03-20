@@ -1,12 +1,12 @@
 package sparta.rooibos.hub.application.service.port;
 
-import sparta.rooibos.hub.application.dto.request.CreateHubRequest;
-import sparta.rooibos.hub.application.dto.request.SearchHubRequest;
-import sparta.rooibos.hub.application.dto.request.UpdateHubRequest;
-import sparta.rooibos.hub.application.dto.response.CreateHubResponse;
-import sparta.rooibos.hub.application.dto.response.GetHubResponse;
-import sparta.rooibos.hub.application.dto.response.SearchHubResponse;
-import sparta.rooibos.hub.application.dto.response.UpdateHubResponse;
+import sparta.rooibos.hub.application.dto.hub.request.CreateHubRequest;
+import sparta.rooibos.hub.application.dto.hub.request.SearchHubRequest;
+import sparta.rooibos.hub.application.dto.hub.request.UpdateHubRequest;
+import sparta.rooibos.hub.application.dto.hub.response.CreateHubResponse;
+import sparta.rooibos.hub.application.dto.hub.response.GetHubResponse;
+import sparta.rooibos.hub.application.dto.hub.response.SearchHubResponse;
+import sparta.rooibos.hub.application.dto.hub.response.UpdateHubResponse;
 
 import java.util.UUID;
 
