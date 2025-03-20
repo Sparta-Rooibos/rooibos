@@ -1,4 +1,4 @@
-package com.sparta.rooibus.order.application.service;
+package com.sparta.rooibus.order.application.service.feign;
 
 import com.sparta.rooibus.order.application.dto.response.CreateDeliveryResponse;
 import com.sparta.rooibus.order.application.dto.request.CreateDeliveryRequest;

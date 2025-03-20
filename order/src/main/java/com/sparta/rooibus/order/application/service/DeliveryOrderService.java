@@ -11,6 +11,7 @@ import com.sparta.rooibus.order.application.dto.response.DeleteOrderResponse;
 import com.sparta.rooibus.order.application.dto.response.GetOrderResponse;
 import com.sparta.rooibus.order.application.dto.response.SearchOrderResponse;
 import com.sparta.rooibus.order.application.dto.response.UpdateOrderResponse;
+import com.sparta.rooibus.order.application.service.feign.DeliveryService;
 import com.sparta.rooibus.order.domain.entity.Order;
 import com.sparta.rooibus.order.domain.model.Pagination;
 import com.sparta.rooibus.order.domain.repository.OrderRepository;

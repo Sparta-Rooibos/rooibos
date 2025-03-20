@@ -2,7 +2,7 @@ package com.sparta.rooibus.order.infrastructure.delivery;
 
 import com.sparta.rooibus.order.application.dto.request.CreateDeliveryRequest;
 import com.sparta.rooibus.order.application.dto.response.CreateDeliveryResponse;
-import com.sparta.rooibus.order.application.service.DeliveryService;
+import com.sparta.rooibus.order.application.service.feign.DeliveryService;
 import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
