@@ -9,7 +9,7 @@ public record CreateMessageResponse(
         String id,
         String sender,
         String receiver,
-        String message,
+        String text,
         LocalDateTime sendAt,
         boolean status
 ) {

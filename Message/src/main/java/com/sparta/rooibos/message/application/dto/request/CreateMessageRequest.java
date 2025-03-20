@@ -4,12 +4,14 @@ import com.sparta.rooibos.message.domain.entity.Message;
 
 public record CreateMessageRequest(
         String recipient,
+        String sender,
         String content
 ) {
     public Message toEntity() {
         return Message.create(
-                recipient,
-                content
+                content,
+                sender,
+                recipient
         );
     }
 }
