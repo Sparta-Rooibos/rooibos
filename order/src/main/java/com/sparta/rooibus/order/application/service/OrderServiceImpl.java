@@ -53,7 +53,7 @@ public class OrderServiceImpl implements OrderService {
         try {
             orderConfirmed = stockService.checkStock(request.productId(),request.quantity());
         } catch (Exception e) {
-            throw new BusinessOrderException(OrderErrorCode.FEIGN_WORK_ERROR);
+            throw new BusinessOrderException(OrderErrorCode.FEIGN_STOCK_ERROR);
         }
         if (orderConfirmed) {
             order.setStatus(OrderStatus.CONFIRMED);
@@ -66,13 +66,14 @@ public class OrderServiceImpl implements OrderService {
         try {
             deliveryFeignResult = deliveryService.createDelivery(CreateDeliveryRequest.from(order),"Role_Master");
         } catch (Exception e) {
-            throw new BusinessOrderException(OrderErrorCode.FEIGN_WORK_ERROR);
+            throw new BusinessOrderException(OrderErrorCode.FEIGN_DELIVERY_ERROR);
         }
         UUID deliveryId = deliveryFeignResult.deliveryId();
         UUID departureId = deliveryFeignResult.departure();
         order.setStatus(OrderStatus.SHIPPED);
         order.setDeliveryInfo(deliveryId,departureId);
 
+//        TODO : 슬랙 메세지 보내기
         return CreateOrderResponse.from(order);
     }
 
