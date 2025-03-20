@@ -31,7 +31,7 @@ public class MessageService {
 
     private void sendMessage(String content) {
         WebClient webClient = WebClient.builder()
-                .baseUrl("https://hooks.slack.com/services/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")
+                .baseUrl("https://hooks.slack.com/services/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")
                 .build();
 
         String payload = """
