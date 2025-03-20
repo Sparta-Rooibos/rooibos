@@ -10,6 +10,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Slf4j
@@ -38,6 +39,9 @@ public class Hub {
 
     // TODO Point 사용할지 고민 -> 지도 라이브러리에 따라 다를듯?
     private String longitude;
+
+    @OneToMany(mappedBy = "hub", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<HubManager> hubManagers;
 
     @CreatedDate
     @Column(updatable = false, nullable = false)
