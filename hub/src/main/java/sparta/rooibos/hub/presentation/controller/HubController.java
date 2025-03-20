@@ -32,6 +32,11 @@ public class HubController {
     }
 
     @GetMapping
+    public ResponseEntity<UUID> getHubIdByRegion(@RequestParam String region) {
+        return ResponseEntity.ok(hubService.getHubIdByRegion(region));
+    }
+
+    @GetMapping
     public ResponseEntity<SearchHubResponse> searchHub(@ModelAttribute SearchHubRequest searchHubRequest) {
         return ResponseEntity.ok(hubService.searchHub(searchHubRequest));
     }

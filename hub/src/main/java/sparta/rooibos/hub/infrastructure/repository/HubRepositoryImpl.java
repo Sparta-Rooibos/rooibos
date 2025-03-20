@@ -31,6 +31,11 @@ public class HubRepositoryImpl implements HubRepository {
         return jpaRepository.getActiveHub(hubId);
     }
 
+    @Override
+    public Optional<UUID> getHubIdByRegion(String region) {
+        return jpaRepository.getHubIdByRegion(region);
+    }
+
     // 허브 개수가 많지 않기 때문에 일반적인 페이지 넘버 방식 페이지네이션 구현
     @Override
     public Pagination<Hub> searchHub(String name, String region, int page, int size) {

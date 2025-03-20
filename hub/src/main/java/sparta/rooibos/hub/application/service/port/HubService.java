@@ -15,6 +15,8 @@ public interface HubService {
 
     GetHubResponse getHub(UUID hubId);
 
+    UUID getHubIdByRegion(String region);
+
     SearchHubResponse searchHub(SearchHubRequest searchHubRequest);
 
     UpdateHubResponse updateHub(UUID hubId, UpdateHubRequest updateHubRequest);

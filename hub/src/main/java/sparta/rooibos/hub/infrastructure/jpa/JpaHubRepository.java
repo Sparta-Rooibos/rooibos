@@ -15,4 +15,11 @@ public interface JpaHubRepository extends JpaRepository<Hub, UUID> {
                     "AND h.deletedAt IS NULL"
     )
     Optional<Hub> getActiveHub(@Param("hubId") UUID hubId);
+
+    @Query(
+            value = "SELECT h.hubId FROM Hub h " +
+                    "WHERE h.region = :region " +
+                    "AND h.deletedAt IS NULL"
+    )
+    Optional<UUID> getHubIdByRegion(@Param("region") String region);
 }

@@ -50,6 +50,12 @@ public class HubServiceImpl implements HubService {
         return GetHubResponse.from(getHubForServer(hubId));
     }
 
+    @Override
+    public UUID getHubIdByRegion(String region) {
+        return hubRepository.getHubIdByRegion(region)
+                .orElseThrow(() -> new BusinessHubException(HubErrorCode.HUB_NOT_FOUND));
+    }
+
     @Cacheable(
             cacheNames = "searchHub",
             key = "'searchHub:' + (#searchHubRequest.name() ?: '') + ':' + (#searchHubRequest.region() ?: '')"

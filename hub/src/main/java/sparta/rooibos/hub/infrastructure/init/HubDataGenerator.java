@@ -27,7 +27,7 @@ public class HubDataGenerator {
 
             hubRepository.createHub(Hub.builder()
                     .name("경기 북부 센터")
-                    .region("경기")
+                    .region("경기북부")
                     .address("경기도 고양시 덕양구 권율대로 570")
                     .latitude(null)
                     .longitude(null)
@@ -36,7 +36,7 @@ public class HubDataGenerator {
 
             hubRepository.createHub(Hub.builder()
                     .name("경기 남부 센터")
-                    .region("경기")
+                    .region("경기남부")
                     .address("경기도 이천시 덕평로 257-21")
                     .latitude(null)
                     .longitude(null)
@@ -108,7 +108,7 @@ public class HubDataGenerator {
 
             hubRepository.createHub(Hub.builder()
                     .name("강원특별자치도 센터")
-                    .region("강원")
+                    .region("강원도")
                     .address("강원특별자치도 춘천시 중앙로 1")
                     .latitude(null)
                     .longitude(null)
@@ -117,7 +117,7 @@ public class HubDataGenerator {
 
             hubRepository.createHub(Hub.builder()
                     .name("충청북도 센터")
-                    .region("충북")
+                    .region("충청북도")
                     .address("충북 청주시 상당구 상당로 82")
                     .latitude(null)
                     .longitude(null)
@@ -126,7 +126,7 @@ public class HubDataGenerator {
 
             hubRepository.createHub(Hub.builder()
                     .name("충청남도 센터")
-                    .region("충남")
+                    .region("충청남도")
                     .address("충남 홍성군 홍북읍 충남대로 21")
                     .latitude(null)
                     .longitude(null)
@@ -135,7 +135,7 @@ public class HubDataGenerator {
 
             hubRepository.createHub(Hub.builder()
                     .name("전북특별자치도 센터")
-                    .region("전북")
+                    .region("전라북도")
                     .address("전북특별자치도 전주시 완산구 효자로 225")
                     .latitude(null)
                     .longitude(null)
@@ -144,7 +144,7 @@ public class HubDataGenerator {
 
             hubRepository.createHub(Hub.builder()
                     .name("전라남도 센터")
-                    .region("전남")
+                    .region("전라남도")
                     .address("전남 무안군 삼향읍 오룡길 1")
                     .latitude(null)
                     .longitude(null)
@@ -153,7 +153,7 @@ public class HubDataGenerator {
 
             hubRepository.createHub(Hub.builder()
                     .name("경상북도 센터")
-                    .region("경북")
+                    .region("경상북도")
                     .address("경북 안동시 풍천면 도청대로 455")
                     .latitude(null)
                     .longitude(null)
@@ -162,7 +162,7 @@ public class HubDataGenerator {
 
             hubRepository.createHub(Hub.builder()
                     .name("경상남도 센터")
-                    .region("경남")
+                    .region("경상남도")
                     .address("경남 창원시 의창구 중앙대로 300")
                     .latitude(null)
                     .longitude(null)
