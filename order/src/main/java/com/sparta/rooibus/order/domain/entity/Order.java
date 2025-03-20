@@ -15,7 +15,6 @@ import org.hibernate.annotations.Where;
 
 @Entity
 @Table(name = "p_order")  // DB 테이블 이름 p_order와 매핑
-@Where(clause = "deleted_at IS NULL")
 @Getter
 @NoArgsConstructor
 public class Order {
