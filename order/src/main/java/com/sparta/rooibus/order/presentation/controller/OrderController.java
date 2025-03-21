@@ -1,6 +1,5 @@
 package com.sparta.rooibus.order.presentation.controller;
 
-import com.sparta.rooibus.order.application.aop.UserContextRequestBean;
 import com.sparta.rooibus.order.application.dto.request.CreateOrderRequest;
 import com.sparta.rooibus.order.application.dto.request.SearchRequest;
 import com.sparta.rooibus.order.application.dto.response.CreateOrderResponse;
@@ -11,10 +10,10 @@ import com.sparta.rooibus.order.application.dto.request.UpdateOrderRequest;
 import com.sparta.rooibus.order.application.dto.response.UpdateOrderResponse;
 import com.sparta.rooibus.order.application.dto.response.DeleteOrderResponse;
 import com.sparta.rooibus.order.application.service.OrderService;
-import com.sparta.rooibus.order.presentation.factory.OrderServiceFactory;
 import jakarta.validation.Valid;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.BadRequestException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -31,11 +30,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class OrderController {
 
-    private final OrderServiceFactory orderServiceFactory;
-    private final UserContextRequestBean userContext;
+    private final OrderService orderService;
     @PostMapping
     public ResponseEntity<String> createOrder(@Valid @RequestBody CreateOrderRequest request) {
-        OrderService orderService = orderServiceFactory.getService(userContext.getRole());
         //TODO : 헤더의 'role' 로 권한 체크 하는거 맞는지 확인
         CreateOrderResponse response = orderService.createOrder(request);
         return ResponseEntity.ok(
@@ -45,22 +42,22 @@ public class OrderController {
     }
 
     @PutMapping
-    public ResponseEntity<UpdateOrderResponse> updateOrder(@Valid @RequestBody UpdateOrderRequest request){
-        OrderService orderService = orderServiceFactory.getService(userContext.getRole());
+    public ResponseEntity<UpdateOrderResponse> updateOrder(@Valid @RequestBody UpdateOrderRequest request)
+        throws BadRequestException {
         UpdateOrderResponse response = orderService.updateOrder(request);
         return ResponseEntity.ok(response);
     }
 
     @PatchMapping("/{orderId}")
-    public ResponseEntity<DeleteOrderResponse> deleteOrder(@PathVariable UUID orderId){
-        OrderService orderService = orderServiceFactory.getService(userContext.getRole());
+    public ResponseEntity<DeleteOrderResponse> deleteOrder(@PathVariable UUID orderId)
+        throws BadRequestException {
         DeleteOrderResponse response = orderService.deleteOrder(orderId);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{orderId}")
-    public ResponseEntity<GetOrderResponse> getOrder(@PathVariable UUID orderId){
-        OrderService orderService = orderServiceFactory.getService(userContext.getRole());
+    public ResponseEntity<GetOrderResponse> getOrder(@PathVariable UUID orderId)
+        throws BadRequestException {
         GetOrderResponse response = orderService.getOrder(orderId);
         return ResponseEntity.ok(response);
     }
@@ -68,8 +65,7 @@ public class OrderController {
     @GetMapping("/search")
     public ResponseEntity<SearchOrderResponse> searchOrder(
         @ModelAttribute SearchRequest request
-    ) {
-        OrderService orderService = orderServiceFactory.getService(userContext.getRole());
+    ) throws BadRequestException {
         return ResponseEntity.ok(orderService.searchOrders(request));
     }
 }

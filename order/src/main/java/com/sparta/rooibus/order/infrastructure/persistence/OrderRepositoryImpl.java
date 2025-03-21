@@ -125,7 +125,7 @@ public class OrderRepositoryImpl implements OrderRepository {
 
     @Override
     public Optional<Order> findByUserId(UUID userId, UUID orderId) {
-        return jpaRepository.findOrderByIdAndAndCreatedByAndDeletedAtIsNull(userId,orderId);
+        return jpaRepository.findOrderByIdAndCreatedByAndDeletedAtIsNull(userId,orderId.toString());
     }
 
     @Override

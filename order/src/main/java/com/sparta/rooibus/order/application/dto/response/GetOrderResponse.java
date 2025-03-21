@@ -10,8 +10,8 @@ public record GetOrderResponse(
     UUID receiveClientId,
     UUID productId,
     UUID deliveryId,
-    LocalDateTime createdAt,
-    LocalDateTime updatedAt
+    String createdAt,
+    String updatedAt
 ) {
     public static GetOrderResponse from(Order order) {
 
@@ -21,8 +21,8 @@ public record GetOrderResponse(
             order.getReceiveClientId(),
             order.getProductId(),
             order.getDeliveryId(),
-            order.getCreatedAt(),
-            order.getUpdatedAt()
+            order.getCreatedAt().toString(),
+            order.getUpdatedAt().toString()
         );
     }
 }

@@ -23,6 +23,8 @@ import com.sparta.rooibus.order.application.dto.response.UpdateOrderResponse;
 import jakarta.validation.Valid;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.coyote.BadRequestException;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
@@ -31,6 +33,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
@@ -51,7 +54,7 @@ public class OrderServiceImpl implements OrderService {
         order.setStatus(OrderStatus.PENDING);
         orderRepository.save(order);
 
-        boolean orderConfirmed = false;
+        boolean orderConfirmed = true;
         try {
             orderConfirmed = stockService.checkStock(request.productId(),request.quantity());
         } catch (Exception e) {
@@ -82,12 +85,12 @@ public class OrderServiceImpl implements OrderService {
 
     @Transactional
     @CachePut(value = "orderCache", key = "#request.id()")
-    public UpdateOrderResponse updateOrder(UpdateOrderRequest request) {
-        UUID userId = userContext.getUserId();
-        String role = userContext.getRole();
+    public UpdateOrderResponse updateOrder(UpdateOrderRequest request) throws BadRequestException {
+        if(userContext.getRole().equals("Role_Delivery")||userContext.getRole().equals("Role_ClientManager")) {
+            throw new BadRequestException("권한이 필요합니다");
+        }
 
-        Order targetOrder = getOrderByRole(userId,role,request.id());
-
+        Order targetOrder = findOrder(request.id());
         targetOrder.update(
             request.receiveClientId(),
             request.quantity(),
@@ -97,30 +100,16 @@ public class OrderServiceImpl implements OrderService {
         return UpdateOrderResponse.from(targetOrder);
     }
 
-    private Order getOrderByRole(UUID userId,String role,UUID orderId){
-        if(role.equals("Role_Master")){
-            return  orderRepository.findById(orderId)
-                .orElseThrow(()->new BusinessOrderException(OrderErrorCode.ORDER_NOT_FOUND));
-        }else if(role.equals("Role_HubManager")){
-            UUID hubId = hubService.getHubByUser(userContext.getUserId(),userContext.getRole());
-            return orderRepository.findByIdAndHub(orderId,hubId)
-                .orElseThrow(()->new BusinessOrderException(OrderErrorCode.ORDER_NOT_FOUND));
-        }else if(role.equals("Role_Deliver")){
-            return orderRepository.findByUserId(userId,orderId)
-                .orElseThrow(()->new BusinessOrderException(OrderErrorCode.ORDER_NOT_FOUND));
-        }else{
-            return orderRepository.findByUserId(userId,orderId)
-                .orElseThrow(()->new BusinessOrderException(OrderErrorCode.ORDER_NOT_FOUND));
-        }
-    }
+
 
     @Transactional
     @CacheEvict(value = "orderCache", key = "#orderId")
-    public DeleteOrderResponse deleteOrder(UUID orderId) {
-        Order targetOrder = orderRepository.findById(orderId).orElseThrow(
-            ()-> new IllegalArgumentException("삭제할 주문이 없습니다.")
-        );
+    public DeleteOrderResponse deleteOrder(UUID orderId) throws BadRequestException {
+        if(userContext.getRole().equals("Role_Delivery")||userContext.getRole().equals("Role_ClientManager")) {
+            throw new BadRequestException("권한이 필요합니다");
+        }
 
+        Order targetOrder = findOrder(orderId);
         targetOrder.delete();
 
         return DeleteOrderResponse.from(targetOrder);
@@ -128,18 +117,67 @@ public class OrderServiceImpl implements OrderService {
 
     @Transactional(readOnly = true)
     @Cacheable(value = "orderCache", key = "#orderId")
-    public GetOrderResponse getOrder(UUID orderId) {
-        Order targetOrder = orderRepository.findById(orderId).orElseThrow(
-            ()-> new IllegalArgumentException("해당 주문이 없습니다.")
-        );
-
+    public GetOrderResponse getOrder(UUID orderId) throws BadRequestException {
+        Order targetOrder = findOrder(orderId);
         return GetOrderResponse.from(targetOrder);
     }
 
     @Override
     @Cacheable(value = "searchOrderCache", key = "#searchRequest.keyword() + ':' + #searchRequest.filterKey() + ':' + #searchRequest.filterValue() + ':' + #searchRequest.sort() + ':' + #searchRequest.page() + ':' + #searchRequest.size()")
-    public SearchOrderResponse searchOrders(SearchRequest searchRequest) {
-        Pagination<Order> orderPagination = orderRepository.searchOrders(searchRequest);
+    public SearchOrderResponse searchOrders(SearchRequest searchRequest) throws BadRequestException {
+        Pagination<Order> orderPagination = search(searchRequest);
         return SearchOrderResponse.from(orderPagination);
+    }
+
+    private Order findOrder(UUID orderId) throws BadRequestException {
+        String role = userContext.getRole();
+        UUID userId = userContext.getUserId();
+
+        switch (role) {
+            case "Role_Master" -> {
+                log.error("Master User role: {}", role);
+                return orderRepository.findById(orderId)
+                    .orElseThrow(() -> new BusinessOrderException(OrderErrorCode.ORDER_NOT_FOUND));
+            }
+            case "Role_HubManager" -> {
+                UUID hubId = null;
+                try {
+                    hubId = hubService.getHubByUser(userContext.getUserId(),
+                        userContext.getRole());
+                } catch (Exception e) {
+                    throw new BusinessOrderException(OrderErrorCode.FEIGN_HUB_ERROR);
+                }
+                return orderRepository.findByIdAndHub(orderId, hubId)
+                    .orElseThrow(() -> new BusinessOrderException(OrderErrorCode.ORDER_NOT_FOUND));
+            }
+            case "Role_Deliver", "Role_ClientManager" -> {
+                return orderRepository.findByUserId(userId, orderId)
+                    .orElseThrow(() -> new BusinessOrderException(OrderErrorCode.ORDER_NOT_FOUND));
+            }
+            default -> {
+                log.error("User role: {}", role);
+                throw new BadRequestException("권한이 필요합니다");
+            }
+        }
+    }
+
+    private Pagination<Order> search(SearchRequest searchRequest) throws BadRequestException {
+        String role = userContext.getRole();
+        UUID userId = userContext.getUserId();
+
+        switch (role) {
+            case "Role_Master" -> {
+                return orderRepository.searchOrders(searchRequest);
+            }
+            case "Role_HubManager" -> {
+                UUID hubId = hubService.getHubByUser(userContext.getUserId(),
+                    userContext.getRole());
+                return orderRepository.searchOrdersByHubId(searchRequest,hubId);
+            }
+            case "Role_Deliver", "Role_ClientManager" -> {
+                return orderRepository.searchOrdersByUserId(searchRequest,userId);
+            }
+            default -> throw new BadRequestException("권한이 필요합니다");
+        }
     }
 }
