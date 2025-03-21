@@ -9,6 +9,7 @@ import com.sparta.rooibos.client.application.dto.response.CreateClientResponse;
 import com.sparta.rooibos.client.application.dto.response.GetClientResponse;
 import com.sparta.rooibos.client.application.dto.response.SearchClientResponse;
 import com.sparta.rooibos.client.application.service.ClientService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -33,7 +34,7 @@ public class ClientController {
     }
 
     @PostMapping()
-    public ResponseEntity<CreateClientResponse> createClient(@RequestBody CreateClientRequest createClientRequest) {
+    public ResponseEntity<CreateClientResponse> createClient(@RequestBody @Valid CreateClientRequest createClientRequest) {
         return ResponseEntity.ok(clientService.createClient(createClientRequest));
 
     }
@@ -49,6 +50,7 @@ public class ClientController {
     }
 
     //사용 허브 변경
+    @Deprecated
     @PatchMapping("/change/hub/{clientId}")
     public ResponseEntity<Boolean> changeUsedHub(@PathVariable UUID clientId, @RequestBody UpdateHubIdRequest request) {
         return ResponseEntity.ok(clientService.changeUsedHub(clientId, request));

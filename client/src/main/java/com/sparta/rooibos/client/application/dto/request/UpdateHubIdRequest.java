@@ -1,3 +1,5 @@
 package com.sparta.rooibos.client.application.dto.request;
 
-public record UpdateHubIdRequest(String hubId) {}
+import jakarta.validation.constraints.NotNull;
+
+public record UpdateHubIdRequest(@NotNull String hubId) {}
