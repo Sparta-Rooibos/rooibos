@@ -11,8 +11,11 @@ import com.sparta.rooibos.client.application.dto.response.SearchClientListRespon
 import com.sparta.rooibos.client.application.dto.response.SearchClientResponse;
 import com.sparta.rooibos.client.application.exception.BusinessClientException;
 import com.sparta.rooibos.client.application.exception.ClientErrorCode;
+import com.sparta.rooibos.client.application.feigin.service.HubService;
+import com.sparta.rooibos.client.application.feigin.service.dto.ManageHub;
 import com.sparta.rooibos.client.domain.entity.Client;
 import com.sparta.rooibos.client.domain.entity.ClientType;
+import com.sparta.rooibos.client.domain.fegin.hub.model.Hub;
 import com.sparta.rooibos.client.domain.model.Pagination;
 import com.sparta.rooibos.client.domain.repository.ClientRepository;
 import com.sparta.rooibos.client.domain.repository.QueryClientRepository;
@@ -27,9 +30,10 @@ import java.util.UUID;
 public class ClientService {
     private final ClientRepository clientRepository;
     private final QueryClientRepository queryClientRepository;
+    private final HubService hubService;
 
-    public SearchClientResponse getClientList(SearchClientRequest condition) {
-        Pagination<Client> clients = queryClientRepository.getClientList(condition.toCriteria());
+    public SearchClientResponse searchClient(SearchClientRequest condition) {
+        Pagination<Client> clients = queryClientRepository.searchClient(condition.toCriteria());
         return new SearchClientResponse(
                 clients.getContent().stream()
                         .map(client -> new SearchClientListResponse(
@@ -46,11 +50,12 @@ public class ClientService {
 
     public GetClientResponse getClient(UUID clientId) {
         Client client = clientRepository.findByIdAndDeleteByIsNull(clientId).orElseThrow(() -> new BusinessClientException(ClientErrorCode.NOT_EXITS_CLIENT));
+        Hub hub = hubService.getHub(client.getManagedHubId());
         return new GetClientResponse(client.getId().toString(),
                 client.getName(),
                 client.getClientAddress(),
                 client.getType().name(),
-                client.getManagedHubId(),
+                new ManageHub(hub) ,
                 client.getCreateAt(),
                 client.getUpdateAt());
     }

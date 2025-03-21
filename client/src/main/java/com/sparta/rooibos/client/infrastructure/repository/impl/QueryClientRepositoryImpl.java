@@ -25,7 +25,7 @@ public class QueryClientRepositoryImpl implements QueryClientRepository {
     private final QClient client = QClient.client;
 
     @Override
-    public Pagination<Client> getClientList(ClientCriteria criteria) {
+    public Pagination<Client> searchClient(ClientCriteria criteria) {
         List<Client> result = query.select(client)
                 .where(nullNameCheck(criteria.name()),
                         nullAddressCheck(criteria.address()),

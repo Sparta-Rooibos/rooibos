@@ -11,10 +11,12 @@ import java.util.UUID;
 @Entity
 @NoArgsConstructor
 @Getter
+@Table(name = "p_client_manager")
 public class ClientManager {
 
     @Id
-    @UuidGenerator
+    @GeneratedValue
+    @Column(columnDefinition = "UUID DEFAULT gen_random_uuid()")
     private UUID id;
     private String userId;
 
