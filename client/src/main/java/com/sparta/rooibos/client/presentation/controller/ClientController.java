@@ -9,6 +9,7 @@ import com.sparta.rooibos.client.application.dto.request.UpdateHubIdRequest;
 import com.sparta.rooibos.client.application.dto.response.CreateClientResponse;
 import com.sparta.rooibos.client.application.dto.response.GetClientResponse;
 import com.sparta.rooibos.client.application.dto.response.SearchClientResponse;
+import com.sparta.rooibos.client.application.service.ClientManagerService;
 import com.sparta.rooibos.client.application.service.ClientService;
 import com.sparta.rooibos.client.application.type.Role;
 import jakarta.validation.Valid;

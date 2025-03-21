@@ -30,6 +30,7 @@ import java.util.UUID;
 public class ClientService {
     private final ClientRepository clientRepository;
     private final QueryClientRepository queryClientRepository;
+    private final ClientManagerService clientManagerService;
     private final HubService hubService;
 
     public SearchClientResponse searchClient(SearchClientRequest condition) {
@@ -84,8 +85,17 @@ public class ClientService {
             throw new BusinessClientException(ClientErrorCode.NOT_FOUND_CLIENT);
         }
         Client client = clientRepository.findByIdAndDeleteByIsNull(clientId).orElseThrow(() -> new BusinessClientException(ClientErrorCode.NOT_EXITS_CLIENT));
+        checkPrincipalClient(email, client.getId());
         client.update(request.name(), request.address(), email);
         return true;
+    }
+
+    private void checkPrincipalClient(String email, UUID clientId) {
+        String id = clientId.toString();
+        String currentManagerClientId = clientManagerService.getClientIdByUserId(email);
+        if (!currentManagerClientId.equals(id)) {
+            throw new BusinessClientException(ClientErrorCode.NOT_PRINCIPAL_CLIENT);
+        }
     }
 
     @Transactional
