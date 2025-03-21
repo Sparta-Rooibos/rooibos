@@ -48,7 +48,7 @@ public class ProductController {
     }
 
     @PostMapping
-    @RoleCheck({Role.MASTER, Role.HUB, Role.CLIENT})
+//    @RoleCheck({Role.MASTER, Role.HUB, Role.CLIENT})
     public ResponseEntity<CreateProductResponse> createProduct(
             @RequestHeader(value = "X-User-Email") String email,
             @RequestHeader(value = "X-User-Name") String username,

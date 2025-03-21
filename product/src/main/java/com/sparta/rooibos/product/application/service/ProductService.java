@@ -46,7 +46,7 @@ public class ProductService {
         if (productRepository.findByNameAndDeleteByIsNull(request.name()).isPresent()) {
             throw new BusinessProductException(ProductErrorCode.NOT_EXITS_PRODUCT);
         }
-
+        checkIfManageClientId(email, request.clientId());
         Client client = clientService.getClient(request.clientId());
 
         // 수령 업체는 제품 생산이 불가능합니다.
@@ -85,5 +85,12 @@ public class ProductService {
         final Product product = productRepository.findByIdAndDeleteByIsNull(id).orElseThrow(() -> new BusinessProductException(ProductErrorCode.NOT_FOUND_PRODUCT));
         product.delete(email);
         return true;
+    }
+
+    private void checkIfManageClientId(String email, String clientId) {
+        String useManageClientId = clientService.getClientId(email);
+        if(!useManageClientId.equals(clientId)){
+            throw new BusinessProductException(ProductErrorCode.NOT_EXITS_PRODUCT);
+        }
     }
 }
