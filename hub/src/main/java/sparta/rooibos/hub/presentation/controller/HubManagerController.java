@@ -24,18 +24,18 @@ public class HubManagerController {
         return ResponseEntity.ok(hubManagerService.createHubManager(createHubManagerRequest));
     }
 
-    @GetMapping(params = "userId")
-    public ResponseEntity<GetHubManagerHubIdResponse> getHubIdByUserId(@RequestParam UUID userId) {
+    @GetMapping("/{userId}")
+    public ResponseEntity<GetHubManagerHubIdResponse> getHubIdByUserId(@PathVariable UUID userId) {
         return ResponseEntity.ok(hubManagerService.getHubIdByUserId(userId));
     }
 
-    @GetMapping(params = "username")
-    public ResponseEntity<GetHubManagerHubIdResponse> getHubIdByUserMame(@RequestParam String username) {
-        return ResponseEntity.ok(hubManagerService.getHubIdByUsername(username));
+    @GetMapping("/{email}")
+    public ResponseEntity<GetHubManagerHubIdResponse> getHubIdByEmail(@PathVariable String email) {
+        return ResponseEntity.ok(hubManagerService.getHubIdByEmail(email));
     }
 
-    @PatchMapping
-    public ResponseEntity<Void> deleteHubManager(@RequestParam UUID userId) {
+    @PatchMapping("/{userId}")
+    public ResponseEntity<Void> deleteHubManager(@PathVariable UUID userId) {
         hubManagerService.deleteHubManager(userId);
 
         return ResponseEntity.noContent().build();

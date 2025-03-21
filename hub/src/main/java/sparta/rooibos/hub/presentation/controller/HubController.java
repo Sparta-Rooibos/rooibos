@@ -31,8 +31,8 @@ public class HubController {
         return ResponseEntity.ok(hubService.getHub(hubId));
     }
 
-    @GetMapping
-    public ResponseEntity<UUID> getHubIdByRegion(@RequestParam String region) {
+    @GetMapping("/{region}")
+    public ResponseEntity<UUID> getHubIdByRegion(@PathVariable String region) {
         return ResponseEntity.ok(hubService.getHubIdByRegion(region));
     }
 
