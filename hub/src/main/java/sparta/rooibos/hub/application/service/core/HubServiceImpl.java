@@ -48,15 +48,6 @@ public class HubServiceImpl implements HubService {
         return CreateHubResponse.from(hubRepository.createHub(newHub));
     }
 
-    private void getAndSetCoordinates(Hub hub) {
-        GetCoordinatesResponse coordinates =
-                geoLocationService.getCoordinates(GetCoordinatesRequest.from(hub.getAddress()));
-        hub.setCoordinates(coordinates.addresses().get(0).latitude(), coordinates.addresses().get(0).longitude());
-
-        log.info("네이버 geocoding 호출 성공: {}, {}", hub.getLatitude(), hub.getLongitude());
-    }
-
-
     // TODO compose.yml 작성하기
 //    @Cacheable(
 //            cacheNames = "getHub",
@@ -73,7 +64,7 @@ public class HubServiceImpl implements HubService {
                 .orElseThrow(() -> new BusinessHubException(HubErrorCode.HUB_NOT_FOUND));
     }
 
-//    @Cacheable(
+    //    @Cacheable(
 //            cacheNames = "searchHub",
 //            key = "'searchHub:' + (#searchHubRequest.name() ?: '') + ':' + (#searchHubRequest.region() ?: '')"
 //    )
@@ -99,7 +90,16 @@ public class HubServiceImpl implements HubService {
                 updateHubRequest.address()
         );
 
+        if (isAddressChanged(targetHub, sourceHub)) {
+            getAndSetCoordinates(targetHub);
+        }
+        ;
+
         return UpdateHubResponse.from(targetHub.update(sourceHub));
+    }
+
+    private boolean isAddressChanged(Hub targetHub, Hub sourceHub) {
+        return targetHub.getAddress().equals(sourceHub.getAddress());
     }
 
     @Override
@@ -115,5 +115,13 @@ public class HubServiceImpl implements HubService {
     private Hub getHubForServer(UUID hubId) {
         return hubRepository.getHub(hubId)
                 .orElseThrow(() -> new BusinessHubException(HubErrorCode.HUB_NOT_FOUND));
+    }
+
+    private void getAndSetCoordinates(Hub hub) {
+        GetCoordinatesResponse coordinates =
+                geoLocationService.getCoordinates(GetCoordinatesRequest.from(hub.getAddress()));
+        hub.setCoordinates(coordinates.addresses().get(0).latitude(), coordinates.addresses().get(0).longitude());
+
+        log.info("네이버 geocoding 호출 성공: {}, {}", hub.getLatitude(), hub.getLongitude());
     }
 }
