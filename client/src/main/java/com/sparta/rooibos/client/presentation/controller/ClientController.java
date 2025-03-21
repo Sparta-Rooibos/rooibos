@@ -30,7 +30,7 @@ public class ClientController {
     public ResponseEntity<SearchClientResponse> getClientList(
             @RequestHeader("X-User-Email") String email,
             @RequestHeader("X-User-Name") String username,
-            @RequestHeader("X-User-Role") Role role,
+            @RequestHeader("X-User-Role") String role,
             @ModelAttribute SearchClientRequest request) {
         return ResponseEntity.ok(clientService.searchClient(request));
     }
@@ -40,7 +40,7 @@ public class ClientController {
     public ResponseEntity<GetClientResponse> getClient(
             @RequestHeader("X-User-Email") String email,
             @RequestHeader("X-User-Name") String username,
-            @RequestHeader("X-User-Role") Role role,
+            @RequestHeader("X-User-Role") String role,
             @PathVariable UUID clientId) {
         return ResponseEntity.ok(clientService.getClient(clientId));
     }
