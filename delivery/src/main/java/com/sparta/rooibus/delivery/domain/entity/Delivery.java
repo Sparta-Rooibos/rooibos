@@ -6,6 +6,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
@@ -24,7 +25,8 @@ import org.hibernate.annotations.Where;
 @NoArgsConstructor
 public class Delivery {
     @Id
-    @Column(name = "delivery_id", nullable = false)
+    @GeneratedValue
+    @Column(name = "delivery_id", nullable = false, columnDefinition = "UUID DEFAULT gen_random_uuid()")
     private UUID id;
 
     @Column(name = "order_id" )
