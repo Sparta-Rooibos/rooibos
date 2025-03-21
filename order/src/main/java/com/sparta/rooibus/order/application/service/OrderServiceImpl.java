@@ -79,7 +79,7 @@ public class OrderServiceImpl implements OrderService {
         order.setStatus(OrderStatus.SHIPPED);
         order.setDeliveryInfo(deliveryId,departureId);
 
-//        TODO : 슬랙 메세지 보내기
+//        TODO : 슬랙 메세지 보내기 (수령자 Id(수령 업체), 발송자 Id(공급업체), {상품명-상품 클라이언트 서비스} {수량}개 출고 완료. 다음 목적지 )
         return CreateOrderResponse.from(order);
     }
 
@@ -164,18 +164,25 @@ public class OrderServiceImpl implements OrderService {
     private Pagination<Order> search(SearchRequest searchRequest) throws BadRequestException {
         String role = userContext.getRole();
         UUID userId = userContext.getUserId();
+        String keyword = searchRequest.keyword();
+        String filterKey = searchRequest.filterKey();
+        String filterValue = searchRequest.filterValue();
+        String sort = searchRequest.sort();
+        int page = searchRequest.page();
+        int size = searchRequest.size();
 
         switch (role) {
             case "Role_Master" -> {
-                return orderRepository.searchOrders(searchRequest);
+                return orderRepository.searchOrders(
+                    keyword,filterKey,filterValue,sort,page,size);
             }
             case "Role_HubManager" -> {
                 UUID hubId = hubService.getHubByUser(userContext.getUserId(),
                     userContext.getRole());
-                return orderRepository.searchOrdersByHubId(searchRequest,hubId);
+                return orderRepository.searchOrdersByHubId(keyword,filterKey,filterValue,sort,page,size,hubId);
             }
             case "Role_Deliver", "Role_ClientManager" -> {
-                return orderRepository.searchOrdersByUserId(searchRequest,userId);
+                return orderRepository.searchOrdersByUserId(keyword,filterKey,filterValue,sort,page,size,userId);
             }
             default -> throw new BadRequestException("권한이 필요합니다");
         }

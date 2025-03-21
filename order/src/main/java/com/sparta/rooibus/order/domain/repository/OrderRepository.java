@@ -1,6 +1,5 @@
 package com.sparta.rooibus.order.domain.repository;
 
-import com.sparta.rooibus.order.application.dto.request.SearchRequest;
 import com.sparta.rooibus.order.domain.entity.Order;
 import com.sparta.rooibus.order.domain.model.Pagination;
 import java.util.Optional;
@@ -11,13 +10,10 @@ import org.springframework.stereotype.Repository;
 public interface OrderRepository {
     Order save(Order order);
     Optional<Order> findById(UUID id);
-    Pagination<Order> searchOrders(SearchRequest searchRequest);
-
+    Optional<Order> findByUserId(UUID orderId, UUID userId);
     Optional<Order> findByIdAndHub(UUID id,UUID hubId);
 
-    Pagination<Order> searchOrdersByHubId(SearchRequest searchRequest, UUID hubId);
-
-    Optional<Order> findByUserId(UUID orderId, UUID userId);
-
-    Pagination<Order> searchOrdersByUserId(SearchRequest searchRequest, UUID userId);
+    Pagination<Order> searchOrdersByHubId(String keyword, String filterKey, String filterValue, String sort, int page, int size, UUID hubId);
+    Pagination<Order> searchOrdersByUserId(String keyword, String filterKey, String filterValue, String sort, int page, int size, UUID userId);
+    Pagination<Order> searchOrders(String keyword, String filterKey, String filterValue, String sort, int page, int size);
 }

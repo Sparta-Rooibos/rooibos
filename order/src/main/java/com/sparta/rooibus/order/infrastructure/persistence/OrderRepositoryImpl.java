@@ -28,13 +28,8 @@ public class OrderRepositoryImpl implements OrderRepository {
     }
 
     @Override
-    public Pagination<Order> searchOrders(SearchRequest searchRequest) {
-        String keyword = searchRequest.keyword();
-        String filterKey = searchRequest.filterKey();
-        String filterValue = searchRequest.filterValue();
-        String sort = searchRequest.sort();
-        int page = searchRequest.page();
-        int size = searchRequest.size();
+    public Pagination<Order> searchOrders(String keyword, String filterKey, String filterValue,
+        String sort, int page, int size) {
 
         BooleanBuilder builder = new BooleanBuilder();
         QOrder order = QOrder.order;
@@ -78,13 +73,8 @@ public class OrderRepositoryImpl implements OrderRepository {
     }
 
     @Override
-    public Pagination<Order> searchOrdersByHubId(SearchRequest searchRequest, UUID hubId) {
-        String keyword = searchRequest.keyword();
-        String filterKey = searchRequest.filterKey();
-        String filterValue = searchRequest.filterValue();
-        String sort = searchRequest.sort();
-        int page = searchRequest.page();
-        int size = searchRequest.size();
+    public Pagination<Order> searchOrdersByHubId(String keyword, String filterKey, String filterValue,
+        String sort, int page, int size, UUID hubId) {
 
         BooleanBuilder builder = new BooleanBuilder();
         QOrder order = QOrder.order;
@@ -129,13 +119,8 @@ public class OrderRepositoryImpl implements OrderRepository {
     }
 
     @Override
-    public Pagination<Order> searchOrdersByUserId(SearchRequest searchRequest, UUID userId) {
-        String keyword = searchRequest.keyword();
-        String filterKey = searchRequest.filterKey();
-        String filterValue = searchRequest.filterValue();
-        String sort = searchRequest.sort();
-        int page = searchRequest.page();
-        int size = searchRequest.size();
+    public Pagination<Order> searchOrdersByUserId(String keyword, String filterKey, String filterValue,
+        String sort, int page, int size, UUID userId) {
 
         BooleanBuilder builder = new BooleanBuilder();
         QOrder order = QOrder.order;
