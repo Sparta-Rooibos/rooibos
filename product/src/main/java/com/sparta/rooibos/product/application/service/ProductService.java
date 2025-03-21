@@ -42,7 +42,7 @@ public class ProductService {
         return new GetProductResponse(product);
     }
 
-    public CreateProductResponse createProduct(CreateProductRequest request) {
+    public CreateProductResponse createProduct(String email, CreateProductRequest request) {
         if (productRepository.findByNameAndDeleteByIsNull(request.name()).isPresent()) {
             throw new BusinessProductException(ProductErrorCode.NOT_EXITS_PRODUCT);
         }
@@ -59,14 +59,14 @@ public class ProductService {
                 request.name(),
                 client.id(),
                 client.manageHub().id(),
-                "계정 아이디"
+                email
         ));
 
         return new CreateProductResponse(product.getId(), request.name());
     }
 
     @Transactional
-    public boolean updateProduct(UUID id, UpdateProductRequest request) {
+    public boolean updateProduct(String email, UUID id, UpdateProductRequest request) {
         //아이디가 같은 경우에는 무시한다.
         if (productRepository.findByNameAndDeleteByIsNull(request.name()).filter(
                 product -> !product.getId().equals(id)
@@ -76,14 +76,14 @@ public class ProductService {
 
         final Product product = productRepository.findByIdAndDeleteByIsNull(id).orElseThrow(() -> new BusinessProductException(ProductErrorCode.NOT_FOUND_PRODUCT));
         // 상품 수정
-        product.update(request.name());
+        product.update(request.name(),email);
         return true;
     }
 
     @Transactional
-    public boolean deleteProduct(UUID id) {
+    public boolean deleteProduct(String email, UUID id) {
         final Product product = productRepository.findByIdAndDeleteByIsNull(id).orElseThrow(() -> new BusinessProductException(ProductErrorCode.NOT_FOUND_PRODUCT));
-        product.delete("계정아이디");
+        product.delete(email);
         return true;
     }
 }

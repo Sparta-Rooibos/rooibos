@@ -54,7 +54,7 @@ public class ProductController {
             @RequestHeader(value = "X-User-Name") String username,
             @RequestHeader(value = "X-User-Role") String role,
             @RequestBody @Valid CreateProductRequest request) {
-        return ResponseEntity.ok(productService.createProduct(request));
+        return ResponseEntity.ok(productService.createProduct(email, request));
     }
 
     @PutMapping("/{productId}")
@@ -64,7 +64,7 @@ public class ProductController {
             @RequestHeader(value = "X-User-Name") String username,
             @RequestHeader(value = "X-User-Role") String role,
             @PathVariable UUID productId, @RequestBody @Valid UpdateProductRequest request) {
-        return ResponseEntity.ok(productService.updateProduct(productId, request));
+        return ResponseEntity.ok(productService.updateProduct(email, productId, request));
     }
 
     @PatchMapping("/{productId}")
@@ -74,7 +74,7 @@ public class ProductController {
             @RequestHeader(value = "X-User-Name") String username,
             @RequestHeader(value = "X-User-Role") String role,
             @PathVariable UUID productId) {
-        return ResponseEntity.ok(productService.deleteProduct(productId));
+        return ResponseEntity.ok(productService.deleteProduct(email, productId));
     }
 
 }
