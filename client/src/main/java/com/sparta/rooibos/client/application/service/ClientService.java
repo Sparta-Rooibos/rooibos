@@ -95,9 +95,8 @@ public class ClientService {
         if(!role.contains("CLIENT")){
             return;
         }
-        String id = clientId.toString();
-        String currentManagerClientId = clientManagerService.getClientIdByUserId(email);
-        if (!currentManagerClientId.equals(id)) {
+        String clientIdByUser = clientManagerService.getClientIdByUserId(email);
+        if (!clientIdByUser.equals(clientId.toString())) {
             throw new BusinessClientException(ClientErrorCode.NOT_PRINCIPAL_CLIENT);
         }
     }
