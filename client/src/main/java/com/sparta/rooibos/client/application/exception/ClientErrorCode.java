@@ -18,7 +18,7 @@ public enum ClientErrorCode {
     // 클라이언트(업체)
     NOT_FOUND_CLIENT(HttpStatus.NOT_FOUND, "CLI-01", "이미 존재하는 업체입니다."),
     NOT_EXITS_CLIENT(HttpStatus.BAD_REQUEST, "CLI-02", "해당 하는 업체가 존재하지 않습니다."),
-    NOT_FOUND_CLIENT_MANAGER(HttpStatus.NOT_FOUND, "CLI-03", "업체 담당자가 존재하지 않습니다.");
+    NOT_EXITS_CLIENT_MANAGER(HttpStatus.NOT_FOUND, "CLI-03", "업체 담당자가 이미 존재합니다.");
     private final HttpStatus status;
     private final String code;
     private final String message;

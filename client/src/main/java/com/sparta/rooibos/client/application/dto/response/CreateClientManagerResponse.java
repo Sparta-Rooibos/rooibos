@@ -10,7 +10,7 @@ public record CreateClientManagerResponse(
 ) {
     public static CreateClientManagerResponse create(ClientManager clientManager) {
         return new CreateClientManagerResponse(
-                clientManager.getClientId(),
+                clientManager.getClient().getId(),
                 clientManager.getUserId()
         );
     }

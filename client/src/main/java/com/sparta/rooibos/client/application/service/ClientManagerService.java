@@ -10,6 +10,7 @@ import com.sparta.rooibos.client.domain.repository.ClientManagerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -18,11 +19,15 @@ public class ClientManagerService {
     private final ClientManagerRepository repository;
 
     public CreateClientManagerResponse createClientManager(CreateClientManagerRequest request) {
+        List<ClientManager> managers = repository.findAllByClientId(request.clientId()).stream().toList();
+        if(!managers.isEmpty()){
+            throw new BusinessClientException(ClientErrorCode.NOT_EXITS_CLIENT_MANAGER);
+        }
         return CreateClientManagerResponse.create(repository.save(request.toEntity()));
     }
 
     public GetClientManagerResponse getClientManager(UUID clientId) {
-        ClientManager clientManager = repository.findById(clientId).orElseThrow(() -> new BusinessClientException(ClientErrorCode.NOT_FOUND_CLIENT_MANAGER));
+        ClientManager clientManager = repository.findAllByClientId(clientId).get(0);
         return GetClientManagerResponse.get(clientManager);
     }
 
