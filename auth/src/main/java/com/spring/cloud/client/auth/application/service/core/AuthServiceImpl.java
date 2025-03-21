@@ -1,7 +1,7 @@
-package com.spring.cloud.client.auth.application.service.adapter;
+package com.spring.cloud.client.auth.application.service.core;
 
 import com.spring.cloud.client.auth.application.dto.request.LoginRequest;
-import com.spring.cloud.client.auth.application.dto.UserDTO;
+import com.spring.cloud.client.auth.application.dto.UserAuthDTO;
 import com.spring.cloud.client.auth.application.exception.BusinessAuthException;
 import com.spring.cloud.client.auth.application.exception.custom.AuthErrorCode;
 import com.spring.cloud.client.auth.application.service.port.AuthService;
@@ -35,18 +35,18 @@ public class AuthServiceImpl implements AuthService {
             throw new BusinessAuthException(AuthErrorCode.BLOCKED_ACCOUNT);
         }
 
-        Optional<UserDTO> cachedUser = redisProvider.getUserInfo(loginRequest.email());
+        Optional<UserAuthDTO> cachedUser = redisProvider.getUserInfo(loginRequest.email());
         if (cachedUser.isEmpty()) {
             throw new BusinessAuthException(AuthErrorCode.INVALID_CREDENTIALS);
         }
-        UserDTO user = cachedUser.get();
+        UserAuthDTO user = cachedUser.get();
 
         if (!passwordEncoder.matches(loginRequest.password(), user.password())) {
             throw new BusinessAuthException(AuthErrorCode.INVALID_PASSWORD);
         }
 
-        String accessToken = jwtProvider.createJwt("access", user.email(), user.role(), 600000L);
-        String refreshToken = jwtProvider.createJwt("refresh", user.email(), user.role(), 86400000L);
+        String accessToken = jwtProvider.createJwt("access", user.username(), user.email(), user.role(), 600000L);
+        String refreshToken = jwtProvider.createJwt("refresh", user.username(), user.email(), user.role(), 86400000L);
         refreshRepository.save(Refresh.create(user.email(), refreshToken, 86400000L));
 
         response.setHeader("Authorization", "Bearer " + accessToken);
@@ -58,8 +58,6 @@ public class AuthServiceImpl implements AuthService {
     public void logout(HttpServletRequest request, HttpServletResponse response) {
         String refreshToken = cookieProvider.getRefreshToken(request);
 
-        // 리프레시토큰 만료여부를 따지지 않는 것은 무조건 로그아웃을 눌러서 로그아웃하므로 만료를 떠나 로그아웃 시켜버리는 로직이다
-        // 만약 만료된 것 땜에 로그아웃이 된다면 그것은 로그인 시도했을 때 즉 게이트웨이에서부터 거절되어야 하는게 맞다
         if (refreshToken == null) {
             throw new BusinessAuthException(AuthErrorCode.INVALID_REFRESH_TOKEN);
         }
@@ -83,13 +81,14 @@ public class AuthServiceImpl implements AuthService {
             throw new BusinessAuthException(AuthErrorCode.INVALID_REFRESH_TOKEN);
         }
 
+        String username = jwtProvider.getUsername(refreshToken);
         String email = jwtProvider.getEmail(refreshToken);
         String role = jwtProvider.getRole(refreshToken);
-        String newAccessToken = jwtProvider.createJwt("access", email, role, 600000L);
-        String newRefreshToken = jwtProvider.createJwt("refresh", email, role, 86400000L);
+        String newAccessToken = jwtProvider.createJwt("access", username, email, role, 600000L);
+        String newRefreshToken = jwtProvider.createJwt("refresh", username, email, role, 86400000L);
 
-        refreshRepository.deleteByRefresh(refreshToken); // 기존 Refresh 토큰 제거
-        refreshRepository.save(Refresh.create(email, newRefreshToken, 86400000L)); // 새로 저장
+        refreshRepository.deleteByRefresh(refreshToken);
+        refreshRepository.save(Refresh.create(email, newRefreshToken, 86400000L));
 
         response.setHeader("Authorization", "Bearer " + newAccessToken);
         response.addCookie(cookieProvider.createCookie(newRefreshToken));
