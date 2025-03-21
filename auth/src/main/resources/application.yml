@@ -15,8 +15,10 @@ spring:
 
   data:
     redis:
-      host: localhost  # ? Redis ?? ??
+      host: localhost
       port: 6379
+      username: default
+      password: systempass
 
 eureka:
   client:
