@@ -22,7 +22,8 @@ import java.util.UUID;
 public class Client {
 
     @Id
-    @UuidGenerator
+    @GeneratedValue
+    @Column(columnDefinition = "UUID DEFAULT gen_random_uuid()")
     private UUID id;
 
     private String name;
