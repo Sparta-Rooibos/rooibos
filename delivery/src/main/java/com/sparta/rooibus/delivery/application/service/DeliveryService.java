@@ -16,7 +16,6 @@ import com.sparta.rooibus.delivery.application.service.feign.ClientService;
 import com.sparta.rooibus.delivery.application.service.feign.DeliveryAgentService;
 import com.sparta.rooibus.delivery.application.service.feign.UserService;
 import com.sparta.rooibus.delivery.domain.entity.Delivery;
-import com.sparta.rooibus.delivery.domain.repository.DeliveryQueryRepository;
 import com.sparta.rooibus.delivery.domain.repository.DeliveryRepository;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
@@ -35,7 +34,6 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class DeliveryService {
     private final DeliveryRepository deliveryRepository;
-    private final DeliveryQueryRepository deliveryQueryRepository;
     private final ClientService clientService;
     private final UserService userService;
     private final DeliveryAgentService deliveryAgentService;
@@ -52,7 +50,7 @@ public class DeliveryService {
 
         String slackAccount = userService.getUser(GetUserRequest.from(recipient)).slackAccount();
 
-        UUID clientManagerId = deliveryAgentService.getDeliver(GetDeliverRequest.from(request.requestClientId())).deliverId();
+        UUID clientDeliverId = deliveryAgentService.getDeliver(GetDeliverRequest.from(request.requestClientId())).deliverId();
 
         Delivery delivery = Delivery.of(
             request.orderId(),
@@ -61,7 +59,7 @@ public class DeliveryService {
             address,
             recipient,
             slackAccount,
-            clientManagerId
+            clientDeliverId
         );
         deliveryRepository.save(delivery);
 
@@ -101,7 +99,7 @@ public class DeliveryService {
     @Cacheable(value = "searchDeliveryCache", key = "#request.page() + '-' + #request.size()")
     public Page<SearchDeliveryResponse> searchOrders(SearchDeliveryRequestDTO request) {
         PageRequest pageRequest = PageRequest.of(request.page(), request.size());
-        Page<Delivery> deliveryPage = deliveryQueryRepository.searchOrders(request, pageRequest);
+        Page<Delivery> deliveryPage = deliveryRepository.searchOrders(request, pageRequest);
 
         List<SearchDeliveryResponse> deliverySearchList = deliveryPage.getContent()
             .stream()
