@@ -11,6 +11,7 @@ import java.util.UUID;
 @Entity
 @NoArgsConstructor
 @Getter
+@Table(name = "p_client_manager")
 public class ClientManager {
 
     @Id
