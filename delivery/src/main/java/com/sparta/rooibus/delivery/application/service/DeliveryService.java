@@ -1,7 +1,7 @@
 package com.sparta.rooibus.delivery.application.service;
 
 import com.sparta.rooibus.delivery.application.dto.request.CreateDeliveryRequest;
-import com.sparta.rooibus.delivery.application.dto.request.SearchDeliveryRequestDTO;
+import com.sparta.rooibus.delivery.application.dto.request.SearchRequest;
 import com.sparta.rooibus.delivery.application.dto.request.UpdateDeliveryRequest;
 import com.sparta.rooibus.delivery.application.dto.request.feign.client.GetClientManagerRequest;
 import com.sparta.rooibus.delivery.application.dto.request.feign.client.GetClientRequest;
@@ -16,17 +16,14 @@ import com.sparta.rooibus.delivery.application.service.feign.ClientService;
 import com.sparta.rooibus.delivery.application.service.feign.DeliveryAgentService;
 import com.sparta.rooibus.delivery.application.service.feign.UserService;
 import com.sparta.rooibus.delivery.domain.entity.Delivery;
+import com.sparta.rooibus.delivery.domain.model.Pagination;
 import com.sparta.rooibus.delivery.domain.repository.DeliveryRepository;
 import jakarta.persistence.EntityNotFoundException;
-import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -97,15 +94,16 @@ public class DeliveryService {
     }
 
     @Cacheable(value = "searchDeliveryCache", key = "#request.page() + '-' + #request.size()")
-    public Page<SearchDeliveryResponse> searchOrders(SearchDeliveryRequestDTO request) {
-        PageRequest pageRequest = PageRequest.of(request.page(), request.size());
-        Page<Delivery> deliveryPage = deliveryRepository.searchOrders(request, pageRequest);
+    public SearchDeliveryResponse searchOrders(SearchRequest searchRequest) {
+        String keyword = searchRequest.keyword();
+        String filterKey = searchRequest.filterKey();
+        String filterValue = searchRequest.filterValue();
+        String sort = searchRequest.sort();
+        int page = searchRequest.page();
+        int size = searchRequest.size();
 
-        List<SearchDeliveryResponse> deliverySearchList = deliveryPage.getContent()
-            .stream()
-            .map(SearchDeliveryResponse::new)
-            .toList();
+        Pagination<Delivery> deliveryPagination = deliveryRepository.searchOrders(keyword,filterKey,filterValue,sort,page,size);
 
-        return new PageImpl<>(deliverySearchList,pageRequest,deliveryPage.getTotalElements());
+        return SearchDeliveryResponse.from(deliveryPagination);
     }
 }
