@@ -3,17 +3,24 @@ package com.sparta.rooibus.delivery.application.service;
 import com.sparta.rooibus.delivery.application.dto.request.CreateDeliveryRequest;
 import com.sparta.rooibus.delivery.application.dto.request.SearchDeliveryRequestDTO;
 import com.sparta.rooibus.delivery.application.dto.request.UpdateDeliveryRequest;
+import com.sparta.rooibus.delivery.application.dto.request.feign.client.GetClientManagerRequest;
+import com.sparta.rooibus.delivery.application.dto.request.feign.client.GetClientRequest;
+import com.sparta.rooibus.delivery.application.dto.request.feign.deliverAgent.GetDeliverRequest;
+import com.sparta.rooibus.delivery.application.dto.request.feign.user.GetUserRequest;
 import com.sparta.rooibus.delivery.application.dto.response.CreateDeliveryResponse;
 import com.sparta.rooibus.delivery.application.dto.response.GetDeliveryResponse;
 import com.sparta.rooibus.delivery.application.dto.response.SearchDeliveryResponse;
 import com.sparta.rooibus.delivery.application.dto.response.UpdateDeliveryResponse;
+import com.sparta.rooibus.delivery.application.dto.response.feign.client.GetClientResponse;
+import com.sparta.rooibus.delivery.application.service.feign.ClientService;
+import com.sparta.rooibus.delivery.application.service.feign.DeliveryAgentService;
+import com.sparta.rooibus.delivery.application.service.feign.UserService;
 import com.sparta.rooibus.delivery.domain.entity.Delivery;
 import com.sparta.rooibus.delivery.domain.repository.DeliveryQueryRepository;
 import com.sparta.rooibus.delivery.domain.repository.DeliveryRepository;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
@@ -29,14 +36,33 @@ import org.springframework.transaction.annotation.Transactional;
 public class DeliveryService {
     private final DeliveryRepository deliveryRepository;
     private final DeliveryQueryRepository deliveryQueryRepository;
+    private final ClientService clientService;
+    private final UserService userService;
+    private final DeliveryAgentService deliveryAgentService;
 
     @Transactional
     public CreateDeliveryResponse createDelivery(CreateDeliveryRequest request) {
-//       업체 배송담당자 요청해서 받아서 넣기
-        String slackAccount = "feign client로 받아올 슬랙 어카운트";
-        UUID deliverId = UUID.randomUUID();
+        UUID departure = clientService.getClient(GetClientRequest.from(request.requestClientId())).manageHub().id();
 
-        Delivery delivery = request.toCommand(slackAccount,deliverId).toDelivery();
+        GetClientResponse getClientResponse = clientService.getClient(GetClientRequest.from(request.requestClientId()));
+        UUID arrival = getClientResponse.manageHub().id();
+        String address = getClientResponse.address();
+
+        UUID recipient = clientService.getClientManager(GetClientManagerRequest.from(request.requestClientId())).clientManagerId();
+
+        String slackAccount = userService.getUser(GetUserRequest.from(recipient)).slackAccount();
+
+        UUID clientManagerId = deliveryAgentService.getDeliver(GetDeliverRequest.from(request.requestClientId())).deliverId();
+
+        Delivery delivery = Delivery.of(
+            request.orderId(),
+            departure,
+            arrival,
+            address,
+            recipient,
+            slackAccount,
+            clientManagerId
+        );
         deliveryRepository.save(delivery);
 
         return CreateDeliveryResponse.from(delivery);

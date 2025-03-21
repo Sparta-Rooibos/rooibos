@@ -1,5 +1,6 @@
 package com.sparta.rooibus.delivery.domain.entity;
 
+import com.sparta.rooibus.delivery.application.dto.request.CreateDeliveryRequest;
 import com.sparta.rooibus.delivery.application.dto.request.UpdateDeliveryRequest;
 import com.sparta.rooibus.delivery.domain.model.DeliveryStatus;
 import jakarta.persistence.Column;
@@ -43,14 +44,14 @@ public class Delivery {
     @Column(name = "address", length = 50)
     private String address;
 
-    @Column(name = "recipient" )
+    @Column(name = "recipient_id" )
     private UUID recipient;
 
     @Column(name = "slack_acoount", length = 50)
     private String slackAccount;
 
-    @Column(name = "deliver_id" )
-    private UUID deliverId;
+    @Column(name = "client_delivery_manager_id" )
+    private UUID clientDeliveryManagerId;
 
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
@@ -70,6 +71,18 @@ public class Delivery {
     @Column(name = "deleted_by", length = 50)
     private String deletedBy;
 
+    public static Delivery of(UUID orderId, UUID departure, UUID arrival, String address, UUID recipient, String slackAccount, UUID clientManagerId) {
+        Delivery delivery = new Delivery();
+        delivery.orderId = orderId;
+        delivery.departure = departure;
+        delivery.arrival = arrival;
+        delivery.address = address;
+        delivery.recipient = recipient;
+        delivery.slackAccount = slackAccount;
+        delivery.clientDeliveryManagerId = clientManagerId;
+        return delivery;
+    }
+
     @PrePersist
     public void prePersist() {
         if (this.id == null) {
@@ -84,26 +97,12 @@ public class Delivery {
         this.updatedAt = LocalDateTime.now();
     }
 
-    public Delivery(UUID departure, UUID arrival, String address, UUID recipient, UUID orderId, String slackAccount, UUID deliverId) {
-        this.departure = departure;
-        this.arrival = arrival;
-        this.address = address;
-        this.recipient = recipient;
-        this.orderId = orderId;
-        this.slackAccount = slackAccount;
-        this.deliverId = deliverId;
-        this.status = DeliveryStatus.PENDING;
-        this.createdAt = LocalDateTime.now();
-        this.updatedAt = LocalDateTime.now();
-    }
-
     public void update(UpdateDeliveryRequest request) {
         Optional.ofNullable(request.departure()).ifPresent(dep -> this.departure = dep);
         Optional.ofNullable(request.arrival()).ifPresent(arr -> this.arrival = arr);
         Optional.ofNullable(request.address()).ifPresent(addr -> this.address = addr);
         Optional.ofNullable(request.recipient()).ifPresent(rec -> this.recipient = rec);
         Optional.ofNullable(request.slackAccount()).ifPresent(slack -> this.slackAccount = slack);
-        Optional.ofNullable(request.deliverId()).ifPresent(deliver -> this.deliverId = deliver);
 //      TODO : status 변경하는 로직 ???하는게 맞다하면 만들기
     }
 
