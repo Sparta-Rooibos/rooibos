@@ -1,6 +1,7 @@
-package com.sparta.rooibos.common.entity;
+package com.sparta.rooibos.stock.domain.entity;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,41 +11,39 @@ import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
 @MappedSuperclass
 @Getter
 @Setter
+@EntityListeners(AuditingEntityListener.class)
 public abstract class BaseEntity {
     @CreatedDate
     @Column(updatable = false, nullable = false)
-    private LocalDateTime createAt;
+    protected LocalDateTime createAt;
 
     @CreatedBy
     @Column(updatable = false, nullable = false)
-    private String createBy;
+    protected String createBy;
 
     @LastModifiedDate
     @Column
-    private LocalDateTime updateAt;
+    protected LocalDateTime updateAt;
 
     @LastModifiedBy
     @Column
-    private String updateBy;
+    protected String updateBy;
 
     @Column
-    private LocalDateTime deleteAt;
+    protected LocalDateTime deleteAt;
 
     @Column
-    private String deleteBy;
+    protected String deleteBy;
 
-    @Column
-    private boolean hidden = false;
-
-    public void delete(String deleteBy) {
+    public void delete(String deletedBy) {
+        this.deleteBy = deletedBy;
         this.deleteAt = LocalDateTime.now();
-        this.deleteBy = deleteBy;
-        this.hidden = true;
     }
 }
