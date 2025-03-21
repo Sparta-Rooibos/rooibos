@@ -24,7 +24,7 @@ public class ClientController {
     @GetMapping
     public ResponseEntity<SearchClientResponse> getClientList(
             @ModelAttribute SearchClientRequest request) {
-       return ResponseEntity.ok(clientService.getClientList(request));
+       return ResponseEntity.ok(clientService.searchClient(request));
     }
 
     @GetMapping("/{clientId}")

@@ -32,8 +32,8 @@ public class ClientService {
     private final QueryClientRepository queryClientRepository;
     private final HubService hubService;
 
-    public SearchClientResponse getClientList(SearchClientRequest condition) {
-        Pagination<Client> clients = queryClientRepository.getClientList(condition.toCriteria());
+    public SearchClientResponse searchClient(SearchClientRequest condition) {
+        Pagination<Client> clients = queryClientRepository.searchClient(condition.toCriteria());
         return new SearchClientResponse(
                 clients.getContent().stream()
                         .map(client -> new SearchClientListResponse(
