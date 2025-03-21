@@ -2,4 +2,8 @@ package sparta.rooibos.hub.application.dto.GeoLocation.request;
 
 public record GetCoordinatesRequest(
         String address
-) {}
+) {
+    public static GetCoordinatesRequest from(String address) {
+        return new GetCoordinatesRequest(address);
+    }
+}

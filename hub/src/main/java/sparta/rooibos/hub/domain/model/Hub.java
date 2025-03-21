@@ -65,14 +65,19 @@ public class Hub {
     @Column
     private String deletedBy;
 
-    public static Hub of(String name, String region, String address, String latitude, String longitude) {
+    public static Hub of(String name, String region, String address) {
         return Hub.builder()
                 .name(name)
                 .region(region)
                 .address(address)
-                .latitude(latitude)
-                .longitude(longitude)
                 .build();
+    }
+
+    public Hub setCoordinates(String latitude, String longitude) {
+        this.latitude = latitude;
+        this.longitude = longitude;
+
+        return this;
     }
 
     public Hub update(Hub hub) {

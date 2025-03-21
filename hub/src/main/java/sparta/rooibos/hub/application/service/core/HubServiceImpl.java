@@ -1,9 +1,12 @@
 package sparta.rooibos.hub.application.service.core;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import sparta.rooibos.hub.application.dto.GeoLocation.request.GetCoordinatesRequest;
+import sparta.rooibos.hub.application.dto.GeoLocation.response.GetCoordinatesResponse;
 import sparta.rooibos.hub.application.dto.hub.request.CreateHubRequest;
 import sparta.rooibos.hub.application.dto.hub.request.SearchHubRequest;
 import sparta.rooibos.hub.application.dto.hub.request.UpdateHubRequest;
@@ -14,17 +17,21 @@ import sparta.rooibos.hub.application.dto.hub.response.UpdateHubResponse;
 import sparta.rooibos.hub.application.service.exception.BusinessHubException;
 import sparta.rooibos.hub.application.service.exception.custom.HubErrorCode;
 import sparta.rooibos.hub.application.service.port.in.HubService;
+import sparta.rooibos.hub.application.service.port.out.GeoLocationService;
 import sparta.rooibos.hub.domain.model.Hub;
 import sparta.rooibos.hub.domain.model.Pagination;
 import sparta.rooibos.hub.domain.respository.HubRepository;
+import sparta.rooibos.hub.infrastructure.client.NaverGeoClient;
 
 import java.util.UUID;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 // TODO 도메인에 VO 만들어서 하나씩 보내고 있는 거 정리하기
 public class HubServiceImpl implements HubService {
 
+    private final GeoLocationService geoLocationService;
     private final HubRepository hubRepository;
 
     @Override
@@ -33,13 +40,22 @@ public class HubServiceImpl implements HubService {
         Hub newHub = Hub.of(
                 createHubRequest.name(),
                 createHubRequest.region(),
-                createHubRequest.address(),
-                createHubRequest.latitude(),
-                createHubRequest.longitude()
+                createHubRequest.address()
         );
+
+        getAndSetCoordinates(newHub);
 
         return CreateHubResponse.from(hubRepository.createHub(newHub));
     }
+
+    private void getAndSetCoordinates(Hub hub) {
+        GetCoordinatesResponse coordinates =
+                geoLocationService.getCoordinates(GetCoordinatesRequest.from(hub.getAddress()));
+        hub.setCoordinates(coordinates.addresses().get(0).latitude(), coordinates.addresses().get(0).longitude());
+
+        log.info("네이버 geocoding 호출 성공: {}, {}", hub.getLatitude(), hub.getLongitude());
+    }
+
 
     // TODO compose.yml 작성하기
 //    @Cacheable(
@@ -80,9 +96,7 @@ public class HubServiceImpl implements HubService {
         Hub sourceHub = Hub.of(
                 updateHubRequest.name(),
                 updateHubRequest.region(),
-                updateHubRequest.address(),
-                updateHubRequest.latitude(),
-                updateHubRequest.longitude()
+                updateHubRequest.address()
         );
 
         return UpdateHubResponse.from(targetHub.update(sourceHub));
