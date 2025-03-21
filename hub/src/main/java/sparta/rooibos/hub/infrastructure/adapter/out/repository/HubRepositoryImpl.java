@@ -1,4 +1,4 @@
-package sparta.rooibos.hub.infrastructure.repository;
+package sparta.rooibos.hub.infrastructure.adapter.out.repository;
 
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;

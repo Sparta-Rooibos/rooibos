@@ -10,7 +10,7 @@ import sparta.rooibos.hub.application.dto.hub.response.CreateHubResponse;
 import sparta.rooibos.hub.application.dto.hub.response.GetHubResponse;
 import sparta.rooibos.hub.application.dto.hub.response.SearchHubResponse;
 import sparta.rooibos.hub.application.dto.hub.response.UpdateHubResponse;
-import sparta.rooibos.hub.application.service.port.HubService;
+import sparta.rooibos.hub.application.service.port.in.HubService;
 
 import java.util.UUID;
 

@@ -1,4 +1,4 @@
-package sparta.rooibos.hub.infrastructure.repository;
+package sparta.rooibos.hub.infrastructure.adapter.out.repository;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;

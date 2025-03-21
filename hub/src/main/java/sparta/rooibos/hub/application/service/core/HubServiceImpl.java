@@ -13,7 +13,7 @@ import sparta.rooibos.hub.application.dto.hub.response.SearchHubResponse;
 import sparta.rooibos.hub.application.dto.hub.response.UpdateHubResponse;
 import sparta.rooibos.hub.application.service.exception.BusinessHubException;
 import sparta.rooibos.hub.application.service.exception.custom.HubErrorCode;
-import sparta.rooibos.hub.application.service.port.HubService;
+import sparta.rooibos.hub.application.service.port.in.HubService;
 import sparta.rooibos.hub.domain.model.Hub;
 import sparta.rooibos.hub.domain.model.Pagination;
 import sparta.rooibos.hub.domain.respository.HubRepository;
