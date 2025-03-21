@@ -79,18 +79,22 @@ public class ClientService {
     }
 
     @Transactional
-    public boolean updateClient(String email, UUID clientId, UpdateClientRequest request) {
+    public boolean updateClient(String email, String role, UUID clientId, UpdateClientRequest request) {
         if (clientRepository.findByNameAndDeleteByIsNull(request.name())
                 .filter(client -> !client.getId().equals(clientId)).isPresent()) {
             throw new BusinessClientException(ClientErrorCode.NOT_FOUND_CLIENT);
         }
         Client client = clientRepository.findByIdAndDeleteByIsNull(clientId).orElseThrow(() -> new BusinessClientException(ClientErrorCode.NOT_EXITS_CLIENT));
-        checkPrincipalClient(email, client.getId());
+        checkPrincipalClient(email, role, client.getId());
         client.update(request.name(), request.address(), email);
         return true;
     }
 
-    private void checkPrincipalClient(String email, UUID clientId) {
+    private void checkPrincipalClient(String email, String role, UUID clientId) {
+        // 업체가 아니라면 무시한다.
+        if(!role.contains("CLIENT")){
+            return;
+        }
         String id = clientId.toString();
         String currentManagerClientId = clientManagerService.getClientIdByUserId(email);
         if (!currentManagerClientId.equals(id)) {
