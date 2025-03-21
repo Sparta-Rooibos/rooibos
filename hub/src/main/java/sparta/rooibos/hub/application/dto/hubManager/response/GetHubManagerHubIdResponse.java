@@ -8,6 +8,6 @@ public record GetHubManagerHubIdResponse(
         UUID hubId
 ) {
     public static GetHubManagerHubIdResponse from(HubManager hubManager) {
-        return new GetHubManagerHubIdResponse(hubManager.getHub().getHubId());
+        return new GetHubManagerHubIdResponse(hubManager.getBelongingHubId());
     }
 }

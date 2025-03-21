@@ -10,5 +10,5 @@ public interface JpaHubManagerRepository extends JpaRepository<HubManager, UUID>
 
     Optional<HubManager> findHubManagerByUserIdAndDeletedAtIsNull(UUID userId);
 
-    Optional<HubManager> findHubManagerByUsernameAndDeletedAtIsNull(String username);
+    Optional<HubManager> findHubManagerByEmailAndDeletedAtIsNull(String email);
 }

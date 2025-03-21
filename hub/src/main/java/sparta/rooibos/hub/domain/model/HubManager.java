@@ -2,7 +2,6 @@ package sparta.rooibos.hub.domain.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -21,9 +20,9 @@ public class HubManager {
 
     private UUID userId;
 
-    private String username;
+    private String email;
 
-    private UUID hubId;
+    private UUID belongingHubId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "hub_id")

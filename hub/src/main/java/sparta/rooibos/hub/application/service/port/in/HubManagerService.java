@@ -12,7 +12,7 @@ public interface HubManagerService {
 
     GetHubManagerHubIdResponse getHubIdByUserId(UUID userId);
 
-    GetHubManagerHubIdResponse getHubIdByUsername(String username);
+    GetHubManagerHubIdResponse getHubIdByEmail(String email);
 
     void deleteHubManager(UUID userId);
 }

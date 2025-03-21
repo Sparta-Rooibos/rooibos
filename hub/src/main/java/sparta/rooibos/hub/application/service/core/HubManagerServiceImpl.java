@@ -35,8 +35,8 @@ public class HubManagerServiceImpl implements HubManagerService {
     }
 
     @Override
-    public GetHubManagerHubIdResponse getHubIdByUsername(String username) {
-        HubManager targetHubManger = getHubManager(username);
+    public GetHubManagerHubIdResponse getHubIdByEmail(String email) {
+        HubManager targetHubManger = getHubManager(email);
 
         return GetHubManagerHubIdResponse.from(targetHubManger);
     }
@@ -53,8 +53,8 @@ public class HubManagerServiceImpl implements HubManagerService {
                 .orElseThrow(() -> new BusinessHubManagerException(HubManagerErrorCode.HUB_MANAGER_NOT_FOUND));
     }
 
-    private HubManager getHubManager(String username) {
-        return hubManagerRepository.getHubManagerByUsername(username)
+    private HubManager getHubManager(String email) {
+        return hubManagerRepository.getHubManagerByEmail(email)
                 .orElseThrow(() -> new BusinessHubManagerException(HubManagerErrorCode.HUB_MANAGER_NOT_FOUND));
     }
 }

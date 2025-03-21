@@ -10,5 +10,5 @@ public interface HubManagerRepository {
 
     Optional<HubManager> getHubManagerByUserId(UUID userId);
 
-    Optional<HubManager> getHubManagerByUsername(String username);
+    Optional<HubManager> getHubManagerByEmail(String email);
 }
