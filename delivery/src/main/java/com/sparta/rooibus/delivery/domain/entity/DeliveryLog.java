@@ -1,0 +1,77 @@
+package com.sparta.rooibus.delivery.domain.entity;
+
+import com.sparta.rooibus.delivery.domain.model.DeliveryLogEnum;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import java.time.LocalDateTime;
+import java.util.UUID;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Entity
+@Table(name = "p_deliverylog")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class DeliveryLog {
+    @Id
+    @GeneratedValue
+    @Column(name = "deliverylog_id", nullable = false, columnDefinition = "UUID DEFAULT gen_random_uuid()")
+    private UUID id;
+
+    @Column(name = "delivery_id", nullable = false)
+    private UUID deliveryId;
+
+    @Column(name = "departure")
+    private UUID departure;
+
+    @Column(name = "arrival")
+    private UUID arrival;
+
+    @Column(name = "sequence", length = 100)
+    private String sequence;
+
+    @Column(name = "expected_distance", length = 50)
+    private String expectedDistance;
+
+    @Column(name = "expected_time", length = 50)
+    private String expectedTime;
+
+    @Column(name = "distance", length = 50)
+    private String distance;
+
+    @Column(name = "taken_time", length = 50)
+    private String takenTime;
+
+    @Column(name = "status", length = 50)
+    private DeliveryLogEnum status;
+
+    @Column(name = "deliver")
+    private UUID deliver;
+
+    @Column(name = "created_by", length = 50)
+    private String createdBy;
+
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+
+    @Column(name = "updated_by", length = 50)
+    private String updatedBy;
+
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
+    @Column(name = "deleted_by", length = 50)
+    private String deletedBy;
+
+    @Column(name = "deleted_at")
+    private LocalDateTime deletedAt;
+}
