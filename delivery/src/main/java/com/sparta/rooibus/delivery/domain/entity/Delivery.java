@@ -1,6 +1,5 @@
 package com.sparta.rooibus.delivery.domain.entity;
 
-import com.sparta.rooibus.delivery.application.dto.request.CreateDeliveryRequest;
 import com.sparta.rooibus.delivery.application.dto.request.UpdateDeliveryRequest;
 import com.sparta.rooibus.delivery.domain.model.DeliveryStatus;
 import jakarta.persistence.Column;
@@ -50,8 +49,8 @@ public class Delivery {
     @Column(name = "slack_acoount", length = 50)
     private String slackAccount;
 
-    @Column(name = "client_delivery_manager_id" )
-    private UUID clientDeliveryManagerId;
+    @Column(name = "client_deliver_id" )
+    private UUID clientDeliver;
 
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
@@ -71,7 +70,7 @@ public class Delivery {
     @Column(name = "deleted_by", length = 50)
     private String deletedBy;
 
-    public static Delivery of(UUID orderId, UUID departure, UUID arrival, String address, UUID recipient, String slackAccount, UUID clientManagerId) {
+    public static Delivery of(UUID orderId, UUID departure, UUID arrival, String address, UUID recipient, String slackAccount, UUID clientDeliverID) {
         Delivery delivery = new Delivery();
         delivery.orderId = orderId;
         delivery.departure = departure;
@@ -79,7 +78,7 @@ public class Delivery {
         delivery.address = address;
         delivery.recipient = recipient;
         delivery.slackAccount = slackAccount;
-        delivery.clientDeliveryManagerId = clientManagerId;
+        delivery.clientDeliver = clientDeliverID;
         return delivery;
     }
 
