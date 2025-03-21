@@ -106,13 +106,12 @@ public class Delivery {
     }
 
     public void delete(){
-        this.status = DeliveryStatus.CANCELED;
         this.deletedAt = LocalDateTime.now();
         this.deletedBy = "취소한 사람";// TODO: 로그인한 사람
     }
 
     public void validateDeletable() {
-        if (this.status == DeliveryStatus.IN_PROGRESS || this.status == DeliveryStatus.COMPLETED) {
+        if (this.status != DeliveryStatus.PENDING) {
             throw new IllegalStateException("배송 중이거나 완료된 주문은 삭제할 수 없습니다.");
         }
     }
