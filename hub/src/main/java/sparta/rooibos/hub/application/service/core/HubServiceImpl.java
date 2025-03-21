@@ -41,10 +41,11 @@ public class HubServiceImpl implements HubService {
         return CreateHubResponse.from(hubRepository.createHub(newHub));
     }
 
-    @Cacheable(
-            cacheNames = "getHub",
-            key = "'getHub:' + #hubId"
-    )
+    // TODO compose.yml 작성하기
+//    @Cacheable(
+//            cacheNames = "getHub",
+//            key = "'getHub:' + #hubId"
+//    )
     @Override
     public GetHubResponse getHub(UUID hubId) {
         return GetHubResponse.from(getHubForServer(hubId));
@@ -56,10 +57,10 @@ public class HubServiceImpl implements HubService {
                 .orElseThrow(() -> new BusinessHubException(HubErrorCode.HUB_NOT_FOUND));
     }
 
-    @Cacheable(
-            cacheNames = "searchHub",
-            key = "'searchHub:' + (#searchHubRequest.name() ?: '') + ':' + (#searchHubRequest.region() ?: '')"
-    )
+//    @Cacheable(
+//            cacheNames = "searchHub",
+//            key = "'searchHub:' + (#searchHubRequest.name() ?: '') + ':' + (#searchHubRequest.region() ?: '')"
+//    )
     @Override
     public SearchHubResponse searchHub(SearchHubRequest searchHubRequest) {
         Pagination<Hub> hubPagination = hubRepository.searchHub(
