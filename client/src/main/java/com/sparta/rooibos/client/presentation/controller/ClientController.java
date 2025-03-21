@@ -51,7 +51,7 @@ public class ClientController {
             @RequestHeader(name = "X-User-Name") String username,
             @RequestHeader(name = "X-User-Role") String role,
             @RequestBody @Valid CreateClientRequest createClientRequest) {
-        return ResponseEntity.ok(clientService.createClient(createClientRequest));
+        return ResponseEntity.ok(clientService.createClient(email,createClientRequest));
 
     }
 
@@ -62,7 +62,7 @@ public class ClientController {
             @RequestHeader("X-User-Name") String username,
             @RequestHeader("X-User-Role") String role,
             @PathVariable UUID clientId, @RequestBody UpdateClientRequest request) {
-        return ResponseEntity.ok(clientService.updateClient(clientId, request));
+        return ResponseEntity.ok(clientService.updateClient(email, clientId, request));
     }
 
     @PatchMapping("/{clientId}")
@@ -72,7 +72,7 @@ public class ClientController {
             @RequestHeader("X-User-Name") String username,
             @RequestHeader("X-User-Role") String role,
             @PathVariable UUID clientId) {
-        return ResponseEntity.ok(clientService.deleteClient(clientId));
+        return ResponseEntity.ok(clientService.deleteClient(email,clientId));
     }
 
     //사용 허브 변경

@@ -50,48 +50,48 @@ public class ClientService {
 
     public GetClientResponse getClient(UUID clientId) {
         Client client = clientRepository.findByIdAndDeleteByIsNull(clientId).orElseThrow(() -> new BusinessClientException(ClientErrorCode.NOT_EXITS_CLIENT));
-        Hub hub = hubService.getHub(client.getManagedHubId());
+        Hub hub = hubService.getHub(client.getManagedHubId()).orElseThrow(() -> new BusinessClientException(ClientErrorCode.NOT_FOUND_HUB));
         return new GetClientResponse(client.getId().toString(),
                 client.getName(),
                 client.getClientAddress(),
                 client.getType().name(),
-                new ManageHub(hub) ,
+                new ManageHub(hub),
                 client.getCreateAt(),
                 client.getUpdateAt());
     }
 
-    public CreateClientResponse createClient(CreateClientRequest createClientRequest) {
+    public CreateClientResponse createClient(String email, CreateClientRequest createClientRequest) {
         if (clientRepository.findByNameAndDeleteByIsNull(createClientRequest.name()).isPresent()) {
             throw new BusinessClientException(ClientErrorCode.NOT_FOUND_CLIENT);
         }
 
-        //TODO 계정 아이디를 등록해주면 된다.
+        Hub hub = hubService.getHub(createClientRequest.managedHubId()).orElseThrow(() -> new BusinessClientException(ClientErrorCode.NOT_FOUND_HUB));
+
         //업체 등록
         Client client = clientRepository.save(new Client(
                 createClientRequest.name(),
                 ClientType.valueOf(createClientRequest.clientType()),
-                createClientRequest.managedHubId(),
+                hub.hubId(),
                 createClientRequest.address(),
-                "계정아이디"));
+                email));
         return new CreateClientResponse(client);
     }
 
     @Transactional
-    public boolean updateClient(UUID clientId, UpdateClientRequest request) {
+    public boolean updateClient(String email, UUID clientId, UpdateClientRequest request) {
         if (clientRepository.findByNameAndDeleteByIsNull(request.name())
                 .filter(client -> !client.getId().equals(clientId)).isPresent()) {
             throw new BusinessClientException(ClientErrorCode.NOT_FOUND_CLIENT);
         }
         Client client = clientRepository.findByIdAndDeleteByIsNull(clientId).orElseThrow(() -> new BusinessClientException(ClientErrorCode.NOT_EXITS_CLIENT));
-        client.update(request.name(), request.address(), "계정아이디");
+        client.update(request.name(), request.address(), email);
         return true;
     }
 
     @Transactional
-    public boolean deleteClient(UUID id) {
+    public boolean deleteClient(String email, UUID id) {
         Client client = clientRepository.findByIdAndDeleteByIsNull(id).orElseThrow(() -> new BusinessClientException(ClientErrorCode.NOT_EXITS_CLIENT));
-        //TODO 삭제시 계정 ID를 가져온다.
-        return client.delete("계정아이디");
+        return client.delete(email);
     }
 
     @Transactional
