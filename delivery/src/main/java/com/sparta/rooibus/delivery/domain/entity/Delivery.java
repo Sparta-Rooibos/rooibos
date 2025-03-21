@@ -48,7 +48,7 @@ public class Delivery {
     @Column(name = "recipient_id" )
     private UUID recipient;
 
-    @Column(name = "slack_acoount", length = 50)
+    @Column(name = "slack_account", length = 50)
     private String slackAccount;
 
     @Column(name = "client_deliver_id" )

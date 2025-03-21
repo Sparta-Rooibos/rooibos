@@ -71,4 +71,18 @@ public class DeliveryRepositoryImpl implements DeliveryRepository {
     public Optional<Delivery> findById(UUID deliveryId) {
         return jpaRepository.findById(deliveryId);
     }
+
+    @Override
+    public Delivery findByIdAndHub(UUID deliveryId, UUID hubId) {
+        return jpaRepository.findByDepartureAndIdAndDeletedAtIsNull(deliveryId,hubId).orElseThrow(
+            ()-> new IllegalArgumentException("찾는 배송이 없음")
+        );
+    }
+
+    @Override
+    public Delivery findByDeliver(UUID userId,UUID deliveryId) {
+        return jpaRepository.findByClientDeliverAndIdAndDeletedAtIsNull(userId,deliveryId).orElseThrow(
+            ()-> new IllegalArgumentException("찾는 배송 정보 없음")
+        );
+    }
 }

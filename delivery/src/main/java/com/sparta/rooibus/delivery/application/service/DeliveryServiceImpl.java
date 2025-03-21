@@ -157,7 +157,7 @@ public class DeliveryServiceImpl {
                 return deliveryRepository.findByIdAndHub(deliveryId,hubId);
             }
             case "ROLE_DELIVERY"->{
-                return deliveryRepository.findByDeliver(userId);
+                return deliveryRepository.findByDeliver(userId,deliveryId);
             }
             default -> {
                 throw new BadRequestException("권한이 필요합니다");

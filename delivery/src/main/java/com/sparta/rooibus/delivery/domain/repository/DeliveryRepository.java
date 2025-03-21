@@ -22,5 +22,5 @@ public interface DeliveryRepository {
 
     Delivery findByIdAndHub(UUID deliveryId, UUID hubId);
 
-    Delivery findByDeliver(UUID userId);
+    Delivery findByDeliver(UUID userId,UUID deliveryId);
 }
