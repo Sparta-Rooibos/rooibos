@@ -9,6 +9,7 @@ import com.sparta.rooibos.product.application.dto.response.GetProductResponse;
 import com.sparta.rooibos.product.application.dto.response.SearchProductResponse;
 import com.sparta.rooibos.product.application.service.ProductService;
 import com.sparta.rooibos.product.application.type.Role;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -52,7 +53,7 @@ public class ProductController {
             @RequestHeader(value = "X-User-Email") String email,
             @RequestHeader(value = "X-User-Name") String username,
             @RequestHeader(value = "X-User-Role") String role,
-            @RequestBody CreateProductRequest request) {
+            @RequestBody @Valid CreateProductRequest request) {
         return ResponseEntity.ok(productService.createProduct(request));
     }
 
@@ -62,7 +63,7 @@ public class ProductController {
             @RequestHeader(value = "X-User-Email") String email,
             @RequestHeader(value = "X-User-Name") String username,
             @RequestHeader(value = "X-User-Role") String role,
-            @PathVariable UUID productId, @RequestBody UpdateProductRequest request) {
+            @PathVariable UUID productId, @RequestBody @Valid UpdateProductRequest request) {
         return ResponseEntity.ok(productService.updateProduct(productId, request));
     }
 
