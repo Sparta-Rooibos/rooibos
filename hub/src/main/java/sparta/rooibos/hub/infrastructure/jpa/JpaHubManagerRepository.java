@@ -9,4 +9,6 @@ import java.util.UUID;
 public interface JpaHubManagerRepository extends JpaRepository<HubManager, UUID> {
 
     Optional<HubManager> findHubManagerByUserIdAndDeletedAtIsNull(UUID userId);
+
+    Optional<HubManager> findHubManagerByUsernameAndDeletedAtIsNull(String username);
 }

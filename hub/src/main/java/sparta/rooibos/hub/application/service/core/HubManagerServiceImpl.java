@@ -29,20 +29,32 @@ public class HubManagerServiceImpl implements HubManagerService {
 
     @Override
     public GetHubManagerHubIdResponse getHubIdByUserId(UUID userId) {
-        HubManager targetHubManger = getHubManagerByUserId(userId);
+        HubManager targetHubManger = getHubManager(userId);
+
+        return GetHubManagerHubIdResponse.from(targetHubManger);
+    }
+
+    @Override
+    public GetHubManagerHubIdResponse getHubIdByUsername(String username) {
+        HubManager targetHubManger = getHubManager(username);
 
         return GetHubManagerHubIdResponse.from(targetHubManger);
     }
 
     @Override
     public void deleteHubManager(UUID userId) {
-        HubManager targetHubManager = getHubManagerByUserId(userId);
+        HubManager targetHubManager = getHubManager(userId);
 
         targetHubManager.delete();
     }
 
-    private HubManager getHubManagerByUserId(UUID userId) {
+    private HubManager getHubManager(UUID userId) {
         return hubManagerRepository.getHubManagerByUserId(userId)
+                .orElseThrow(() -> new BusinessHubManagerException(HubManagerErrorCode.HUB_MANAGER_NOT_FOUND));
+    }
+
+    private HubManager getHubManager(String username) {
+        return hubManagerRepository.getHubManagerByUsername(username)
                 .orElseThrow(() -> new BusinessHubManagerException(HubManagerErrorCode.HUB_MANAGER_NOT_FOUND));
     }
 }

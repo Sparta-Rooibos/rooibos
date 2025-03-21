@@ -9,4 +9,6 @@ public interface HubManagerRepository {
     HubManager createHubManager(UUID userId, UUID hubId);
 
     Optional<HubManager> getHubManagerByUserId(UUID userId);
+
+    Optional<HubManager> getHubManagerByUsername(String username);
 }

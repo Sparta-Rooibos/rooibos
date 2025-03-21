@@ -24,9 +24,14 @@ public class HubManagerController {
         return ResponseEntity.ok(hubManagerService.createHubManager(createHubManagerRequest));
     }
 
-    @GetMapping
+    @GetMapping(params = "userId")
     public ResponseEntity<GetHubManagerHubIdResponse> getHubIdByUserId(@RequestParam UUID userId) {
         return ResponseEntity.ok(hubManagerService.getHubIdByUserId(userId));
+    }
+
+    @GetMapping(params = "username")
+    public ResponseEntity<GetHubManagerHubIdResponse> getHubIdByUserMame(@RequestParam String username) {
+        return ResponseEntity.ok(hubManagerService.getHubIdByUsername(username));
     }
 
     @PatchMapping

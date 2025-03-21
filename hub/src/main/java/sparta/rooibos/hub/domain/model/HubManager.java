@@ -21,6 +21,8 @@ public class HubManager {
 
     private UUID userId;
 
+    private String username;
+
     private UUID hubId;
 
     @ManyToOne(fetch = FetchType.LAZY)

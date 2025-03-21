@@ -24,4 +24,9 @@ public class HubManagerRepositoryImpl implements HubManagerRepository {
     public Optional<HubManager> getHubManagerByUserId(UUID userId) {
         return jpaHubManagerRepository.findHubManagerByUserIdAndDeletedAtIsNull(userId);
     }
+
+    @Override
+    public Optional<HubManager> getHubManagerByUsername(String username) {
+        return jpaHubManagerRepository.findHubManagerByUsernameAndDeletedAtIsNull(username);
+    }
 }
