@@ -8,8 +8,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.UUID;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -19,8 +17,6 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class DeliveryLog {
     @Id
     @GeneratedValue
@@ -36,7 +32,7 @@ public class DeliveryLog {
     @Column(name = "arrival")
     private UUID arrival;
 
-    @Column(name = "sequence", length = 100)
+    @Column(name = "sequence", length = 255)
     private String sequence;
 
     @Column(name = "expected_distance", length = 50)
@@ -46,7 +42,7 @@ public class DeliveryLog {
     private String expectedTime;
 
     @Column(name = "distance", length = 50)
-    private String distance;
+    private String takenDistance;
 
     @Column(name = "taken_time", length = 50)
     private String takenTime;
@@ -74,4 +70,17 @@ public class DeliveryLog {
 
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
+
+    public static DeliveryLog of(UUID deliveryId, UUID departure, UUID arrival, String sequence, String expectedDistance, String expectedTime, UUID deliverId) {
+        DeliveryLog deliveryLog = new DeliveryLog();
+        deliveryLog.deliveryId = deliveryId;
+        deliveryLog.departure = departure;
+        deliveryLog.arrival = arrival;
+        deliveryLog.sequence = sequence;
+        deliveryLog.expectedDistance = expectedDistance;
+        deliveryLog.expectedTime = expectedTime;
+        deliveryLog.deliver = deliveryId;
+        deliveryLog.status = DeliveryLogEnum.PENDING;
+        return deliveryLog;
+    }
 }

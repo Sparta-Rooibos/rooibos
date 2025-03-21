@@ -6,17 +6,14 @@ import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.sparta.rooibus.delivery.application.dto.request.SearchDeliveryRequestDTO;
 import com.sparta.rooibus.delivery.domain.entity.Delivery;
 import com.sparta.rooibus.delivery.domain.entity.QDelivery;
-import com.sparta.rooibus.delivery.domain.model.DeliveryStatus;
 import com.sparta.rooibus.delivery.domain.model.Pagination;
 import com.sparta.rooibus.delivery.domain.repository.DeliveryRepository;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Repository;
 
 @Repository

@@ -6,17 +6,24 @@ import com.sparta.rooibus.delivery.application.dto.request.UpdateDeliveryRequest
 import com.sparta.rooibus.delivery.application.dto.request.feign.client.GetClientManagerRequest;
 import com.sparta.rooibus.delivery.application.dto.request.feign.client.GetClientRequest;
 import com.sparta.rooibus.delivery.application.dto.request.feign.deliverAgent.GetDeliverRequest;
+import com.sparta.rooibus.delivery.application.dto.request.feign.deliverAgent.GetHubDeliverRequest;
+import com.sparta.rooibus.delivery.application.dto.request.feign.route.GetRouteRequest;
 import com.sparta.rooibus.delivery.application.dto.request.feign.user.GetUserRequest;
 import com.sparta.rooibus.delivery.application.dto.response.CreateDeliveryResponse;
 import com.sparta.rooibus.delivery.application.dto.response.GetDeliveryResponse;
 import com.sparta.rooibus.delivery.application.dto.response.SearchDeliveryResponse;
 import com.sparta.rooibus.delivery.application.dto.response.UpdateDeliveryResponse;
 import com.sparta.rooibus.delivery.application.dto.response.feign.client.GetClientResponse;
+import com.sparta.rooibus.delivery.application.dto.response.feign.deliverAgent.GetHubDeliverResponse;
+import com.sparta.rooibus.delivery.application.dto.response.feign.route.GetRouteResponse;
 import com.sparta.rooibus.delivery.application.service.feign.ClientService;
 import com.sparta.rooibus.delivery.application.service.feign.DeliveryAgentService;
+import com.sparta.rooibus.delivery.application.service.feign.RouteService;
 import com.sparta.rooibus.delivery.application.service.feign.UserService;
 import com.sparta.rooibus.delivery.domain.entity.Delivery;
+import com.sparta.rooibus.delivery.domain.entity.DeliveryLog;
 import com.sparta.rooibus.delivery.domain.model.Pagination;
+import com.sparta.rooibus.delivery.domain.repository.DeliveryLogRepository;
 import com.sparta.rooibus.delivery.domain.repository.DeliveryRepository;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.UUID;
@@ -34,6 +41,8 @@ public class DeliveryService {
     private final ClientService clientService;
     private final UserService userService;
     private final DeliveryAgentService deliveryAgentService;
+    private final RouteService routeService;
+    private final DeliveryLogRepository deliveryLogRepository;
 
     @Transactional
     public CreateDeliveryResponse createDelivery(CreateDeliveryRequest request) {
@@ -59,6 +68,27 @@ public class DeliveryService {
             clientDeliverId
         );
         deliveryRepository.save(delivery);
+
+        GetRouteResponse routeResponse = routeService.getRoute(GetRouteRequest.of(departure,arrival));
+        String expectedDistance = routeResponse.expected_distance();
+        String expectedTime = routeResponse.expected_time();
+        String sequence = routeResponse.routeList().toString();
+
+        GetHubDeliverResponse deliverResponse = deliveryAgentService.getHubDeliver(
+            GetHubDeliverRequest.from(departure));
+        UUID deliverId = deliverResponse.deliverId();
+
+        DeliveryLog deliveryLog = DeliveryLog.of(
+            delivery.getId(),
+            departure,
+            arrival,
+            sequence,
+            expectedDistance,
+            expectedTime,
+            deliverId
+        );
+
+        deliveryLogRepository.save(deliveryLog);
 
         return CreateDeliveryResponse.from(delivery);
     }
