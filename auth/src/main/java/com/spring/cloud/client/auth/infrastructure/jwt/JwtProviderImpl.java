@@ -11,8 +11,8 @@ public class JwtProviderImpl implements JwtProvider {
     private final JwtValidator jwtValidator;
 
     @Override
-    public String createJwt(String type, String email, String role, long expiration) {
-        return jwtGenerator.createJwt(type, email, role, expiration);
+    public String createJwt(String type, String username, String email, String role, long expiration) {
+        return jwtGenerator.createJwt(type, username, email, role, expiration);
     }
 
     @Override
@@ -26,9 +26,10 @@ public class JwtProviderImpl implements JwtProvider {
     }
 
     @Override
-    public String getEmail(String token) {
-        return jwtValidator.getEmail(token);
-    }
+    public String getEmail(String token) { return jwtValidator.getEmail(token); }
+
+    @Override
+    public String getUsername(String token) { return jwtValidator.getUsername(token); }
 
     @Override
     public String getRole(String token) {
