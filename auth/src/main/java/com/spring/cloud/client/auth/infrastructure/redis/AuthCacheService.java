@@ -1,6 +1,7 @@
 package com.spring.cloud.client.auth.infrastructure.redis;
 
 import com.spring.cloud.client.auth.application.dto.UserAuthDTO;
+import com.spring.cloud.client.auth.application.dto.UserStreamEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
