@@ -1,5 +1,6 @@
 package com.sparta.rooibus.delivery.application.service;
 
+import com.sparta.rooibus.delivery.application.aop.UserContextRequestBean;
 import com.sparta.rooibus.delivery.application.dto.request.CreateDeliveryRequest;
 import com.sparta.rooibus.delivery.application.dto.request.SearchRequest;
 import com.sparta.rooibus.delivery.application.dto.request.UpdateDeliveryRequest;
@@ -26,6 +27,7 @@ import com.sparta.rooibus.delivery.domain.model.Pagination;
 import com.sparta.rooibus.delivery.domain.repository.DeliveryLogRepository;
 import com.sparta.rooibus.delivery.domain.repository.DeliveryRepository;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.ws.rs.BadRequestException;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
@@ -36,13 +38,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class DeliveryService {
+public class DeliveryServiceImpl {
     private final DeliveryRepository deliveryRepository;
     private final ClientService clientService;
     private final UserService userService;
     private final DeliveryAgentService deliveryAgentService;
     private final RouteService routeService;
     private final DeliveryLogRepository deliveryLogRepository;
+    private final UserContextRequestBean userContext;
 
     @Transactional
     public CreateDeliveryResponse createDelivery(CreateDeliveryRequest request) {
@@ -96,28 +99,30 @@ public class DeliveryService {
     @Transactional(readOnly = true)
     @Cacheable(value = "deliveryCache", key = "#deliveryId")
     public GetDeliveryResponse getDelivery(UUID deliveryId) {
-        Delivery delivery = deliveryRepository.findById(deliveryId).orElseThrow(
-            ()-> new EntityNotFoundException("찾으시는 데이터가 올바르지 않습니다.")
-        );
+        Delivery delivery = findDelivery(deliveryId);
         return GetDeliveryResponse.from(delivery);
     }
 
     @Transactional
     @CachePut(value = "deliveryCache", key = "#request.deliveryId()")
     public UpdateDeliveryResponse updateDelivery(UpdateDeliveryRequest request) {
-        Delivery delivery = deliveryRepository.findById(request.deliveryId()).orElseThrow(
-            ()-> new EntityNotFoundException("찾으시는 데이터가 올바르지 않습니다.")
-        );
-        delivery.update(request);
+        if(userContext.getRole().equalsIgnoreCase("ROLE_CLIENT")){
+            throw new BadRequestException("권한이 필요합니다");
+        }
+        Delivery delivery = findDelivery(request.deliveryId());
+        delivery.updateStatus(request.status());
         return UpdateDeliveryResponse.from(delivery);
     }
 
     @Transactional
     @CacheEvict(value = "deliveryCache", key = "#deliveryId")
     public UUID deleteDelivery(UUID deliveryId) {
-        Delivery delivery = deliveryRepository.findById(deliveryId).orElseThrow(
-            ()-> new EntityNotFoundException("찾으시는 데이터가 올바르지 않습니다.")
-        );
+        if(userContext.getRole().equalsIgnoreCase("ROLE_CLIENT") ||
+            userContext.getRole().equalsIgnoreCase("ROLE_DELIVERY")
+        ){
+            throw new BadRequestException("권한이 필요합니다");
+        }
+        Delivery delivery = findDelivery(deliveryId);
         delivery.validateDeletable();
         delivery.delete();
         return delivery.getId();
@@ -135,5 +140,28 @@ public class DeliveryService {
         Pagination<Delivery> deliveryPagination = deliveryRepository.searchOrders(keyword,filterKey,filterValue,sort,page,size);
 
         return SearchDeliveryResponse.from(deliveryPagination);
+    }
+
+    private Delivery findDelivery(UUID deliveryId){
+        String role = userContext.getRole();
+        UUID userId = userContext.getUserId();
+
+        switch (role){
+//            TODO : feignclient로 hubid
+            case "ROLE_MASTER"->{
+                return deliveryRepository.findById(deliveryId)
+                    .orElseThrow(()-> new EntityNotFoundException("찾으시는 데이터가 올바르지 않습니다."));
+            }
+            case "ROLE_HUB"->{
+                UUID hubId = UUID.randomUUID();
+                return deliveryRepository.findByIdAndHub(deliveryId,hubId);
+            }
+            case "ROLE_DELIVERY"->{
+                return deliveryRepository.findByDeliver(userId);
+            }
+            default -> {
+                throw new BadRequestException("권한이 필요합니다");
+            }
+        }
     }
 }

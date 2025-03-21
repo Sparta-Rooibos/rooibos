@@ -19,4 +19,8 @@ public interface DeliveryRepository {
     Delivery save(Delivery order);
 
     Optional<Delivery> findById(UUID deliveryId);
+
+    Delivery findByIdAndHub(UUID deliveryId, UUID hubId);
+
+    Delivery findByDeliver(UUID userId);
 }

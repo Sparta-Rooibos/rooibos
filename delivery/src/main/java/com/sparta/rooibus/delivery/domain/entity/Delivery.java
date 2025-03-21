@@ -98,13 +98,8 @@ public class Delivery {
         this.updatedAt = LocalDateTime.now();
     }
 
-    public void update(UpdateDeliveryRequest request) {
-        Optional.ofNullable(request.departure()).ifPresent(dep -> this.departure = dep);
-        Optional.ofNullable(request.arrival()).ifPresent(arr -> this.arrival = arr);
-        Optional.ofNullable(request.address()).ifPresent(addr -> this.address = addr);
-        Optional.ofNullable(request.recipient()).ifPresent(rec -> this.recipient = rec);
-        Optional.ofNullable(request.slackAccount()).ifPresent(slack -> this.slackAccount = slack);
-//      TODO : status 변경하는 로직 ???하는게 맞다하면 만들기
+    public void updateStatus(DeliveryStatus status) {
+        this.status = status;
     }
 
     public void delete(){
