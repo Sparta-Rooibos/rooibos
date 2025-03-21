@@ -10,6 +10,8 @@ import com.sparta.rooibos.product.application.dto.response.SearchProductResponse
 import com.sparta.rooibos.product.application.exception.BusinessProductException;
 import com.sparta.rooibos.product.application.exception.ProductErrorCode;
 import com.sparta.rooibos.product.domain.entity.Product;
+import com.sparta.rooibos.product.domain.feign.dto.Client;
+import com.sparta.rooibos.product.domain.feign.service.ClientService;
 import com.sparta.rooibos.product.domain.repository.ProductRepository;
 import com.sparta.rooibos.product.domain.repository.QueryProductRepository;
 import jakarta.transaction.Transactional;
@@ -25,7 +27,7 @@ import java.util.UUID;
 public class ProductService {
     private final ProductRepository productRepository;
     private final QueryProductRepository queryProductRepository;
-
+    private final ClientService clientService;
 
     public SearchProductResponse getProductList(SearchProductRequest request, Pageable pageable) {
         Page<Product> products = queryProductRepository.getProductList(pageable, request.id(), request.name(), request.isDeleted());
@@ -44,11 +46,19 @@ public class ProductService {
         if (productRepository.findByNameAndDeleteByIsNull(request.name()).isPresent()) {
             throw new BusinessProductException(ProductErrorCode.NOT_EXITS_PRODUCT);
         }
+
+        Client client = clientService.getClient(request.clientId());
+
+        // 수령 업체는 제품 생산이 불가능합니다.
+        if(client.type().equals("CONSUME")) {
+            throw new BusinessProductException(ProductErrorCode.NOT_SUPPORTED_TYPE);
+        }
+
         // 상품 등록
         Product product = productRepository.save(new Product(
                 request.name(),
-                request.clientId(),
-                request.managedHubId(),
+                client.id(),
+                client.manageHub().id(),
                 "계정 아이디"
         ));
 

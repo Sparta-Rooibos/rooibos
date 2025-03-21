@@ -35,7 +35,11 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseEntity<CreateProductResponse> createProduct(@RequestBody CreateProductRequest request) {
+    public ResponseEntity<CreateProductResponse> createProduct(
+            @RequestHeader(value = "X-User-Email") String email,
+            @RequestHeader(value = "X-User-Name") String username,
+            @RequestHeader(value = "X-User-Role") String role,
+            @RequestBody CreateProductRequest request) {
         return ResponseEntity.ok(productService.createProduct(request));
     }
 
