@@ -28,10 +28,13 @@ public class Hub {
     @Column(columnDefinition = "UUID DEFAULT gen_random_uuid()")
     private UUID hubId;
 
+    @Column(nullable = false)
     private String name;
 
+    @Column(nullable = false)
     private String region;
 
+    @Column(nullable = false)
     private String address;
 
     // TODO Point 사용할지 고민 -> 지도 라이브러리에 따라 다를듯?

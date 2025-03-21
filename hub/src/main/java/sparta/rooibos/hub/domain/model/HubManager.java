@@ -1,6 +1,7 @@
 package sparta.rooibos.hub.domain.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -18,10 +19,14 @@ public class HubManager {
     @Column(columnDefinition = "UUID DEFAULT gen_random_uuid()")
     private UUID hubManagerId;
 
+    @Column(nullable = false)
     private UUID userId;
 
+    @Email
+    @Column(nullable = false)
     private String email;
 
+    @Column(nullable = false)
     private UUID belongingHubId;
 
     @ManyToOne(fetch = FetchType.LAZY)
