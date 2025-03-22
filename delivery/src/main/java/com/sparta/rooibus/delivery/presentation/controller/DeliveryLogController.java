@@ -36,5 +36,10 @@ public class DeliveryLogController {
         return ResponseEntity.ok(deliveryLogService.updateDeliveryLog(request));
     }
 
+    @PatchMapping("/{deliveryLog}")
+    public ResponseEntity<DeleteDeliveryLogResponse> deleteDeliveryLog(@PathVariable UUID deliveryLog){
+        return ResponseEntity.ok(deliveryLogService.deleteDeliveryLog(deliveryLog));
+    }
+
 
 }

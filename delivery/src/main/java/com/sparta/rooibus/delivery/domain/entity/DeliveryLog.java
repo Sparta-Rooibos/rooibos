@@ -88,4 +88,8 @@ public class DeliveryLog {
         DeliveryLogEnum deliveryStatus = DeliveryLogEnum.valueOf(status);
         this.status = deliveryStatus;
     }
+
+    public void delete() {
+        this.deletedAt =LocalDateTime.now();
+    }
 }

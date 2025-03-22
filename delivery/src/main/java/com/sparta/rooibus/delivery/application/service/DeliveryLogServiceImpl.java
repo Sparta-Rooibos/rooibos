@@ -4,6 +4,7 @@ import com.sparta.rooibus.delivery.domain.entity.DeliveryLog;
 import com.sparta.rooibus.delivery.domain.repository.DeliveryLogRepository;
 import com.sparta.rooibus.delivery.presentation.controller.CreateDeliveryLogRequest;
 import com.sparta.rooibus.delivery.presentation.controller.CreateDeliveryLogResponse;
+import com.sparta.rooibus.delivery.presentation.controller.DeleteDeliveryLogResponse;
 import com.sparta.rooibus.delivery.presentation.controller.GetDeliveryLogResponse;
 import com.sparta.rooibus.delivery.presentation.controller.UpdateDeliveryLogRequest;
 import com.sparta.rooibus.delivery.presentation.controller.UpdateDeliveryLogResponse;
@@ -45,5 +46,13 @@ public class DeliveryLogServiceImpl {
         );
         deliveryLog.setStatus(request.status());
         return UpdateDeliveryLogResponse.from(deliveryLog);
+    }
+
+    public DeleteDeliveryLogResponse deleteDeliveryLog(UUID deliveryLogId) {
+        DeliveryLog deliveryLog = deliveryLogRepository.findById(deliveryLogId).orElseThrow(
+            ()-> new EntityNotFoundException("찾는거 없음")
+        );
+        deliveryLog.delete();
+        return DeleteDeliveryLogResponse.from(deliveryLog);
     }
 }
