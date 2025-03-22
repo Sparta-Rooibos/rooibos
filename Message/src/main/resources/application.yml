@@ -9,7 +9,6 @@ spring:
     driver-class-name: org.postgresql.Driver
     hikari:
       maximum-pool-size: 10
-
   jpa:
     hibernate:
       ddl-auto: update
@@ -17,3 +16,15 @@ spring:
     properties:
       hibernate:
         format_sql: true
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:19090/eureka
+
+management:
+  zipkin:
+    tracing:
+      endpoint: http://localhost:9411/api/v2/spans
+  tracing:
+    sampling:
+      probability: 0.1
