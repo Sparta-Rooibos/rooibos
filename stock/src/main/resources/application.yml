@@ -8,6 +8,14 @@ spring:
     password: 1234  # 데이터베이스 비밀번호
   jpa:
     hibernate:
-      ddl-auto: update  # ?????? ??? ?? ??/???? (create, update, validate, none ? ??)
-    show-sql: true  # SQL ?? ?? ??
-    generate-ddl: true  # DDL ?? ??
+      ddl-auto: update
+    show-sql: true
+    generate-ddl: true
+
+management:
+  zipkin:
+    tracing:
+      endpoint: http://localhost:9411/api/v2/spans
+  tracing:
+    sampling:
+      probability: 0.1
