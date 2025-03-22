@@ -1,4 +1,6 @@
 package com.sparta.rooibos.stock.application.dto.request;
 
-public record UpdateStockRequest(int quantity) {
+import jakarta.validation.constraints.PositiveOrZero;
+
+public record UpdateStockRequest(@PositiveOrZero int quantity) {
 }

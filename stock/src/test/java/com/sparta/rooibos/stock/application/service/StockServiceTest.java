@@ -29,9 +29,9 @@ class StockServiceTest {
         ExecutorService executorService = Executors.newFixedThreadPool(100);
 
         // 두 스레드에서 동시에 재고 차감 시도
-        for(int i = 0 ; i < 100 ; i++){
+        for (int i = 0; i < 100; i++) {
             executorService.submit(() -> {
-                stockService.updateStock(stockId, new UpdateStockRequest(-1)); // 첫 번째 스레드
+                stockService.updateStock(null, stockId, new UpdateStockRequest(-1)); // 첫 번째 스레드
             });
         }
 
