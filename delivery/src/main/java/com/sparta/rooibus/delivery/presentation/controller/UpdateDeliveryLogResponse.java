@@ -3,7 +3,7 @@ package com.sparta.rooibus.delivery.presentation.controller;
 import com.sparta.rooibus.delivery.domain.entity.DeliveryLog;
 import java.util.UUID;
 
-public record GetDeliveryLogResponse(
+public record UpdateDeliveryLogResponse(
     UUID id,
     UUID deliveryId,
     UUID departure,
@@ -16,9 +16,8 @@ public record GetDeliveryLogResponse(
     String status,
     UUID deliver
 ) {
-
-    public static GetDeliveryLogResponse from(DeliveryLog deliveryLog) {
-        return new GetDeliveryLogResponse(
+    public static UpdateDeliveryLogResponse from(DeliveryLog deliveryLog) {
+        return new UpdateDeliveryLogResponse(
             deliveryLog.getId(),
             deliveryLog.getDeliveryId(),
             deliveryLog.getDeparture(),

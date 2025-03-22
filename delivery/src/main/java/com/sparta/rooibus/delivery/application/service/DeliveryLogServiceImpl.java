@@ -5,6 +5,8 @@ import com.sparta.rooibus.delivery.domain.repository.DeliveryLogRepository;
 import com.sparta.rooibus.delivery.presentation.controller.CreateDeliveryLogRequest;
 import com.sparta.rooibus.delivery.presentation.controller.CreateDeliveryLogResponse;
 import com.sparta.rooibus.delivery.presentation.controller.GetDeliveryLogResponse;
+import com.sparta.rooibus.delivery.presentation.controller.UpdateDeliveryLogRequest;
+import com.sparta.rooibus.delivery.presentation.controller.UpdateDeliveryLogResponse;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -34,5 +36,14 @@ public class DeliveryLogServiceImpl {
             ()-> new EntityNotFoundException("찾는거 없음")
         );
         return GetDeliveryLogResponse.from(deliveryLog);
+    }
+
+    public UpdateDeliveryLogResponse updateDeliveryLog(UpdateDeliveryLogRequest request) {
+        UUID deliveryLogId = request.deliveryLogId();
+        DeliveryLog deliveryLog = deliveryLogRepository.findById(deliveryLogId).orElseThrow(
+            ()-> new EntityNotFoundException("찾는거 없음")
+        );
+        deliveryLog.setStatus(request.status());
+        return UpdateDeliveryLogResponse.from(deliveryLog);
     }
 }

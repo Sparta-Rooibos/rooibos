@@ -1,6 +1,7 @@
 package com.sparta.rooibus.delivery.domain.entity;
 
 import com.sparta.rooibus.delivery.domain.model.DeliveryLogEnum;
+import com.sparta.rooibus.delivery.domain.model.DeliveryStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -15,7 +16,6 @@ import lombok.Setter;
 @Entity
 @Table(name = "p_deliverylog")
 @Getter
-@Setter
 @NoArgsConstructor
 public class DeliveryLog {
     @Id
@@ -82,5 +82,10 @@ public class DeliveryLog {
         deliveryLog.deliver = deliverId;
         deliveryLog.status = DeliveryLogEnum.PENDING;
         return deliveryLog;
+    }
+
+    public void setStatus(String status) {
+        DeliveryLogEnum deliveryStatus = DeliveryLogEnum.valueOf(status);
+        this.status = deliveryStatus;
     }
 }
