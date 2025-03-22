@@ -1,6 +1,6 @@
 package com.sparta.rooibos.product.application.dto.request;
 
-import java.util.UUID;
+import jakarta.validation.constraints.NotNull;
 
-public record UpdateProductRequest(String name) {
+public record UpdateProductRequest(@NotNull String name) {
 }

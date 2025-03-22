@@ -62,8 +62,9 @@ public class Product {
         this.createBy = userId;
     }
 
-    public void update(String name) {
+    public void update(String name, String email) {
         this.name = name;
+        this.updateBy = email;
     }
 
     public void delete(String userId) {
