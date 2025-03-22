@@ -1,6 +1,5 @@
 package com.sparta.rooibus.delivery.domain.entity;
 
-import com.sparta.rooibus.delivery.application.dto.request.UpdateDeliveryRequest;
 import com.sparta.rooibus.delivery.domain.model.DeliveryStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -12,7 +11,6 @@ import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
-import java.util.Optional;
 import java.util.UUID;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

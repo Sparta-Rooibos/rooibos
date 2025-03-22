@@ -28,6 +28,7 @@ import com.sparta.rooibus.delivery.domain.repository.DeliveryLogRepository;
 import com.sparta.rooibus.delivery.domain.repository.DeliveryRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.ws.rs.BadRequestException;
+import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
@@ -137,7 +138,7 @@ public class DeliveryServiceImpl {
         int page = searchRequest.page();
         int size = searchRequest.size();
 
-        Pagination<Delivery> deliveryPagination = deliveryRepository.searchDeliveries(keyword,filterKey,filterValue,sort,page,size);
+        Pagination<Delivery> deliveryPagination = searchDeliveries(keyword,filterKey,filterValue,sort,page,size);
 
         return SearchDeliveryResponse.from(deliveryPagination);
     }
@@ -157,7 +158,39 @@ public class DeliveryServiceImpl {
                 return deliveryRepository.findByIdAndHub(deliveryId,hubId);
             }
             case "ROLE_DELIVERY"->{
+//                TODO : 허브 배송자 인지, 업체 배송자인지 확인을 페인 클라이언트 처리
                 return deliveryRepository.findByDeliver(userId,deliveryId);
+            }
+            case "ROLE_CLIENT"->{
+                return deliveryRepository.findById(deliveryId)
+                    .orElseThrow(()-> new EntityNotFoundException("찾으시는 데이터가 올바르지 않습니다."));
+            }
+            default -> {
+                throw new BadRequestException("권한이 필요합니다");
+            }
+        }
+    }
+
+    private Pagination<Delivery> searchDeliveries(String keyword,String filterKey,String filterValue,String sort,int page,int size){
+        String role = userContext.getRole();
+        UUID userId = userContext.getUserId();
+
+        switch (role){
+//            TODO : feign client로 hubId
+            case "ROLE_MASTER"->{
+                return deliveryRepository.searchDeliveries(keyword,filterKey,filterValue,sort,page,size);
+            }
+            case "ROLE_HUB"->{
+                UUID hubId = UUID.randomUUID();
+                return deliveryRepository.findAllByDeparture(hubId,keyword,filterKey,filterValue,sort,page,size);
+            }
+            case "ROLE_DELIVERY"->{
+//                TODO : 허브 배송자 인지, 업체 배송자인지 확인을 페인 클라이언트로 해야함.
+                UUID deliverId = UUID.randomUUID();
+                return deliveryRepository.searchDeliveriesByDeliver(deliverId,keyword,filterKey,filterValue,sort,page,size);
+            }
+            case "ROLE_CLIENT"->{
+                return deliveryRepository.searchDeliveries(keyword,filterKey,filterValue,sort,page,size);
             }
             default -> {
                 throw new BadRequestException("권한이 필요합니다");
