@@ -11,9 +11,11 @@ import com.sparta.rooibos.message.domain.repository.MessageRepository;
 import com.sparta.rooibos.message.domain.repository.MessageRepositoryCustom;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.Disposable;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
@@ -26,28 +28,32 @@ public class MessageService {
     private final MessageRepository repository;
     private final MessageRepositoryCustom repositoryCustom;
 
+    @Value("${slack.token}")
+    private String slackToken;
+
     public CreateMessageResponse createMessage(String email, CreateMessageRequest request) {
         sendMessage(request.content());
         return CreateMessageResponse.create(repository.save(request.toEntity(email)));
     }
 
     private void sendMessage(String content) {
-        WebClient webClient = WebClient.builder()
-                .baseUrl("https://hooks.slack.com/services/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")
-                .build();
+        WebClient webClient = WebClient.create("https://slack.com/api");
 
-        String payload = """
-                {"text": "%s"}
-                """.formatted(content);
-
-        Mono<String> response = webClient.post()
+        Disposable subscribe = webClient.post()
+                .uri("/chat.postMessage")
+                .header("Authorization", "Bearer " + slackToken)
                 .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(payload)
-                .retrieve()
-                .bodyToMono(String.class);
+                .bodyValue("""
+                        {
+                        "channel": "#테스트입니다",
+                        "text": "%s"
+                        }
+                        """.formatted(content)).retrieve()
+                .bodyToMono(String.class)
+                .subscribe();
 
+        System.out.println(subscribe.isDisposed());
 
-        response.subscribe(message -> log.info("Message sent: {}", message));
     }
 
     public SearchMessageResponse searchMessage(SearchMessageRequest request) {

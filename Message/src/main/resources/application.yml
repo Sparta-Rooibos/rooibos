@@ -28,3 +28,6 @@ management:
   tracing:
     sampling:
       probability: 0.1
+
+slack:
+  token: {token}
