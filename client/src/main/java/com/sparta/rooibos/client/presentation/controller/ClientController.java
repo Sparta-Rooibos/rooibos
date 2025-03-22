@@ -9,6 +9,7 @@ import com.sparta.rooibos.client.application.dto.request.UpdateHubIdRequest;
 import com.sparta.rooibos.client.application.dto.response.CreateClientResponse;
 import com.sparta.rooibos.client.application.dto.response.GetClientResponse;
 import com.sparta.rooibos.client.application.dto.response.SearchClientResponse;
+import com.sparta.rooibos.client.application.service.ClientManagerService;
 import com.sparta.rooibos.client.application.service.ClientService;
 import com.sparta.rooibos.client.application.type.Role;
 import jakarta.validation.Valid;
@@ -29,7 +30,7 @@ public class ClientController {
     public ResponseEntity<SearchClientResponse> getClientList(
             @RequestHeader("X-User-Email") String email,
             @RequestHeader("X-User-Name") String username,
-            @RequestHeader("X-User-Role") Role role,
+            @RequestHeader("X-User-Role") String role,
             @ModelAttribute SearchClientRequest request) {
         return ResponseEntity.ok(clientService.searchClient(request));
     }
@@ -39,7 +40,7 @@ public class ClientController {
     public ResponseEntity<GetClientResponse> getClient(
             @RequestHeader("X-User-Email") String email,
             @RequestHeader("X-User-Name") String username,
-            @RequestHeader("X-User-Role") Role role,
+            @RequestHeader("X-User-Role") String role,
             @PathVariable UUID clientId) {
         return ResponseEntity.ok(clientService.getClient(clientId));
     }
@@ -51,7 +52,7 @@ public class ClientController {
             @RequestHeader(name = "X-User-Name") String username,
             @RequestHeader(name = "X-User-Role") String role,
             @RequestBody @Valid CreateClientRequest createClientRequest) {
-        return ResponseEntity.ok(clientService.createClient(createClientRequest));
+        return ResponseEntity.ok(clientService.createClient(email, createClientRequest));
 
     }
 
@@ -62,7 +63,7 @@ public class ClientController {
             @RequestHeader("X-User-Name") String username,
             @RequestHeader("X-User-Role") String role,
             @PathVariable UUID clientId, @RequestBody UpdateClientRequest request) {
-        return ResponseEntity.ok(clientService.updateClient(clientId, request));
+        return ResponseEntity.ok(clientService.updateClient(email, role, clientId, request));
     }
 
     @PatchMapping("/{clientId}")
@@ -72,7 +73,7 @@ public class ClientController {
             @RequestHeader("X-User-Name") String username,
             @RequestHeader("X-User-Role") String role,
             @PathVariable UUID clientId) {
-        return ResponseEntity.ok(clientService.deleteClient(clientId));
+        return ResponseEntity.ok(clientService.deleteClient(email, clientId));
     }
 
     //사용 허브 변경

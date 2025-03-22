@@ -34,4 +34,9 @@ public class ClientManagerService {
     public void deleteClientManager(UUID clientId) {
         repository.deleteByClientId(clientId);
     }
+
+    public String getClientIdByUserId(String email) {
+
+        return repository.getClientIdByUserId(email);
+    }
 }

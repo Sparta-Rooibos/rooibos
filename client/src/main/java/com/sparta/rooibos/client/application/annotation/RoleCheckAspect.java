@@ -24,8 +24,10 @@ public class RoleCheckAspect {
     public Object checkRole(ProceedingJoinPoint joinPoint, RoleCheck roleCheck) throws Throwable {
         String role = request.getHeader("X-User-Role");
         List<String> roleNameList = Arrays.stream(roleCheck.value()).map(Role::getAuthority).toList();
-        // 역할이 존재하지 않는 경우에는
-        if(roleNameList.isEmpty()) {
+
+
+        // 역할이 존재하지 않는 경우에는 넘어간다.
+        if (roleNameList.isEmpty()) {
             return joinPoint.proceed();
         }
 
