@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface DeliveryRepository {
 
-    Pagination<Delivery> searchOrders(String keyword,
+    Pagination<Delivery> searchDeliveries(String keyword,
         String filterKey,
         String filterValue,
         String sort,

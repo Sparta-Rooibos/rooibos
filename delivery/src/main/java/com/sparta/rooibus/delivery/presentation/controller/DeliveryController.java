@@ -58,6 +58,6 @@ public class DeliveryController {
     public ResponseEntity<SearchDeliveryResponse> searchOrders(
         @ModelAttribute SearchRequest request
         ) {
-        return ResponseEntity.ok(deliveryServiceImpl.searchOrders(request));
+        return ResponseEntity.ok(deliveryServiceImpl.searchDeliveries(request));
     }
 }

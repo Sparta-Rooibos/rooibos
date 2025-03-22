@@ -129,7 +129,7 @@ public class DeliveryServiceImpl {
     }
 
     @Cacheable(value = "searchDeliveryCache", key = "#request.page() + '-' + #request.size()")
-    public SearchDeliveryResponse searchOrders(SearchRequest searchRequest) {
+    public SearchDeliveryResponse searchDeliveries(SearchRequest searchRequest) {
         String keyword = searchRequest.keyword();
         String filterKey = searchRequest.filterKey();
         String filterValue = searchRequest.filterValue();
@@ -137,7 +137,7 @@ public class DeliveryServiceImpl {
         int page = searchRequest.page();
         int size = searchRequest.size();
 
-        Pagination<Delivery> deliveryPagination = deliveryRepository.searchOrders(keyword,filterKey,filterValue,sort,page,size);
+        Pagination<Delivery> deliveryPagination = deliveryRepository.searchDeliveries(keyword,filterKey,filterValue,sort,page,size);
 
         return SearchDeliveryResponse.from(deliveryPagination);
     }
