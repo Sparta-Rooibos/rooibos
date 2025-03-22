@@ -1,5 +1,6 @@
 package com.sparta.rooibus.delivery.application.service;
 
+import com.sparta.rooibus.delivery.application.aop.UserContextRequestBean;
 import com.sparta.rooibus.delivery.application.dto.request.SearchRequest;
 import com.sparta.rooibus.delivery.domain.entity.DeliveryLog;
 import com.sparta.rooibus.delivery.domain.model.Pagination;
@@ -20,8 +21,12 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class DeliveryLogServiceImpl {
     private final DeliveryLogRepository deliveryLogRepository;
+    private final UserContextRequestBean userContext;
 
     public CreateDeliveryLogResponse createDeliveryLog(CreateDeliveryLogRequest request) {
+        if(userContext.getRole().equalsIgnoreCase("ROLE_MASTER")){
+            throw new RuntimeException("권한이 마스터여야 합니다.");
+        }
         DeliveryLog deliveryLog = DeliveryLog.of(
             request.deliveryId(),
             request.departure(),
@@ -36,6 +41,9 @@ public class DeliveryLogServiceImpl {
     }
 
     public GetDeliveryLogResponse getDeliveryLog(UUID deliveryLogId) {
+        if(userContext.getRole().equalsIgnoreCase("ROLE_MASTER")){
+            throw new RuntimeException("권한이 마스터여야 합니다.");
+        }
         DeliveryLog deliveryLog = deliveryLogRepository.findById(deliveryLogId).orElseThrow(
             ()-> new EntityNotFoundException("찾는거 없음")
         );
@@ -43,6 +51,9 @@ public class DeliveryLogServiceImpl {
     }
 
     public UpdateDeliveryLogResponse updateDeliveryLog(UpdateDeliveryLogRequest request) {
+        if(userContext.getRole().equalsIgnoreCase("ROLE_MASTER")){
+            throw new RuntimeException("권한이 마스터여야 합니다.");
+        }
         UUID deliveryLogId = request.deliveryLogId();
         DeliveryLog deliveryLog = deliveryLogRepository.findById(deliveryLogId).orElseThrow(
             ()-> new EntityNotFoundException("찾는거 없음")
@@ -52,6 +63,9 @@ public class DeliveryLogServiceImpl {
     }
 
     public DeleteDeliveryLogResponse deleteDeliveryLog(UUID deliveryLogId) {
+        if(userContext.getRole().equalsIgnoreCase("ROLE_MASTER")){
+            throw new RuntimeException("권한이 마스터여야 합니다.");
+        }
         DeliveryLog deliveryLog = deliveryLogRepository.findById(deliveryLogId).orElseThrow(
             ()-> new EntityNotFoundException("찾는거 없음")
         );
@@ -60,6 +74,9 @@ public class DeliveryLogServiceImpl {
     }
 
     public SearchDeliveryLogResponse searchDeliveryLogs(SearchRequest searchRequest) {
+        if(userContext.getRole().equalsIgnoreCase("ROLE_MASTER")){
+            throw new RuntimeException("권한이 마스터여야 합니다.");
+        }
         String keyword = searchRequest.keyword();
         String filterKey = searchRequest.filterKey();
         String filterValue = searchRequest.filterValue();
