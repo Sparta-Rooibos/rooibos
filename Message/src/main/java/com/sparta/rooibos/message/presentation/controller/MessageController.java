@@ -6,6 +6,7 @@ import com.sparta.rooibos.message.application.dto.request.SearchMessageRequest;
 import com.sparta.rooibos.message.application.dto.response.*;
 import com.sparta.rooibos.message.application.service.MessageService;
 import com.sparta.rooibos.message.application.type.Role;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +25,7 @@ public class MessageController {
             @RequestHeader("X-User-Email") String email,
             @RequestHeader("X-User-Name") String username,
             @RequestHeader("X-User-Role") String role,
-            @RequestBody CreateMessageRequest request) {
+            @RequestBody @Valid CreateMessageRequest request) {
         return ResponseEntity.ok(messageService.createMessage(request));
     }
     @GetMapping
