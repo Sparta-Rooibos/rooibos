@@ -79,7 +79,7 @@ public class DeliveryLog {
         deliveryLog.sequence = sequence;
         deliveryLog.expectedDistance = expectedDistance;
         deliveryLog.expectedTime = expectedTime;
-        deliveryLog.deliver = deliveryId;
+        deliveryLog.deliver = deliverId;
         deliveryLog.status = DeliveryLogEnum.PENDING;
         return deliveryLog;
     }
