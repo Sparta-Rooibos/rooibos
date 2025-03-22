@@ -1,4 +1,4 @@
-package com.sparta.rooibus.delivery.presentation.controller;
+package com.sparta.rooibus.delivery.application.dto.request;
 
 import java.util.UUID;
 

@@ -1,7 +1,5 @@
-package com.sparta.rooibus.delivery.presentation.controller;
+package com.sparta.rooibus.delivery.application.dto.response;
 
-import com.sparta.rooibus.delivery.application.dto.response.SearchDeliveryResponse;
-import com.sparta.rooibus.delivery.domain.entity.Delivery;
 import com.sparta.rooibus.delivery.domain.entity.DeliveryLog;
 import com.sparta.rooibus.delivery.domain.model.Pagination;
 import java.util.List;

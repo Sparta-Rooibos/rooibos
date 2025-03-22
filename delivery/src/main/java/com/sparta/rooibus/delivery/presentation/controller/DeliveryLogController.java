@@ -1,6 +1,13 @@
 package com.sparta.rooibus.delivery.presentation.controller;
 
+import com.sparta.rooibus.delivery.application.dto.request.CreateDeliveryLogRequest;
 import com.sparta.rooibus.delivery.application.dto.request.SearchRequest;
+import com.sparta.rooibus.delivery.application.dto.request.UpdateDeliveryLogRequest;
+import com.sparta.rooibus.delivery.application.dto.response.CreateDeliveryLogResponse;
+import com.sparta.rooibus.delivery.application.dto.response.DeleteDeliveryLogResponse;
+import com.sparta.rooibus.delivery.application.dto.response.GetDeliveryLogResponse;
+import com.sparta.rooibus.delivery.application.dto.response.SearchDeliveryLogResponse;
+import com.sparta.rooibus.delivery.application.dto.response.UpdateDeliveryLogResponse;
 import com.sparta.rooibus.delivery.application.service.DeliveryLogServiceImpl;
 import jakarta.validation.Valid;
 import java.util.UUID;
@@ -28,9 +35,9 @@ public class DeliveryLogController {
         return ResponseEntity.ok(deliveryLogService.createDeliveryLog(request));
     }
 
-    @GetMapping("/{deliveryLog}")
-    public ResponseEntity<GetDeliveryLogResponse> getDeliveryLog(@PathVariable UUID deliveryLog){
-        return ResponseEntity.ok(deliveryLogService.getDeliveryLog(deliveryLog));
+    @GetMapping("/{deliveryLogId}")
+    public ResponseEntity<GetDeliveryLogResponse> getDeliveryLog(@PathVariable UUID deliveryLogId){
+        return ResponseEntity.ok(deliveryLogService.getDeliveryLog(deliveryLogId));
     }
 
     @PutMapping
@@ -38,11 +45,11 @@ public class DeliveryLogController {
         return ResponseEntity.ok(deliveryLogService.updateDeliveryLog(request));
     }
 
-    @PatchMapping("/{deliveryLog}")
-    public ResponseEntity<DeleteDeliveryLogResponse> deleteDeliveryLog(@PathVariable UUID deliveryLog){
-        return ResponseEntity.ok(deliveryLogService.deleteDeliveryLog(deliveryLog));
+    @PatchMapping("/{deliveryLogId}")
+    public ResponseEntity<DeleteDeliveryLogResponse> deleteDeliveryLog(@PathVariable UUID deliveryLogId){
+        return ResponseEntity.ok(deliveryLogService.deleteDeliveryLog(deliveryLogId));
     }
-    
+
     @GetMapping("/search")
     public ResponseEntity<SearchDeliveryLogResponse> searchDeliveryLogs(
         @ModelAttribute SearchRequest request
