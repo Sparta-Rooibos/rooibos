@@ -24,7 +24,7 @@ public class DeliveryRepositoryImpl implements DeliveryRepository {
     private final JpaDeliveryRepository jpaRepository;
 
     @Override
-    public Pagination<Delivery> searchOrders(String keyword, String filterKey, String filterValue,
+    public Pagination<Delivery> searchDeliveries(String keyword, String filterKey, String filterValue,
         String sort, int page, int size) {
         BooleanBuilder builder = new BooleanBuilder();
         QDelivery delivery = QDelivery.delivery;
