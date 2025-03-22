@@ -1,6 +1,6 @@
 spring:
   application:
-    name: server
+    name: eureka
 
 server:
   port: 19090
