@@ -1,11 +1,13 @@
 package com.sparta.rooibus.delivery.presentation.controller;
 
+import com.sparta.rooibus.delivery.application.dto.request.SearchRequest;
 import com.sparta.rooibus.delivery.application.service.DeliveryLogServiceImpl;
 import jakarta.validation.Valid;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -39,6 +41,13 @@ public class DeliveryLogController {
     @PatchMapping("/{deliveryLog}")
     public ResponseEntity<DeleteDeliveryLogResponse> deleteDeliveryLog(@PathVariable UUID deliveryLog){
         return ResponseEntity.ok(deliveryLogService.deleteDeliveryLog(deliveryLog));
+    }
+    
+    @GetMapping("/search")
+    public ResponseEntity<SearchDeliveryLogResponse> searchDeliveryLogs(
+        @ModelAttribute SearchRequest request
+    ){
+        return ResponseEntity.ok(deliveryLogService.searchDeliveryLogs(request));
     }
 
 

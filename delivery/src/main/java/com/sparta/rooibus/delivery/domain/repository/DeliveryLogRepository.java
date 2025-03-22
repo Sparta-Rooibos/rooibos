@@ -18,4 +18,6 @@ public interface DeliveryLogRepository {
     DeliveryLog save(DeliveryLog deliveryLogId);
 
     Optional<DeliveryLog> findById(UUID deliveryId);
+
+    Pagination<DeliveryLog> searchDeliveryLogs(String keyword, String filterKey, String filterValue, String sort, int page, int size);
 }

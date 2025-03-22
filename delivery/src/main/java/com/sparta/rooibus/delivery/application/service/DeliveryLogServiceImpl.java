@@ -1,11 +1,16 @@
 package com.sparta.rooibus.delivery.application.service;
 
+import com.sparta.rooibus.delivery.application.dto.request.SearchRequest;
+import com.sparta.rooibus.delivery.application.dto.response.SearchDeliveryResponse;
+import com.sparta.rooibus.delivery.domain.entity.Delivery;
 import com.sparta.rooibus.delivery.domain.entity.DeliveryLog;
+import com.sparta.rooibus.delivery.domain.model.Pagination;
 import com.sparta.rooibus.delivery.domain.repository.DeliveryLogRepository;
 import com.sparta.rooibus.delivery.presentation.controller.CreateDeliveryLogRequest;
 import com.sparta.rooibus.delivery.presentation.controller.CreateDeliveryLogResponse;
 import com.sparta.rooibus.delivery.presentation.controller.DeleteDeliveryLogResponse;
 import com.sparta.rooibus.delivery.presentation.controller.GetDeliveryLogResponse;
+import com.sparta.rooibus.delivery.presentation.controller.SearchDeliveryLogResponse;
 import com.sparta.rooibus.delivery.presentation.controller.UpdateDeliveryLogRequest;
 import com.sparta.rooibus.delivery.presentation.controller.UpdateDeliveryLogResponse;
 import jakarta.persistence.EntityNotFoundException;
@@ -54,5 +59,18 @@ public class DeliveryLogServiceImpl {
         );
         deliveryLog.delete();
         return DeleteDeliveryLogResponse.from(deliveryLog);
+    }
+
+    public SearchDeliveryLogResponse searchDeliveryLogs(SearchRequest searchRequest) {
+        String keyword = searchRequest.keyword();
+        String filterKey = searchRequest.filterKey();
+        String filterValue = searchRequest.filterValue();
+        String sort = searchRequest.sort();
+        int page = searchRequest.page();
+        int size = searchRequest.size();
+
+        Pagination<DeliveryLog> deliveryPagination = deliveryLogRepository.searchDeliveryLogs(keyword,filterKey,filterValue,sort,page,size);
+
+        return SearchDeliveryLogResponse.from(deliveryPagination);
     }
 }
