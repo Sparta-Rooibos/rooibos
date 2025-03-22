@@ -26,7 +26,7 @@ public class MessageController {
             @RequestHeader("X-User-Name") String username,
             @RequestHeader("X-User-Role") String role,
             @RequestBody @Valid CreateMessageRequest request) {
-        return ResponseEntity.ok(messageService.createMessage(request));
+        return ResponseEntity.ok(messageService.createMessage(email, request));
     }
     @GetMapping
     @RoleCheck({Role.MASTER})
@@ -54,7 +54,7 @@ public class MessageController {
             @RequestHeader("X-User-Name") String username,
             @RequestHeader("X-User-Role") String role,
             @PathVariable UUID messageId) {
-        messageService.deleteMessage(messageId);
+        messageService.deleteMessage(email, messageId);
         return ResponseEntity.noContent().build();
     }
 

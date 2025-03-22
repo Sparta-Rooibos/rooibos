@@ -8,8 +8,9 @@ public record CreateMessageRequest(
         @NotNull String sender,
         @NotNull String content
 ) {
-    public Message toEntity() {
+    public Message toEntity(String message) {
         return Message.create(
+                message,
                 content,
                 sender,
                 recipient

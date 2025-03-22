@@ -26,9 +26,9 @@ public class MessageService {
     private final MessageRepository repository;
     private final MessageRepositoryCustom repositoryCustom;
 
-    public CreateMessageResponse createMessage(CreateMessageRequest request) {
+    public CreateMessageResponse createMessage(String email, CreateMessageRequest request) {
         sendMessage(request.content());
-        return CreateMessageResponse.create(repository.save(request.toEntity()));
+        return CreateMessageResponse.create(repository.save(request.toEntity(email)));
     }
 
     private void sendMessage(String content) {
@@ -61,9 +61,9 @@ public class MessageService {
     }
 
 
-    public void deleteMessage(UUID messageId) {
+    public void deleteMessage(String email, UUID messageId) {
         Message message = repository.findById(messageId).orElseThrow(() -> new BusinessMessageException(MessageErrorCode.MESSAGE_NOT_FOUND));
-        message.delete("계정 아이디");
+        message.delete(email);
     }
 
 }
