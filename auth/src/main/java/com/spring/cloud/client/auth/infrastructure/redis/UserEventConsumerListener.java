@@ -1,6 +1,7 @@
 package com.spring.cloud.client.auth.infrastructure.redis;
 
 import com.spring.cloud.client.auth.application.dto.UserAuthDTO;
+import com.spring.cloud.client.auth.application.dto.UserStreamEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
@@ -18,25 +19,25 @@ import java.time.Duration;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class UserEventConsumerListener implements StreamListener<String, ObjectRecord<String, UserAuthDTO>>, InitializingBean {
-    private final RedisTemplate<String, UserAuthDTO> redisTemplate;
+public class UserEventConsumerListener implements StreamListener<String, ObjectRecord<String, UserStreamEvent>>, InitializingBean {
+    private final RedisTemplate<String, UserStreamEvent> redisTemplate;
     private final AuthCacheService authCacheService;
 
     private static final String STREAM_KEY = "user-events";
     private static final String CONSUMER_GROUP = "auth-service-group";
     private static final String CONSUMER_NAME = "auth-service";
 
-    private StreamMessageListenerContainer<String, ObjectRecord<String, UserAuthDTO>> listenerContainer;
+    private StreamMessageListenerContainer<String, ObjectRecord<String, UserStreamEvent>> listenerContainer;
 
     @Override
     public void afterPropertiesSet() {
         createConsumerGroup();
 
-        StreamMessageListenerContainer.StreamMessageListenerContainerOptions<String, ObjectRecord<String, UserAuthDTO>> options =
+        StreamMessageListenerContainer.StreamMessageListenerContainerOptions<String, ObjectRecord<String, UserStreamEvent>> options =
                 StreamMessageListenerContainer.StreamMessageListenerContainerOptions
                         .builder()
                         .pollTimeout(Duration.ofMillis(500))
-                        .targetType(UserAuthDTO.class)
+                        .targetType(UserStreamEvent.class)
                         .build();
 
         listenerContainer = StreamMessageListenerContainer.create(redisTemplate.getConnectionFactory(), options);
@@ -49,21 +50,31 @@ public class UserEventConsumerListener implements StreamListener<String, ObjectR
     }
 
     @Override
-    public void onMessage(ObjectRecord<String, UserAuthDTO> message) {
-        UserAuthDTO dto = message.getValue();
-        if (dto == null) return;
+    public void onMessage(ObjectRecord<String, UserStreamEvent> message) {
+        UserStreamEvent event = message.getValue();
+        if (event == null) return;
 
-        log.info("유저 정보 수신: {}", dto);
+        log.info("유저 정보 수신: {}", event);
 
-        if ("deleted".equals(dto.role())) {
-            authCacheService.deleteUserInfo(dto.email());
-        } else {
-            authCacheService.createUserInfo(dto);
+        switch (event.eventType()) {
+            case "create" -> {
+                if (event.payload() instanceof UserAuthDTO dto) {
+                    authCacheService.createUserInfo(dto);
+                } else {
+                    log.warn("create 이벤트에 잘못된 payload 형식");
+                }
+            }
+            case "delete" -> {
+                if (event.payload() instanceof String email) {
+                    authCacheService.deleteUserInfo(email);
+                } else {
+                    log.warn("delete 이벤트에 잘못된 payload 형식");
+                }
+            }
         }
 
         // 메시지 처리 완료 후 ACK → XPENDING에서 제거됨
         redisTemplate.opsForStream().acknowledge(STREAM_KEY, CONSUMER_GROUP, message.getId());
-
         redisTemplate.opsForStream().trim(STREAM_KEY, 1000);
     }
 
