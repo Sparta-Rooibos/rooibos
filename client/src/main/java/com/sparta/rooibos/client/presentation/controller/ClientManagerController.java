@@ -18,6 +18,11 @@ import java.util.UUID;
 public class ClientManagerController {
     private final ClientManagerService service;
 
+    @GetMapping
+    public ResponseEntity<String> getClientIdByUserId(@RequestHeader("X-User-Email") String email) {
+        return ResponseEntity.ok(service.getClientIdByUserId(email));
+    }
+
     //생성
     @PostMapping
     @RoleCheck({Role.MASTER, Role.CLIENT})

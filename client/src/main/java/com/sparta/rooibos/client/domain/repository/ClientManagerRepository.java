@@ -10,4 +10,6 @@ public interface ClientManagerRepository {
     ClientManager save(ClientManager clientManager);
     List<ClientManager> findAllByClientId(UUID clientId);
     void deleteByClientId(UUID clientId);
+
+    String getClientIdByUserId(String email);
 }
