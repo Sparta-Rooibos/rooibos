@@ -2,6 +2,7 @@ package com.sparta.rooibus.delivery.presentation.controller;
 
 import com.sparta.rooibus.delivery.application.service.DeliveryLogServiceImpl;
 import jakarta.validation.Valid;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,4 +23,10 @@ public class DeliveryLogController {
     public ResponseEntity<CreateDeliveryLogResponse> createDeliveryLog(@Valid @RequestBody CreateDeliveryLogRequest request){
         return ResponseEntity.ok(deliveryLogService.createDeliveryLog(request));
     }
+
+    @GetMapping("/{deliveryLog}")
+    public ResponseEntity<GetDeliveryLogResponse> getDeliveryLog(@PathVariable UUID deliveryLog){
+        return ResponseEntity.ok(deliveryLogService.getDeliveryLog(deliveryLog));
+    }
+
 }
