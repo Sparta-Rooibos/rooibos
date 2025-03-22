@@ -49,7 +49,7 @@ public class StockController {
             @RequestHeader("X-User-Name") String username,
             @RequestHeader("X-User-Role") String role,
             @RequestBody @Valid CreateStockRequest request) {
-        return ResponseEntity.ok(stockService.createStock(request));
+        return ResponseEntity.ok(stockService.createStock(email, request));
     }
 
     @PutMapping("/{stockId}")
@@ -59,7 +59,7 @@ public class StockController {
             @RequestHeader("X-User-Name") String username,
             @RequestHeader("X-User-Role") String role,
             @PathVariable UUID stockId, @RequestBody @Valid UpdateStockRequest request) {
-        stockService.updateStock(stockId, request);
+        stockService.updateStock(email, stockId, request);
         return ResponseEntity.ok().build();
     }
 
@@ -70,7 +70,7 @@ public class StockController {
             @RequestHeader("X-User-Name") String username,
             @RequestHeader("X-User-Role") String role,
             @PathVariable UUID stockId) {
-        stockService.deleteStock(stockId);
+        stockService.deleteStock(email, stockId);
         return ResponseEntity.ok().build();
     }
 }

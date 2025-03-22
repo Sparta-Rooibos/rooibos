@@ -6,8 +6,9 @@ import jakarta.validation.constraints.PositiveOrZero;
 
 public record CreateStockRequest(@NotNull String hubId, @NotNull String productId, @PositiveOrZero int productQuantity) {
 
-    public Stock toEntity() {
+    public Stock toEntity(String email) {
         return Stock.create(
+                email,
                 hubId,
                 productId,
                 productQuantity
