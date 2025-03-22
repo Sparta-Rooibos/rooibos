@@ -1,4 +1,6 @@
 spring:
+  application:
+    name: stock-service
   datasource:
     driver-class-name: org.postgresql.Driver  # PostgreSQL JDBC 드라이버 클래스
     url: jdbc:postgresql://localhost:5432/postgres  # 데이터베이스 연결 URL (localhost의 5432 포트, shop 데이터베이스)
@@ -6,9 +8,6 @@ spring:
     password: 1234  # 데이터베이스 비밀번호
   jpa:
     hibernate:
-      ddl-auto: create-drop  # ?????? ??? ?? ??/???? (create, update, validate, none ? ??)
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.H2Dialect  # ???? DB? ?? Hibernate ?? ?? (??? H2)
+      ddl-auto: update  # ?????? ??? ?? ??/???? (create, update, validate, none ? ??)
     show-sql: true  # SQL ?? ?? ??
     generate-ddl: true  # DDL ?? ??
