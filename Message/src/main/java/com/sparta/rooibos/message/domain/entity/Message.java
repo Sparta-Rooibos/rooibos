@@ -26,18 +26,18 @@ public class Message extends BaseEntity {
     private Boolean status;
     private LocalDateTime sendingAt;
 
-    public static Message create(String content, String sender, String recipient) {
-        return new Message(content, recipient, sender, true);
+    public static Message create(String email, String content, String sender, String recipient) {
+        return new Message(email, content, recipient, sender, true);
     }
 
 
-    public Message(String text, String recipient, String sender, Boolean status) {
+    public Message(String email, String text, String recipient, String sender, Boolean status) {
         this.text = text;
         this.sender = sender;
         this.recipient = recipient;
         this.status = status;
         this.sendingAt = LocalDateTime.now();
-        this.createBy = "계정아이디";
+        this.createBy = email;
     }
 
     public void changeMessage(String massage) {
