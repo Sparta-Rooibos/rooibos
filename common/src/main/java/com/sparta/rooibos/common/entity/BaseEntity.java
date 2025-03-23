@@ -42,9 +42,9 @@ public abstract class BaseEntity {
     @Column
     private boolean hidden = false;
 
-    public void delete(String deletedBy) {
+    public void delete(String deleteBy) {
         this.deleteAt = LocalDateTime.now();
-        this.deleteBy = deletedBy;
+        this.deleteBy = deleteBy;
         this.hidden = true;
     }
 }

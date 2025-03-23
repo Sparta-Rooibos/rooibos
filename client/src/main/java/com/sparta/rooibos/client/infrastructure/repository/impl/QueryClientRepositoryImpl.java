@@ -3,9 +3,11 @@ package com.sparta.rooibos.client.infrastructure.repository.impl;
 import com.querydsl.core.types.Predicate;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.sparta.rooibos.client.domain.critreia.ClientCriteria;
 import com.sparta.rooibos.client.domain.entity.Client;
 import com.sparta.rooibos.client.domain.entity.QClient;
 import com.sparta.rooibos.client.domain.entity.ClientType;
+import com.sparta.rooibos.client.domain.model.Pagination;
 import com.sparta.rooibos.client.domain.repository.QueryClientRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -23,41 +25,35 @@ public class QueryClientRepositoryImpl implements QueryClientRepository {
     private final QClient client = QClient.client;
 
     @Override
-    public Page<Client> getClientList(Pageable pageable, String name, String address, String type, Boolean deleteCheck) {
-        List<Client> content = query.select(client)
-                .where(nullNameCheck(name),
-                        nullAddressCheck(address),
-                        nullTypeCheck(type),
-                        nullDeleteCheck(deleteCheck)
+    public Pagination<Client> searchClient(ClientCriteria criteria) {
+        List<Client> result = query.select(client)
+                .where(nullNameCheck(criteria.name()),
+                        nullAddressCheck(criteria.address()),
+                        nullTypeCheck(criteria.type()),
+                        nullDeleteCheck(criteria.isDeleted())
                 )
                 .from(client)
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
+                .offset((long) (criteria.page() - 1) * criteria.size())
+                .limit(criteria.size())
                 .fetch();
 
-        JPAQuery<Long> countQuery = query.select(client.count())
-                .where(
-                        nullNameCheck(name),
-                        nullAddressCheck(address),
-                        nullTypeCheck(type),
-                        nullDeleteCheck(deleteCheck))
-                .from(client)
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize());
+        Long total = query.select(client.count())
+                .where(nullNameCheck(criteria.name()),
+                        nullAddressCheck(criteria.address()),
+                        nullTypeCheck(criteria.type()),
+                        nullDeleteCheck(criteria.isDeleted())
+                )
+                .from(client).fetchOne();
 
-        if (content.isEmpty()) {
-            return new PageImpl<>(content, pageable, 0);
-        }
 
-        return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
-
+        return Pagination.of(criteria.page(), criteria.size(), total != null ? total : 0, result);
     }
 
     private Predicate nullDeleteCheck(Boolean deleteCheck) {
         return deleteCheck == null ? null :
                 deleteCheck
-                ? client.deleteAt.isNotNull()
-                : client.deleteAt.isNull();
+                        ? client.deleteAt.isNotNull()
+                        : client.deleteAt.isNull();
     }
 
     private Predicate nullTypeCheck(String type) {

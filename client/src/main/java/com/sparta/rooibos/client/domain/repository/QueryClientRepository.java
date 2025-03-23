@@ -1,9 +1,9 @@
 package com.sparta.rooibos.client.domain.repository;
 
+import com.sparta.rooibos.client.domain.critreia.ClientCriteria;
 import com.sparta.rooibos.client.domain.entity.Client;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import com.sparta.rooibos.client.domain.model.Pagination;
 
 public interface QueryClientRepository {
-    Page<Client> getClientList(Pageable pageable, String name, String address, String type, Boolean deleteCheck);
+    Pagination<Client> searchClient(ClientCriteria criteria);
 }
