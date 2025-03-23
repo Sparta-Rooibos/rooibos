@@ -7,12 +7,13 @@ import com.sparta.rooibos.user.application.dto.response.UserListResponse;
 import com.sparta.rooibos.user.application.dto.response.UserResponse;
 import com.sparta.rooibos.user.application.exception.BusinessUserException;
 import com.sparta.rooibos.user.application.exception.custom.UserErrorCode;
-import com.sparta.rooibos.user.application.service.EventProvider;
+import com.sparta.rooibos.user.application.service.port.EventProvider;
 import com.sparta.rooibos.user.application.service.port.MasterService;
 import com.sparta.rooibos.user.domain.entity.User;
 import com.sparta.rooibos.user.domain.entity.UserRoleStatus;
 import com.sparta.rooibos.user.domain.model.Pagination;
 import com.sparta.rooibos.user.domain.repository.UserRepository;
+import com.sparta.rooibos.user.infrastructure.redis.BlacklistManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -99,5 +100,6 @@ public class MasterServiceImpl implements MasterService {
                 .orElseThrow(() -> new BusinessUserException(UserErrorCode.USER_NOT_FOUND));
 
         eventProvider.sendUserReportInfo(user.getEmail());
+        eventProvider.blacklistUser(user.getEmail(), 86400000L);
     }
 }
