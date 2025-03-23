@@ -3,11 +3,11 @@ package sparta.rooibos.route.presentation.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import sparta.rooibos.route.presentation.dto.request.CreateRouteRequest;
-import sparta.rooibos.route.presentation.dto.request.GetOptimizedRouteRequest;
-import sparta.rooibos.route.presentation.dto.request.SearchRouteRequest;
-import sparta.rooibos.route.presentation.dto.request.UpdateRouteRequest;
-import sparta.rooibos.route.presentation.dto.response.*;
+import sparta.rooibos.route.application.dto.request.CreateRouteRequest;
+import sparta.rooibos.route.application.dto.request.GetOptimizedRouteRequest;
+import sparta.rooibos.route.application.dto.request.SearchRouteRequest;
+import sparta.rooibos.route.application.dto.request.UpdateRouteRequest;
+import sparta.rooibos.route.application.dto.response.*;
 import sparta.rooibos.route.application.port.in.RouteService;
 
 import java.util.UUID;

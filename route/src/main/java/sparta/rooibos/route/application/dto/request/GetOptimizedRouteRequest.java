@@ -1,4 +1,4 @@
-package sparta.rooibos.route.presentation.dto.request;
+package sparta.rooibos.route.application.dto.request;
 
 import sparta.rooibos.route.application.core.DijkstraAlgorithm;
 
