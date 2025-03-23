@@ -1,4 +1,4 @@
-package sparta.rooibos.route.application.dto.response.Hub;
+package sparta.rooibos.route.application.dto.response.hub;
 
 import java.util.UUID;
 
