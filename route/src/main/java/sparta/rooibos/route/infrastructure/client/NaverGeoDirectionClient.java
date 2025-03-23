@@ -2,7 +2,7 @@ package sparta.rooibos.route.infrastructure.client;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
-import sparta.rooibos.route.application.dto.request.direction.GetGeoDirectionRequest;
+import org.springframework.web.bind.annotation.RequestParam;
 import sparta.rooibos.route.application.dto.response.direction.GetGeoDirectionResponse;
 import sparta.rooibos.route.infrastructure.config.NaverFeignClientConfig;
 
@@ -12,6 +12,6 @@ import sparta.rooibos.route.infrastructure.config.NaverFeignClientConfig;
         configuration = NaverFeignClientConfig.class
 )
 public interface NaverGeoDirectionClient {
-    @GetMapping(value = "/driving", consumes = "application/json")
-    GetGeoDirectionResponse getDirection(GetGeoDirectionRequest getGeoDirectionRequest);
+    @GetMapping(value = "/map-direction/v1/driving", consumes = "application/json")
+    GetGeoDirectionResponse getDirection(@RequestParam String start, @RequestParam String goal);
 }

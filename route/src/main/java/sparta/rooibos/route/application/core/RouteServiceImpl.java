@@ -1,16 +1,14 @@
 package sparta.rooibos.route.application.core;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import sparta.rooibos.route.application.dto.request.direction.GetGeoDirectionRequest;
 import sparta.rooibos.route.application.dto.request.route.CreateRouteRequest;
 import sparta.rooibos.route.application.dto.request.route.GetOptimizedRouteRequest;
 import sparta.rooibos.route.application.dto.request.route.SearchRouteRequest;
 import sparta.rooibos.route.application.dto.request.route.UpdateRouteRequest;
-import sparta.rooibos.route.application.dto.response.Hub.HubClientResponse;
 import sparta.rooibos.route.application.dto.response.direction.GetGeoDirectionResponse;
+import sparta.rooibos.route.application.dto.response.hub.HubClientResponse;
 import sparta.rooibos.route.application.dto.response.route.*;
 import sparta.rooibos.route.application.port.in.RouteService;
 import sparta.rooibos.route.application.port.out.GeoDirectionService;
@@ -53,7 +51,7 @@ public class RouteServiceImpl implements RouteService {
     }
 
     private GetGeoDirectionResponse getDirectionResult(String fromCoordinates, String toCoordinates) {
-        return geoDirectionService.getGeoDirection(GetGeoDirectionRequest.of(fromCoordinates, toCoordinates));
+        return geoDirectionService.getGeoDirection(fromCoordinates, toCoordinates);
     }
 
     @Override

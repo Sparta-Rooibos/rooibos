@@ -4,9 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
-import sparta.rooibos.route.application.dto.request.direction.GetGeoDirectionRequest;
-import sparta.rooibos.route.application.dto.response.Hub.HubClientResponse;
 import sparta.rooibos.route.application.dto.response.direction.GetGeoDirectionResponse;
+import sparta.rooibos.route.application.dto.response.hub.HubClientResponse;
 import sparta.rooibos.route.application.port.out.GeoDirectionService;
 import sparta.rooibos.route.domain.model.Route;
 import sparta.rooibos.route.domain.repository.RouteRepository;
@@ -70,7 +69,7 @@ public class RouteDataGenerator {
                   String goal = toHub.getCoordinates();
 
                   GetGeoDirectionResponse result =
-                          geoDirectionService.getGeoDirection(GetGeoDirectionRequest.of(start, goal));
+                          geoDirectionService.getGeoDirection(start, goal);
 
                   Route route = Route.of(fromHubId, toHubId);
                   route.setDistanceAndDuration(result.getDistance(), result.getDuration());
