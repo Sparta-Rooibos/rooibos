@@ -1,12 +1,10 @@
-package sparta.rooibos.route.service;
+package sparta.rooibos.route.service.core;
 
-import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import sparta.rooibos.route.domain.model.Route;
 
-import javax.xml.transform.Result;
 import java.util.*;
 import java.util.stream.Collectors;
 

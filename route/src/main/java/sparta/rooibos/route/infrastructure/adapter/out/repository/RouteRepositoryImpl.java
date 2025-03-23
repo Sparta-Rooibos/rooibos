@@ -1,4 +1,4 @@
-package sparta.rooibos.route.infrastructure.repository;
+package sparta.rooibos.route.infrastructure.adapter.out.repository;
 
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.OrderSpecifier;
