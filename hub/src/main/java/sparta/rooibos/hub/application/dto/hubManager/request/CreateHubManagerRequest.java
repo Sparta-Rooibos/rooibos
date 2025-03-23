@@ -1,10 +1,10 @@
 package sparta.rooibos.hub.application.dto.hubManager.request;
 
-import sparta.rooibos.hub.domain.model.Hub;
+import jakarta.validation.constraints.NotNull;
 
 import java.util.UUID;
 
 public record CreateHubManagerRequest(
-        UUID userId,
-        Hub hub
+        @NotNull UUID userId,
+        @NotNull UUID hubId
 ) {}

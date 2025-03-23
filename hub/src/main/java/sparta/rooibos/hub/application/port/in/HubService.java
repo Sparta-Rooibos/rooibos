@@ -1,4 +1,4 @@
-package sparta.rooibos.hub.application.service.port;
+package sparta.rooibos.hub.application.port.in;
 
 import sparta.rooibos.hub.application.dto.hub.request.CreateHubRequest;
 import sparta.rooibos.hub.application.dto.hub.request.SearchHubRequest;
@@ -14,6 +14,8 @@ public interface HubService {
     CreateHubResponse createHub(CreateHubRequest createHubRequest);
 
     GetHubResponse getHub(UUID hubId);
+
+    GetHubResponse getHubByRegion(String region);
 
     SearchHubResponse searchHub(SearchHubRequest searchHubRequest);
 

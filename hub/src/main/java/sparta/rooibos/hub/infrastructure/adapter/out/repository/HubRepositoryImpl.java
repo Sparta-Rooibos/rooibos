@@ -1,4 +1,4 @@
-package sparta.rooibos.hub.infrastructure.repository;
+package sparta.rooibos.hub.infrastructure.adapter.out.repository;
 
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -29,6 +29,11 @@ public class HubRepositoryImpl implements HubRepository {
     @Override
     public Optional<Hub> getHub(UUID hubId) {
         return jpaRepository.getActiveHub(hubId);
+    }
+
+    @Override
+    public Optional<Hub> getHubByRegion(String region) {
+        return jpaRepository.getHubByRegion(region);
     }
 
     // 허브 개수가 많지 않기 때문에 일반적인 페이지 넘버 방식 페이지네이션 구현

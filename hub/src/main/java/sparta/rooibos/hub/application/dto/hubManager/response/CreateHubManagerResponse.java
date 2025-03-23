@@ -13,7 +13,7 @@ public record CreateHubManagerResponse(
         return new CreateHubManagerResponse(
                 hubManager.getHubManagerId(),
                 hubManager.getUserId(),
-                hubManager.getHub().getHubId()
+                hubManager.getBelongingHubId()
         );
     }
 }

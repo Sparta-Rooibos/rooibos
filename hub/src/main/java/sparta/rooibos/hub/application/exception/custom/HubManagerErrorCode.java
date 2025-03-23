@@ -1,4 +1,4 @@
-package sparta.rooibos.hub.application.service.exception.custom;
+package sparta.rooibos.hub.application.exception.custom;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
