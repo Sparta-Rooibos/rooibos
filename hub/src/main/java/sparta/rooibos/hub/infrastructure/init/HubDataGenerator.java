@@ -5,8 +5,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 import sparta.rooibos.hub.application.dto.hub.request.CreateHubRequest;
-import sparta.rooibos.hub.application.service.port.in.HubService;
-import sparta.rooibos.hub.domain.model.Hub;
+import sparta.rooibos.hub.application.port.in.HubService;
 import sparta.rooibos.hub.domain.respository.HubRepository;
 
 @Component

@@ -10,7 +10,7 @@ import sparta.rooibos.hub.application.dto.hub.response.CreateHubResponse;
 import sparta.rooibos.hub.application.dto.hub.response.GetHubResponse;
 import sparta.rooibos.hub.application.dto.hub.response.SearchHubResponse;
 import sparta.rooibos.hub.application.dto.hub.response.UpdateHubResponse;
-import sparta.rooibos.hub.application.service.port.in.HubService;
+import sparta.rooibos.hub.application.port.in.HubService;
 
 import java.util.UUID;
 
@@ -32,8 +32,8 @@ public class HubController {
     }
 
     @GetMapping("/{region}")
-    public ResponseEntity<UUID> getHubIdByRegion(@PathVariable String region) {
-        return ResponseEntity.ok(hubService.getHubIdByRegion(region));
+    public ResponseEntity<GetHubResponse> getHubByRegion(@PathVariable String region) {
+        return ResponseEntity.ok(hubService.getHubByRegion(region));
     }
 
     @GetMapping

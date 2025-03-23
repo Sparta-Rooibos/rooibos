@@ -1,13 +1,13 @@
-package sparta.rooibos.hub.application.service.core;
+package sparta.rooibos.hub.application.core;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import sparta.rooibos.hub.application.dto.hubManager.request.CreateHubManagerRequest;
 import sparta.rooibos.hub.application.dto.hubManager.response.CreateHubManagerResponse;
 import sparta.rooibos.hub.application.dto.hubManager.response.GetHubManagerHubIdResponse;
-import sparta.rooibos.hub.application.service.exception.BusinessHubManagerException;
-import sparta.rooibos.hub.application.service.exception.custom.HubManagerErrorCode;
-import sparta.rooibos.hub.application.service.port.in.HubManagerService;
+import sparta.rooibos.hub.application.exception.BusinessHubManagerException;
+import sparta.rooibos.hub.application.exception.custom.HubManagerErrorCode;
+import sparta.rooibos.hub.application.port.in.HubManagerService;
 import sparta.rooibos.hub.domain.model.HubManager;
 import sparta.rooibos.hub.domain.respository.HubManagerRepository;
 

@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import sparta.rooibos.hub.application.dto.hubManager.request.CreateHubManagerRequest;
 import sparta.rooibos.hub.application.dto.hubManager.response.CreateHubManagerResponse;
 import sparta.rooibos.hub.application.dto.hubManager.response.GetHubManagerHubIdResponse;
-import sparta.rooibos.hub.application.service.port.in.HubManagerService;
+import sparta.rooibos.hub.application.port.in.HubManagerService;
 
 import java.util.UUID;
 

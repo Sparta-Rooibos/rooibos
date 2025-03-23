@@ -1,4 +1,4 @@
-package sparta.rooibos.hub.application.service.port.in;
+package sparta.rooibos.hub.application.port.in;
 
 import sparta.rooibos.hub.application.dto.hubManager.request.CreateHubManagerRequest;
 import sparta.rooibos.hub.application.dto.hubManager.response.CreateHubManagerResponse;

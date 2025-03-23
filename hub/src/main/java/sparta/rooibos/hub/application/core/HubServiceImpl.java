@@ -1,4 +1,4 @@
-package sparta.rooibos.hub.application.service.core;
+package sparta.rooibos.hub.application.core;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,10 +13,10 @@ import sparta.rooibos.hub.application.dto.hub.response.CreateHubResponse;
 import sparta.rooibos.hub.application.dto.hub.response.GetHubResponse;
 import sparta.rooibos.hub.application.dto.hub.response.SearchHubResponse;
 import sparta.rooibos.hub.application.dto.hub.response.UpdateHubResponse;
-import sparta.rooibos.hub.application.service.exception.BusinessHubException;
-import sparta.rooibos.hub.application.service.exception.custom.HubErrorCode;
-import sparta.rooibos.hub.application.service.port.in.HubService;
-import sparta.rooibos.hub.application.service.port.out.GeoLocationService;
+import sparta.rooibos.hub.application.exception.BusinessHubException;
+import sparta.rooibos.hub.application.exception.custom.HubErrorCode;
+import sparta.rooibos.hub.application.port.in.HubService;
+import sparta.rooibos.hub.application.port.out.GeoLocationService;
 import sparta.rooibos.hub.domain.model.Hub;
 import sparta.rooibos.hub.domain.model.Pagination;
 import sparta.rooibos.hub.domain.respository.HubRepository;
@@ -56,10 +56,13 @@ public class HubServiceImpl implements HubService {
         return GetHubResponse.from(getHubForServer(hubId));
     }
 
+
     @Override
-    public UUID getHubIdByRegion(String region) {
-        return hubRepository.getHubIdByRegion(region)
+    public GetHubResponse getHubByRegion(String region) {
+        Hub findHub = hubRepository.getHubByRegion(region)
                 .orElseThrow(() -> new BusinessHubException(HubErrorCode.HUB_NOT_FOUND));
+
+        return GetHubResponse.from(findHub);
     }
 
     //    @Cacheable(

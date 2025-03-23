@@ -1,7 +1,7 @@
-package sparta.rooibos.hub.application.service.exception;
+package sparta.rooibos.hub.application.exception;
 
 import org.springframework.http.HttpStatus;
-import sparta.rooibos.hub.application.service.exception.custom.HubErrorCode;
+import sparta.rooibos.hub.application.exception.custom.HubErrorCode;
 
 public class BusinessHubException extends RuntimeException {
     private final HubErrorCode hubErrorCode;
