@@ -1,4 +1,4 @@
-package sparta.rooibos.route.application.dto.response;
+package sparta.rooibos.route.application.dto.response.route;
 
 import sparta.rooibos.route.domain.model.Route;
 

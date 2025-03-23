@@ -1,10 +1,10 @@
 package sparta.rooibos.route.application.port.in;
 
-import sparta.rooibos.route.application.dto.request.CreateRouteRequest;
-import sparta.rooibos.route.application.dto.request.GetOptimizedRouteRequest;
-import sparta.rooibos.route.application.dto.request.SearchRouteRequest;
-import sparta.rooibos.route.application.dto.request.UpdateRouteRequest;
-import sparta.rooibos.route.application.dto.response.*;
+import sparta.rooibos.route.application.dto.request.route.CreateRouteRequest;
+import sparta.rooibos.route.application.dto.request.route.GetOptimizedRouteRequest;
+import sparta.rooibos.route.application.dto.request.route.SearchRouteRequest;
+import sparta.rooibos.route.application.dto.request.route.UpdateRouteRequest;
+import sparta.rooibos.route.application.dto.response.route.*;
 
 import java.util.UUID;
 
