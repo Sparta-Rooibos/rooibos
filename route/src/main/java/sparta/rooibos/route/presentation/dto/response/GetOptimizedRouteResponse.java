@@ -1,6 +1,6 @@
 package sparta.rooibos.route.presentation.dto.response;
 
-import sparta.rooibos.route.service.DijkstraAlgorithm;
+import sparta.rooibos.route.service.core.DijkstraAlgorithm;
 
 public record GetOptimizedRouteResponse(
         DijkstraAlgorithm.Result result
