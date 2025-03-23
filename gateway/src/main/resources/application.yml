@@ -17,6 +17,22 @@ spring:
           uri: lb://user-service
           predicates:
             - Path=/user/**
+        - id: client-service
+          uri: lb://client-service
+          predicates:
+            - Path=/client/**
+        - id: message-service
+          uri: lb://message-service
+          predicates:
+            - Path=/message/**
+        - id: product-service
+          uri: lb://product-service
+          predicates:
+            - Path=/product/**
+        - id: stock-service
+          uri: lb://stock-service
+          predicates:
+            - Path=/stock/**
       discovery:
         locator:
           enabled: true
