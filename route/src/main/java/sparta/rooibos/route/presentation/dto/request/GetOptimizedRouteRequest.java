@@ -1,6 +1,6 @@
 package sparta.rooibos.route.presentation.dto.request;
 
-import sparta.rooibos.route.service.core.DijkstraAlgorithm;
+import sparta.rooibos.route.application.core.DijkstraAlgorithm;
 
 import java.util.UUID;
 

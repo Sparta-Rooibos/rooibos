@@ -1,4 +1,4 @@
-package sparta.rooibos.route.service.core;
+package sparta.rooibos.route.application.core;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

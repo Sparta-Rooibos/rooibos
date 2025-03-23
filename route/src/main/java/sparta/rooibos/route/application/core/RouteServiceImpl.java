@@ -1,4 +1,4 @@
-package sparta.rooibos.route.service.core;
+package sparta.rooibos.route.application.core;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
@@ -11,7 +11,7 @@ import sparta.rooibos.route.presentation.dto.request.GetOptimizedRouteRequest;
 import sparta.rooibos.route.presentation.dto.request.SearchRouteRequest;
 import sparta.rooibos.route.presentation.dto.request.UpdateRouteRequest;
 import sparta.rooibos.route.presentation.dto.response.*;
-import sparta.rooibos.route.service.port.in.RouteService;
+import sparta.rooibos.route.application.port.in.RouteService;
 
 import java.util.List;
 import java.util.UUID;

@@ -1,4 +1,4 @@
-package sparta.rooibos.route.service.port.in;
+package sparta.rooibos.route.application.port.in;
 
 import sparta.rooibos.route.presentation.dto.request.CreateRouteRequest;
 import sparta.rooibos.route.presentation.dto.request.GetOptimizedRouteRequest;
