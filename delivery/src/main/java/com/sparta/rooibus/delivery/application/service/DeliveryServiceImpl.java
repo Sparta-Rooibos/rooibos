@@ -5,7 +5,6 @@ import com.sparta.rooibus.delivery.application.dto.request.CreateDeliveryRequest
 import com.sparta.rooibus.delivery.application.dto.request.SearchRequest;
 import com.sparta.rooibus.delivery.application.dto.request.UpdateDeliveryRequest;
 import com.sparta.rooibus.delivery.application.dto.request.feign.client.GetClientManagerRequest;
-import com.sparta.rooibus.delivery.application.dto.request.feign.client.GetClientRequest;
 import com.sparta.rooibus.delivery.application.dto.request.feign.deliverAgent.GetDeliverRequest;
 import com.sparta.rooibus.delivery.application.dto.request.feign.deliverAgent.GetHubDeliverRequest;
 import com.sparta.rooibus.delivery.application.dto.request.feign.route.GetRouteRequest;
@@ -28,7 +27,6 @@ import com.sparta.rooibus.delivery.domain.repository.DeliveryLogRepository;
 import com.sparta.rooibus.delivery.domain.repository.DeliveryRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.ws.rs.BadRequestException;
-import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
@@ -50,13 +48,22 @@ public class DeliveryServiceImpl {
 
     @Transactional
     public CreateDeliveryResponse createDelivery(CreateDeliveryRequest request) {
-        UUID departure = clientService.getClient(GetClientRequest.from(request.requestClientId())).manageHub().id();
+        String email = "userName1@naver.com";
+        String username = "userName1";
+        String role = "ROLE_MASTER";
+        UUID departure = clientService.getClient(
+                email,username,role,request.requestClientId()
+            ).getBody().manageHub().id();
 
-        GetClientResponse getClientResponse = clientService.getClient(GetClientRequest.from(request.requestClientId()));
+        GetClientResponse getClientResponse = clientService.getClient(
+            email,username,role,request.receiveClientId()
+        ).getBody();
         UUID arrival = getClientResponse.manageHub().id();
         String address = getClientResponse.address();
 
-        UUID recipient = clientService.getClientManager(GetClientManagerRequest.from(request.requestClientId())).clientManagerId();
+        UUID recipient = clientService.getClientManager(
+            email,username,role,request.requestClientId()
+        ).getBody().clientManagerId();
 
         String slackAccount = userService.getUser(GetUserRequest.from(recipient)).slackAccount();
 
