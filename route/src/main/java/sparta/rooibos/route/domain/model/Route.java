@@ -52,13 +52,16 @@ public class Route {
     @Column
     private String deleteBy;
 
-    public static Route of(UUID fromHubId, UUID toHubId, Integer distance, Integer timeCost) {
+    public static Route of(UUID fromHubId, UUID toHubId) {
         return Route.builder()
                 .fromHubId(fromHubId)
                 .toHubId(toHubId)
-                .distance(distance)
-                .timeCost(timeCost)
                 .build();
+    }
+
+    public void setDistanceAndDuration(int distance, int timeCost) {
+        this.distance = distance;
+        this.timeCost = timeCost;
     }
 
     public Route update(Route route) {

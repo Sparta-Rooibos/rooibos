@@ -4,14 +4,19 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import sparta.rooibos.route.application.dto.response.route.*;
-import sparta.rooibos.route.domain.model.Route;
-import sparta.rooibos.route.domain.repository.RouteRepository;
+import sparta.rooibos.route.application.dto.request.direction.GetGeoDirectionRequest;
 import sparta.rooibos.route.application.dto.request.route.CreateRouteRequest;
 import sparta.rooibos.route.application.dto.request.route.GetOptimizedRouteRequest;
 import sparta.rooibos.route.application.dto.request.route.SearchRouteRequest;
 import sparta.rooibos.route.application.dto.request.route.UpdateRouteRequest;
+import sparta.rooibos.route.application.dto.response.Hub.HubClientResponse;
+import sparta.rooibos.route.application.dto.response.direction.GetGeoDirectionResponse;
+import sparta.rooibos.route.application.dto.response.route.*;
 import sparta.rooibos.route.application.port.in.RouteService;
+import sparta.rooibos.route.application.port.out.GeoDirectionService;
+import sparta.rooibos.route.application.port.out.HubClientService;
+import sparta.rooibos.route.domain.model.Route;
+import sparta.rooibos.route.domain.repository.RouteRepository;
 
 import java.util.List;
 import java.util.UUID;
@@ -22,19 +27,33 @@ public class RouteServiceImpl implements RouteService {
 
     private final RouteRepository routeRepository;
     private final DijkstraAlgorithm dijkstraAlgorithm;
+    private final HubClientService hubClientService;
+    private final GeoDirectionService geoDirectionService;
 
     @Override
     @Transactional
     public CreateRouteResponse createRoute(CreateRouteRequest createRouteRequest) {
-        Route newRoute = Route.of(
-                createRouteRequest.fromHubId(),
-                createRouteRequest.toHubId(),
-                createRouteRequest.distance(),
-                createRouteRequest.timeCost()
-        );
+        UUID fromHubId = createRouteRequest.fromHubId();
+        UUID toHubId = createRouteRequest.toHubId();
+        Route newRoute = Route.of(fromHubId, toHubId);
+
+        GetGeoDirectionResponse result = getDirectionResult(getCoordinates(fromHubId), getCoordinates(toHubId));
+        newRoute.setDistanceAndDuration(result.getDistance(), result.getDuration());
 
         Route savedRoute = routeRepository.createRoute(newRoute);
         return CreateRouteResponse.from(savedRoute);
+    }
+
+    private String getCoordinates(UUID hubId) {
+        return getHubByHubId(hubId).getCoordinates();
+    }
+
+    private HubClientResponse getHubByHubId(UUID hubId) {
+        return hubClientService.getHubByHubId(hubId);
+    }
+
+    private GetGeoDirectionResponse getDirectionResult(String fromCoordinates, String toCoordinates) {
+        return geoDirectionService.getGeoDirection(GetGeoDirectionRequest.of(fromCoordinates, toCoordinates));
     }
 
     @Override
@@ -42,10 +61,10 @@ public class RouteServiceImpl implements RouteService {
         return GetRouteResponse.from(getRouteForServer(routeId));
     }
 
-    @Cacheable(
-            cacheNames = "searchRoute",
-            key = "'searchRoute' + (#searchRouteRequest.sort()) + ':' + (#searchRouteRequest.size())"
-    )
+//    @Cacheable(
+//            cacheNames = "searchRoute",
+//            key = "'searchRoute' + (#searchRouteRequest.sort()) + ':' + (#searchRouteRequest.size())"
+//    )
     @Override
     public SearchRouteResponse searchRoute(SearchRouteRequest searchRouteRequest) {
         List<Route> routes = routeRepository.searchRoute(
@@ -61,10 +80,10 @@ public class RouteServiceImpl implements RouteService {
         return SearchRouteResponse.from(routes, searchRouteRequest.sort());
     }
 
-    @Cacheable(
-            cacheNames = "gerOptimizedRoute",
-            key = "'getOptimizedRoute' + (#getOptimizedRouteRequest.priorityType())"
-    )
+//    @Cacheable(
+//            cacheNames = "gerOptimizedRoute",
+//            key = "'getOptimizedRoute' + (#getOptimizedRouteRequest.priorityType())"
+//    )
     @Override
     public GetOptimizedRouteResponse getOptimizedRoute(GetOptimizedRouteRequest getOptimizedRouteRequest) {
         DijkstraAlgorithm.Result result = dijkstraAlgorithm.getOptimizedRoutes(
@@ -81,13 +100,14 @@ public class RouteServiceImpl implements RouteService {
     @Transactional
     public UpdateRouteResponse updateRoute(UUID routeId, UpdateRouteRequest updateRouteRequest) {
         Route targetRoute = getRouteForServer(routeId);
-        Route sourceRoute = Route.of(
-                updateRouteRequest.fromHubId(),
-                updateRouteRequest.toHubId(),
-                updateRouteRequest.distance(),
-                updateRouteRequest.timeCost()
-        );
+
+        UUID fromHubId = updateRouteRequest.fromHubId();
+        UUID toHubId = updateRouteRequest.toHubId();
+        Route sourceRoute = Route.of(fromHubId, toHubId);
         Route updatedRoute = targetRoute.update(sourceRoute);
+
+        GetGeoDirectionResponse result = getDirectionResult(getCoordinates(fromHubId), getCoordinates(toHubId));
+        updatedRoute.setDistanceAndDuration(result.getDistance(), result.getDuration());
         return UpdateRouteResponse.from(updatedRoute);
     }
 
