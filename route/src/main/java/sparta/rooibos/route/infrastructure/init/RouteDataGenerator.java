@@ -4,6 +4,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
+import sparta.rooibos.route.application.dto.request.direction.GetGeoDirectionRequest;
+import sparta.rooibos.route.application.dto.response.Hub.HubClientResponse;
+import sparta.rooibos.route.application.dto.response.direction.GetGeoDirectionResponse;
+import sparta.rooibos.route.application.port.out.GeoDirectionService;
+import sparta.rooibos.route.domain.model.Route;
 import sparta.rooibos.route.domain.repository.RouteRepository;
 import sparta.rooibos.route.infrastructure.client.HubFeignClient;
 
@@ -14,6 +19,7 @@ import java.util.*;
 public class RouteDataGenerator {
 
     private final HubFeignClient hubFeignClient;
+    private final GeoDirectionService geoDirectionService;
     private final RouteRepository routeRepository;
 
     @Bean
@@ -54,12 +60,22 @@ public class RouteDataGenerator {
               String fromHubRegion = region.getKey();
               List<String> toHubRegions = region.getValue();
 
-              UUID fromHubId = hubFeignClient.getHubIdByRegion(fromHubRegion);
+              HubClientResponse fromHub = hubFeignClient.getHubByRegion(fromHubRegion);
+              UUID fromHubId = fromHub.hubId();
+              String start = fromHub.getCoordinates();
 
               for (String toHubRegion : toHubRegions) {
-                  UUID toHubId = hubFeignClient.getHubIdByRegion(toHubRegion);
+                  HubClientResponse toHub = hubFeignClient.getHubByRegion(toHubRegion);
+                  UUID toHubId = toHub.hubId();
+                  String goal = toHub.getCoordinates();
 
+                  GetGeoDirectionResponse result =
+                          geoDirectionService.getGeoDirection(GetGeoDirectionRequest.of(start, goal));
 
+                  Route route = Route.of(fromHubId, toHubId);
+                  route.setDistanceAndDuration(result.getDistance(), result.getDuration());
+
+                  routeRepository.createRoute(route);
               }
           }
         };
