@@ -30,4 +30,6 @@ management:
       probability: 0.1
 
 slack:
-  token: {token}
+  token: ${token}
+ai:
+  token: ${ai_token}
