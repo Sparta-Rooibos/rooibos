@@ -12,6 +12,7 @@ import java.util.UUID;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "p_message")
 public class Message extends BaseEntity {
 
     @Id
