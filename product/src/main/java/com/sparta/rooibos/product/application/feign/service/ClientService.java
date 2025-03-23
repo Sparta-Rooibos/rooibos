@@ -1,4 +1,4 @@
-package com.sparta.rooibos.product.domain.feign.service;
+package com.sparta.rooibos.product.application.feign.service;
 
 import com.sparta.rooibos.product.domain.feign.dto.Client;
 

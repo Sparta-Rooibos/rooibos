@@ -9,5 +9,5 @@ import java.util.UUID;
 
 @Repository
 public interface QueryProductRepository {
-    Page<Product> getProductList(Pageable pageable, UUID id, String name, Boolean deleted);
+    Page<Product> getProductList(Pageable pageable,  UUID id, String name, String hubId, Boolean deleted);
 }

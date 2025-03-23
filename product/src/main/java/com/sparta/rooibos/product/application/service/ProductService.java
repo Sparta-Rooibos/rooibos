@@ -9,9 +9,10 @@ import com.sparta.rooibos.product.application.dto.response.SearchProductListResp
 import com.sparta.rooibos.product.application.dto.response.SearchProductResponse;
 import com.sparta.rooibos.product.application.exception.BusinessProductException;
 import com.sparta.rooibos.product.application.exception.ProductErrorCode;
+import com.sparta.rooibos.product.application.feign.service.HubService;
 import com.sparta.rooibos.product.domain.entity.Product;
 import com.sparta.rooibos.product.domain.feign.dto.Client;
-import com.sparta.rooibos.product.domain.feign.service.ClientService;
+import com.sparta.rooibos.product.application.feign.service.ClientService;
 import com.sparta.rooibos.product.domain.repository.ProductRepository;
 import com.sparta.rooibos.product.domain.repository.QueryProductRepository;
 import jakarta.transaction.Transactional;
@@ -20,7 +21,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -29,9 +29,11 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final QueryProductRepository queryProductRepository;
     private final ClientService clientService;
+    private final HubService hubService;
 
-    public SearchProductResponse getProductList(SearchProductRequest request, Pageable pageable) {
-        Page<Product> products = queryProductRepository.getProductList(pageable, request.id(), request.name(), request.isDeleted());
+    public SearchProductResponse getProductList(String email, SearchProductRequest request, Pageable pageable) {
+        String hubId = getHubId(email);
+        Page<Product> products = queryProductRepository.getProductList(pageable, request.id(), request.name(), hubId, request.isDeleted());
 
         return new SearchProductResponse(products.getContent().stream().map(
                 p -> new SearchProductListResponse(p.getId(), p.getName(), p.getClientId(), p.getManagedHubId(), p.getDeleteBy() != null)).toList(),
@@ -40,7 +42,7 @@ public class ProductService {
 
     public GetProductResponse getProduct(String email, String name, String role, UUID productId) {
         Product product = productRepository.findByIdAndDeleteByIsNull(productId).orElseThrow(() -> new BusinessProductException(ProductErrorCode.NOT_FOUND_PRODUCT));
-
+        checkIfManageHubId(email, product.getManagedHubId());
         Client client = clientService.getClient(email, name, role, product.getClientId()).orElseThrow(() -> new BusinessProductException(ProductErrorCode.NOT_FOUND_CLIENT));
 
 
@@ -56,6 +58,7 @@ public class ProductService {
         }
         checkIfManageClientId(email, request.clientId());
         Client client = clientService.getClient(email, name, role, request.clientId()).orElseThrow(() -> new BusinessProductException(ProductErrorCode.NOT_FOUND_CLIENT));
+        checkIfManageHubId(email, client.manageHub().id());
 
         // 수령 업체는 제품 생산이 불가능합니다.
         if (client.type().equals("CONSUME")) {
@@ -73,6 +76,18 @@ public class ProductService {
         return new CreateProductResponse(product.getId(), request.name());
     }
 
+    private void checkIfManageHubId(String email, String hubId) {
+        UUID useManageHubId = hubService.getHubManager(email);
+        if (!useManageHubId.equals(UUID.fromString(hubId))) {
+            throw new BusinessProductException(ProductErrorCode.NOT_MANAGE_HUB);
+        }
+    }
+
+    private String getHubId(String email) {
+        return hubService.getHubManager(email).toString();
+    }
+
+
     @Transactional
     public boolean updateProduct(String email, UUID id, UpdateProductRequest request) {
         //아이디가 같은 경우에는 무시한다.
@@ -83,6 +98,7 @@ public class ProductService {
         }
 
         final Product product = productRepository.findByIdAndDeleteByIsNull(id).orElseThrow(() -> new BusinessProductException(ProductErrorCode.NOT_FOUND_PRODUCT));
+        checkIfManageHubId(email, product.getManagedHubId());
         // 상품 수정
         product.update(request.name(), email);
         return true;
@@ -91,6 +107,7 @@ public class ProductService {
     @Transactional
     public boolean deleteProduct(String email, UUID id) {
         final Product product = productRepository.findByIdAndDeleteByIsNull(id).orElseThrow(() -> new BusinessProductException(ProductErrorCode.NOT_FOUND_PRODUCT));
+        checkIfManageHubId(email, product.getManagedHubId());
         product.delete(email);
         return true;
     }

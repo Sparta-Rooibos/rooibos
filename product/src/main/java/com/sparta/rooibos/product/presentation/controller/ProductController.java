@@ -34,7 +34,7 @@ public class ProductController {
             @RequestHeader(value = "X-User-Role") String role,
             @ModelAttribute SearchProductRequest request) {
         Pageable pageable = PageRequest.of(request.page() - 1, request.size(), Sort.by(Sort.Direction.DESC, request.sort()));
-        return ResponseEntity.ok(productService.getProductList(request, pageable));
+        return ResponseEntity.ok(productService.getProductList(email, request, pageable));
     }
 
     @GetMapping("/{productId}")
@@ -48,7 +48,7 @@ public class ProductController {
     }
 
     @PostMapping
-//    @RoleCheck({Role.MASTER, Role.HUB, Role.CLIENT})
+    @RoleCheck({Role.MASTER, Role.HUB, Role.CLIENT})
     public ResponseEntity<CreateProductResponse> createProduct(
             @RequestHeader(value = "X-User-Email") String email,
             @RequestHeader(value = "X-User-Name") String username,

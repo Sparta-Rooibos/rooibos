@@ -18,7 +18,8 @@ public enum ProductErrorCode {
     NOT_EXITS_PRODUCT(HttpStatus.BAD_REQUEST, "PRD-02", "이미 존재하는 상품입니다."),
     NOT_SUPPORTED_TYPE(HttpStatus.BAD_REQUEST, "PRD-03", "수령업체는 제품을 생산할 수 없습니다."),
     NOT_MANAGE_CLIENT(HttpStatus.FORBIDDEN, "PRD-04", "해당 업체의 담당자가 아닙니다."),
-    NOT_FOUND_CLIENT(HttpStatus.NOT_FOUND, "RPD-05" , "해당 업체를 찾을 수 없습니다." );
+    NOT_FOUND_CLIENT(HttpStatus.NOT_FOUND, "RPD-05" , "해당 업체를 찾을 수 없습니다." ),
+    NOT_MANAGE_HUB(HttpStatus.NOT_FOUND, "RPD-06" , "해당 허브의 담당자가 아닙니다." );
     private final HttpStatus status;
     private final String code;
     private final String message;

@@ -23,10 +23,11 @@ public class QueryProductRepositoryImpl implements QueryProductRepository {
     private final QProduct product = QProduct.product;
 
     @Override
-    public Page<Product> getProductList(Pageable pageable, UUID id, String name, Boolean deleteCheck) {
+    public Page<Product> getProductList(Pageable pageable,  UUID id, String name, String hubId, Boolean deleteCheck) {
         List<Product> content = query.select(product)
                 .where(nullNameCheck(name),
                         nullIdCheck(id),
+                        nullHubIdCheck(hubId),
                         nullCheckDeleted(deleteCheck)
                 )
                 .from(product)
@@ -38,6 +39,7 @@ public class QueryProductRepositoryImpl implements QueryProductRepository {
                 .where(
                         nullNameCheck(name),
                         nullIdCheck(id),
+                        nullHubIdCheck(hubId),
                         nullCheckDeleted(deleteCheck)
                 )
                 .from(product)
@@ -49,6 +51,10 @@ public class QueryProductRepositoryImpl implements QueryProductRepository {
         }
 
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
+    }
+
+    private Predicate nullHubIdCheck(String hubId) {
+        return hubId == null ? null : product.managedHubId.eq(hubId);
     }
 
     private Predicate nullCheckDeleted(Boolean deleteCheck) {

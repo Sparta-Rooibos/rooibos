@@ -1,7 +1,7 @@
 package com.sparta.rooibos.product.infrastructure.feign;
 
 import com.sparta.rooibos.product.domain.feign.dto.Client;
-import com.sparta.rooibos.product.domain.feign.service.ClientService;
+import com.sparta.rooibos.product.application.feign.service.ClientService;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
