@@ -7,11 +7,11 @@ import sparta.rooibos.hub.application.dto.GeoLocation.response.GetCoordinatesRes
 import sparta.rooibos.hub.infrastructure.config.NaverFeignClientConfig;
 
 @FeignClient(
-        name = "naverGeoClient",
+        name = "naverGeocodingClient",
         url = "https://maps.apigw.ntruss.com",
         configuration = NaverFeignClientConfig.class
 )
-public interface NaverGeoClient {
+public interface NaverGeocodingClient {
 
     @GetMapping(value = "/map-geocode/v2/geocode", consumes = "application/json")
     GetCoordinatesResponse getCoordinates(@RequestParam String query);

@@ -2,7 +2,6 @@ package sparta.rooibos.hub.application.service.core;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sparta.rooibos.hub.application.dto.GeoLocation.request.GetCoordinatesRequest;
@@ -21,7 +20,6 @@ import sparta.rooibos.hub.application.service.port.out.GeoLocationService;
 import sparta.rooibos.hub.domain.model.Hub;
 import sparta.rooibos.hub.domain.model.Pagination;
 import sparta.rooibos.hub.domain.respository.HubRepository;
-import sparta.rooibos.hub.infrastructure.client.NaverGeoClient;
 
 import java.util.UUID;
 
