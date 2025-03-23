@@ -1,0 +1,110 @@
+version: '3.8'
+
+services:
+  auth-db:
+    image: postgres:latest
+    container_name: auth_db
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_DB: auth_db
+    ports:
+      - "5432:5432"
+
+  order-db:
+    image: postgres:latest
+    container_name: order_db
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_DB: order_db
+    ports:
+      - "5433:5432"
+
+  product-db:
+    image: postgres:latest
+    container_name: product_db
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_DB: product_db
+    ports:
+      - "5434:5432"
+
+  stock-db:
+    image: postgres:latest
+    container_name: stock_db
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_DB: stock_db
+    ports:
+      - "5435:5432"
+
+  delivery-db:
+    image: postgres:latest
+    container_name: delivery_db
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_DB: delivery_db
+    ports:
+      - "5436:5432"
+
+  message-db:
+    image: postgres:latest
+    container_name: message_db
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_DB: message_db
+    ports:
+      - "5437:5432"
+
+  user-db:
+    image: postgres:latest
+    container_name: user_db
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_DB: user_db
+    ports:
+      - "5438:5432"
+  hub-db:
+    image: postgres:latest
+    container_name: hub_db
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_DB: hub_db
+    ports:
+      - "5439:5432"
+  route-db:
+    image: postgres:latest
+    container_name: route_db
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_DB: route_db
+    ports:
+      - "5440:5432"
+  client-db:
+    image: postgres:latest
+    container_name: client_db
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_DB: client_db
+    ports:
+      - "5441:5432"
+volumes:
+  auth_db_data:
+  order_db_data:
+  product_db_data:
+  stock_db_data:
+  delivery_db_data:
+  message_db_data:
+  user_db_data:
+  hub_db_data:
+  route_db_data:
+  client_db_data:
