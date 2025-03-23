@@ -35,7 +35,7 @@ public record SearchRouteResponse(
         public static PaginationResult of(String sort, Route route) {
             return new PaginationResult(
                     sort,
-                    route.getCreateAt(),
+                    route.getCreatedAt(),
                     route.getDistance(),
                     route.getTimeCost()
             );

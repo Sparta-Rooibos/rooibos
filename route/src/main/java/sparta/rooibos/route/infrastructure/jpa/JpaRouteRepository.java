@@ -11,7 +11,7 @@ public interface JpaRouteRepository extends JpaRepository<Route, UUID> {
     @Query(
             value = "SELECT r FROM Route r " +
                     "WHERE r.routeId = :routeId " +
-                    "AND r.deleteAt IS NULL"
+                    "AND r.deletedAt IS NULL"
     )
     Optional<Route> getRoute(UUID routeId);
 }

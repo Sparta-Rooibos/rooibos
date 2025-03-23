@@ -6,6 +6,7 @@ import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -15,6 +16,7 @@ import java.util.UUID;
 @Getter @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
+@EntityListeners(AuditingEntityListener.class)
 public class Route {
 
     @Id
@@ -32,25 +34,25 @@ public class Route {
 
     @CreatedDate
     @Column(updatable = false, nullable = false)
-    private LocalDateTime createAt;
+    private LocalDateTime createdAt;
 
     @CreatedBy
     @Column(updatable = false, nullable = false)
-    private String createBy;
+    private String createdBy;
 
     @LastModifiedDate
     @Column
-    private LocalDateTime updateAt;
+    private LocalDateTime updatedAt;
 
     @LastModifiedBy
     @Column
-    private String updateBy;
+    private String updatedBy;
 
     @Column
-    private LocalDateTime deleteAt;
+    private LocalDateTime deletedAt;
 
     @Column
-    private String deleteBy;
+    private String deletedBy;
 
     public static Route of(UUID fromHubId, UUID toHubId) {
         return Route.builder()
@@ -74,6 +76,6 @@ public class Route {
     }
 
     public void delete() {
-        this.deleteAt = LocalDateTime.now();
+        this.deletedAt = LocalDateTime.now();
     }
 }
