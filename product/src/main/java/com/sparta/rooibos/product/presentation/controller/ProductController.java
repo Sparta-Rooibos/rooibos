@@ -44,7 +44,7 @@ public class ProductController {
             @RequestHeader(value = "X-User-Name") String username,
             @RequestHeader(value = "X-User-Role") String role,
             @PathVariable UUID productId) {
-        return ResponseEntity.ok(productService.getProduct(productId));
+        return ResponseEntity.ok(productService.getProduct(email, username, role, productId));
     }
 
     @PostMapping
@@ -54,7 +54,7 @@ public class ProductController {
             @RequestHeader(value = "X-User-Name") String username,
             @RequestHeader(value = "X-User-Role") String role,
             @RequestBody @Valid CreateProductRequest request) {
-        return ResponseEntity.ok(productService.createProduct(email, request));
+        return ResponseEntity.ok(productService.createProduct(email, username, role, request));
     }
 
     @PutMapping("/{productId}")

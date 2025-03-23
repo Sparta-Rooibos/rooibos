@@ -20,6 +20,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -37,20 +38,27 @@ public class ProductService {
                 products.getTotalElements(), products.getNumber() + 1, products.getSize());
     }
 
-    public GetProductResponse getProduct(UUID productId) {
+    public GetProductResponse getProduct(String email, String name, String role, UUID productId) {
         Product product = productRepository.findByIdAndDeleteByIsNull(productId).orElseThrow(() -> new BusinessProductException(ProductErrorCode.NOT_FOUND_PRODUCT));
-        return new GetProductResponse(product);
+
+        Client client = clientService.getClient(email, name, role, product.getClientId()).orElseThrow(() -> new BusinessProductException(ProductErrorCode.NOT_FOUND_CLIENT));
+
+
+        return new GetProductResponse(
+                product,
+                client.manageHub()
+        );
     }
 
-    public CreateProductResponse createProduct(String email, CreateProductRequest request) {
+    public CreateProductResponse createProduct(String email, String name, String role, CreateProductRequest request) {
         if (productRepository.findByNameAndDeleteByIsNull(request.name()).isPresent()) {
             throw new BusinessProductException(ProductErrorCode.NOT_EXITS_PRODUCT);
         }
         checkIfManageClientId(email, request.clientId());
-        Client client = clientService.getClient(request.clientId());
+        Client client = clientService.getClient(email, name, role, request.clientId()).orElseThrow(() -> new BusinessProductException(ProductErrorCode.NOT_FOUND_CLIENT));
 
         // 수령 업체는 제품 생산이 불가능합니다.
-        if(client.type().equals("CONSUME")) {
+        if (client.type().equals("CONSUME")) {
             throw new BusinessProductException(ProductErrorCode.NOT_SUPPORTED_TYPE);
         }
 
@@ -76,7 +84,7 @@ public class ProductService {
 
         final Product product = productRepository.findByIdAndDeleteByIsNull(id).orElseThrow(() -> new BusinessProductException(ProductErrorCode.NOT_FOUND_PRODUCT));
         // 상품 수정
-        product.update(request.name(),email);
+        product.update(request.name(), email);
         return true;
     }
 
@@ -89,8 +97,8 @@ public class ProductService {
 
     private void checkIfManageClientId(String email, String clientId) {
         String useManageClientId = clientService.getClientId(email);
-        if(!useManageClientId.equals(clientId)){
-            throw new BusinessProductException(ProductErrorCode.NOT_EXITS_PRODUCT);
+        if (!useManageClientId.equals(clientId)) {
+            throw new BusinessProductException(ProductErrorCode.NOT_MANAGE_CLIENT);
         }
     }
 }

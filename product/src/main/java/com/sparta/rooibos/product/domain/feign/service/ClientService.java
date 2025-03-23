@@ -2,7 +2,10 @@ package com.sparta.rooibos.product.domain.feign.service;
 
 import com.sparta.rooibos.product.domain.feign.dto.Client;
 
+import java.util.Optional;
+
 public interface ClientService {
-    Client getClient(String clientId);
+    Optional<Client> getClient(String email,String name,String role, String clientId);
+
     String getClientId(String email);
 }
