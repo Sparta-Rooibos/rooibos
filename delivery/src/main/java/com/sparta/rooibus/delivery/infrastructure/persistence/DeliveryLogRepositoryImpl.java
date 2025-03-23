@@ -71,4 +71,9 @@ public class DeliveryLogRepositoryImpl implements DeliveryLogRepository {
 
         return Pagination.of(page,size,total,deliveryLogs);
     }
+
+    @Override
+    public List<DeliveryLog> findAllByDeliveryId(UUID deliveryId) {
+        return jpaRepository.findAllByDeliveryIdAndDeletedAtIsNull(deliveryId);
+    }
 }

@@ -4,11 +4,9 @@ import com.sparta.rooibus.delivery.application.aop.UserContextRequestBean;
 import com.sparta.rooibus.delivery.application.dto.request.CreateDeliveryRequest;
 import com.sparta.rooibus.delivery.application.dto.request.SearchRequest;
 import com.sparta.rooibus.delivery.application.dto.request.UpdateDeliveryRequest;
-import com.sparta.rooibus.delivery.application.dto.request.feign.client.GetClientManagerRequest;
 import com.sparta.rooibus.delivery.application.dto.request.feign.deliverAgent.GetDeliverRequest;
 import com.sparta.rooibus.delivery.application.dto.request.feign.deliverAgent.GetHubDeliverRequest;
 import com.sparta.rooibus.delivery.application.dto.request.feign.route.GetRouteRequest;
-import com.sparta.rooibus.delivery.application.dto.request.feign.user.GetUserRequest;
 import com.sparta.rooibus.delivery.application.dto.response.CreateDeliveryResponse;
 import com.sparta.rooibus.delivery.application.dto.response.GetDeliveryResponse;
 import com.sparta.rooibus.delivery.application.dto.response.SearchDeliveryResponse;
@@ -22,6 +20,7 @@ import com.sparta.rooibus.delivery.application.service.feign.RouteService;
 import com.sparta.rooibus.delivery.application.service.feign.UserService;
 import com.sparta.rooibus.delivery.domain.entity.Delivery;
 import com.sparta.rooibus.delivery.domain.entity.DeliveryLog;
+import com.sparta.rooibus.delivery.domain.model.DeliveryStatus;
 import com.sparta.rooibus.delivery.domain.model.Pagination;
 import com.sparta.rooibus.delivery.domain.repository.DeliveryLogRepository;
 import com.sparta.rooibus.delivery.domain.repository.DeliveryRepository;
@@ -146,7 +145,14 @@ public class DeliveryServiceImpl {
             throw new BadRequestException("권한이 필요합니다");
         }
         Delivery delivery = findDelivery(request.deliveryId());
-        delivery.updateStatus(request.status());
+
+            delivery.updateStatus(request.status());
+
+
+        if(request.status().equals(DeliveryStatus.CANCELED)){
+            deliveryLogRepository.findAllByDeliveryId(request.deliveryId())
+                .forEach(deliveryLog -> deliveryLog.setStatus("CANCELED"));
+        }
         return UpdateDeliveryResponse.from(delivery);
     }
 
@@ -161,6 +167,10 @@ public class DeliveryServiceImpl {
         Delivery delivery = findDelivery(deliveryId);
         delivery.validateDeletable();
         delivery.delete();
+
+        deliveryLogRepository.findAllByDeliveryId(deliveryId)
+            .forEach(deliveryLog -> deliveryLog.delete());
+
         return delivery.getId();
     }
 
