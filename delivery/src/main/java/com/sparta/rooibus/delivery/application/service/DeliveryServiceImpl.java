@@ -48,26 +48,38 @@ public class DeliveryServiceImpl {
 
     @Transactional
     public CreateDeliveryResponse createDelivery(CreateDeliveryRequest request) {
+//        TODO : 배송자 지정 서비스, 루트 서비스 실제 로직으로 변경하기
         String email = "userName1@naver.com";
         String username = "userName1";
         String feignRole = "ROLE_MASTER";
-        UUID departure = clientService.getClient(
-                email,username,feignRole,request.requestClientId()
-            ).getBody().manageHub().id();
 
-        GetClientResponse getClientResponse = clientService.getClient(
-            email,username,feignRole,request.receiveClientId()
-        ).getBody();
+        UUID departure = null;
+        GetClientResponse getClientResponse = null;
+        UUID recipient = null;
+        String slackAccount = null;
+        UUID clientDeliverId = null;
+        try {
+            departure = clientService.getClient(
+                    email,username,feignRole,request.requestClientId()
+                ).getBody().manageHub().id();
+
+            getClientResponse = clientService.getClient(
+                email,username,feignRole,request.receiveClientId()
+            ).getBody();
+
+            recipient = clientService.getClientManager(
+                email,username,feignRole,request.requestClientId()
+            ).getBody().clientManagerId();
+
+            slackAccount = userService.getUser(feignRole,recipient).getBody().slackAccount();
+
+            clientDeliverId = deliveryAgentService.getDeliver(GetDeliverRequest.from(request.requestClientId())).deliverId();
+        } catch (Exception e) {
+            throw new RuntimeException("");
+        }
+
         UUID arrival = getClientResponse.manageHub().id();
         String address = getClientResponse.address();
-
-        UUID recipient = clientService.getClientManager(
-            email,username,feignRole,request.requestClientId()
-        ).getBody().clientManagerId();
-
-        String slackAccount = userService.getUser(feignRole,recipient).getBody().slackAccount();
-
-        UUID clientDeliverId = deliveryAgentService.getDeliver(GetDeliverRequest.from(request.requestClientId())).deliverId();
 
         Delivery delivery = Delivery.of(
             request.orderId(),
@@ -80,26 +92,42 @@ public class DeliveryServiceImpl {
         );
         deliveryRepository.save(delivery);
 
-        GetRouteResponse routeResponse = routeService.getRoute(GetRouteRequest.of(departure,arrival));
-        String expectedDistance = routeResponse.expected_distance();
-        String expectedTime = routeResponse.expected_time();
-        String sequence = routeResponse.routeList().toString();
+        GetRouteResponse routeResponse = null;
+        String expectedDistance  =null;
+        String expectedTime = null;
+        String sequence = null;
 
-        GetHubDeliverResponse deliverResponse = deliveryAgentService.getHubDeliver(
-            GetHubDeliverRequest.from(departure));
-        UUID deliverId = deliverResponse.deliverId();
+        try {
+            routeResponse = routeService.getRoute(GetRouteRequest.of(departure,arrival));
+            expectedDistance = routeResponse.expected_distance();
+            expectedTime = routeResponse.expected_time();
+            sequence = routeResponse.routeList().toString();
+        } catch (Exception e) {
+//           TODO : 업체 배송 담당자 지정하는 부분에서 뭔가를 바꿧다면 그걸 다시 바꾸는 로직 추가
+            throw new RuntimeException(e);
+        }
 
-        DeliveryLog deliveryLog = DeliveryLog.of(
-            delivery.getId(),
-            departure,
-            arrival,
-            sequence,
-            expectedDistance,
-            expectedTime,
-            deliverId
-        );
+        try {
+            GetHubDeliverResponse deliverResponse = deliveryAgentService.getHubDeliver(
+                GetHubDeliverRequest.from(departure));
+            UUID deliverId = deliverResponse.deliverId();
 
-        deliveryLogRepository.save(deliveryLog);
+            DeliveryLog deliveryLog = DeliveryLog.of(
+                delivery.getId(),
+                departure,
+                arrival,
+                sequence,
+                expectedDistance,
+                expectedTime,
+                deliverId
+            );
+
+            deliveryLogRepository.save(deliveryLog);
+        } catch (Exception e) {
+//           TODO : 업체 배송 담당자 지정하는 부분에서 뭔가를 바꿧다면 그걸 다시 바꾸는 로직 추가
+//           TODO : 허브 배송 담당자 지정하는 부분에서 뭔가를 바꿧다면 그걸 다시 바꾸는 로직 추가
+            throw new RuntimeException(e);
+        }
 
         return CreateDeliveryResponse.from(delivery);
     }
