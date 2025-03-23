@@ -10,6 +10,8 @@ import com.sparta.rooibos.product.application.dto.response.SearchProductResponse
 import com.sparta.rooibos.product.application.exception.BusinessProductException;
 import com.sparta.rooibos.product.application.exception.ProductErrorCode;
 import com.sparta.rooibos.product.domain.entity.Product;
+import com.sparta.rooibos.product.domain.feign.dto.Client;
+import com.sparta.rooibos.product.domain.feign.service.ClientService;
 import com.sparta.rooibos.product.domain.repository.ProductRepository;
 import com.sparta.rooibos.product.domain.repository.QueryProductRepository;
 import jakarta.transaction.Transactional;
@@ -25,7 +27,7 @@ import java.util.UUID;
 public class ProductService {
     private final ProductRepository productRepository;
     private final QueryProductRepository queryProductRepository;
-
+    private final ClientService clientService;
 
     public SearchProductResponse getProductList(SearchProductRequest request, Pageable pageable) {
         Page<Product> products = queryProductRepository.getProductList(pageable, request.id(), request.name(), request.isDeleted());
@@ -40,23 +42,31 @@ public class ProductService {
         return new GetProductResponse(product);
     }
 
-    public CreateProductResponse createProduct(CreateProductRequest request) {
+    public CreateProductResponse createProduct(String email, CreateProductRequest request) {
         if (productRepository.findByNameAndDeleteByIsNull(request.name()).isPresent()) {
             throw new BusinessProductException(ProductErrorCode.NOT_EXITS_PRODUCT);
         }
+        checkIfManageClientId(email, request.clientId());
+        Client client = clientService.getClient(request.clientId());
+
+        // 수령 업체는 제품 생산이 불가능합니다.
+        if(client.type().equals("CONSUME")) {
+            throw new BusinessProductException(ProductErrorCode.NOT_SUPPORTED_TYPE);
+        }
+
         // 상품 등록
         Product product = productRepository.save(new Product(
                 request.name(),
-                request.clientId(),
-                request.managedHubId(),
-                "계정 아이디"
+                client.id(),
+                client.manageHub().id(),
+                email
         ));
 
         return new CreateProductResponse(product.getId(), request.name());
     }
 
     @Transactional
-    public boolean updateProduct(UUID id, UpdateProductRequest request) {
+    public boolean updateProduct(String email, UUID id, UpdateProductRequest request) {
         //아이디가 같은 경우에는 무시한다.
         if (productRepository.findByNameAndDeleteByIsNull(request.name()).filter(
                 product -> !product.getId().equals(id)
@@ -66,14 +76,21 @@ public class ProductService {
 
         final Product product = productRepository.findByIdAndDeleteByIsNull(id).orElseThrow(() -> new BusinessProductException(ProductErrorCode.NOT_FOUND_PRODUCT));
         // 상품 수정
-        product.update(request.name());
+        product.update(request.name(),email);
         return true;
     }
 
     @Transactional
-    public boolean deleteProduct(UUID id) {
+    public boolean deleteProduct(String email, UUID id) {
         final Product product = productRepository.findByIdAndDeleteByIsNull(id).orElseThrow(() -> new BusinessProductException(ProductErrorCode.NOT_FOUND_PRODUCT));
-        product.delete("계정아이디");
+        product.delete(email);
         return true;
+    }
+
+    private void checkIfManageClientId(String email, String clientId) {
+        String useManageClientId = clientService.getClientId(email);
+        if(!useManageClientId.equals(clientId)){
+            throw new BusinessProductException(ProductErrorCode.NOT_EXITS_PRODUCT);
+        }
     }
 }

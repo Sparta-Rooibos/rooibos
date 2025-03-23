@@ -11,8 +11,12 @@ import com.sparta.rooibos.client.application.dto.response.SearchClientListRespon
 import com.sparta.rooibos.client.application.dto.response.SearchClientResponse;
 import com.sparta.rooibos.client.application.exception.BusinessClientException;
 import com.sparta.rooibos.client.application.exception.ClientErrorCode;
+import com.sparta.rooibos.client.application.feigin.service.HubService;
+import com.sparta.rooibos.client.application.feigin.service.dto.ManageHub;
 import com.sparta.rooibos.client.domain.entity.Client;
 import com.sparta.rooibos.client.domain.entity.ClientType;
+import com.sparta.rooibos.client.domain.fegin.hub.model.Hub;
+import com.sparta.rooibos.client.domain.model.Pagination;
 import com.sparta.rooibos.client.domain.repository.ClientRepository;
 import com.sparta.rooibos.client.domain.repository.QueryClientRepository;
 import lombok.RequiredArgsConstructor;
@@ -28,13 +32,11 @@ import java.util.UUID;
 public class ClientService {
     private final ClientRepository clientRepository;
     private final QueryClientRepository queryClientRepository;
+    private final ClientManagerService clientManagerService;
+    private final HubService hubService;
 
-    public SearchClientResponse getClientList(SearchClientRequest condition, Pageable pageable) {
-        Page<Client> clients = queryClientRepository.getClientList(pageable,
-                condition.name(),
-                condition.address(),
-                condition.type(),
-                condition.isDeleted());
+    public SearchClientResponse searchClient(SearchClientRequest condition) {
+        Pagination<Client> clients = queryClientRepository.searchClient(condition.toCriteria());
         return new SearchClientResponse(
                 clients.getContent().stream()
                         .map(client -> new SearchClientListResponse(
@@ -51,47 +53,60 @@ public class ClientService {
 
     public GetClientResponse getClient(UUID clientId) {
         Client client = clientRepository.findByIdAndDeleteByIsNull(clientId).orElseThrow(() -> new BusinessClientException(ClientErrorCode.NOT_EXITS_CLIENT));
+        Hub hub = hubService.getHub(client.getManagedHubId()).orElseThrow(() -> new BusinessClientException(ClientErrorCode.NOT_FOUND_HUB));
         return new GetClientResponse(client.getId().toString(),
                 client.getName(),
                 client.getClientAddress(),
                 client.getType().name(),
-                client.getManagedHubId(),
+                new ManageHub(hub),
                 client.getCreateAt(),
                 client.getUpdateAt());
     }
 
-    public CreateClientResponse createClient(CreateClientRequest createClientRequest) {
+    public CreateClientResponse createClient(String email, CreateClientRequest createClientRequest) {
         if (clientRepository.findByNameAndDeleteByIsNull(createClientRequest.name()).isPresent()) {
             throw new BusinessClientException(ClientErrorCode.NOT_FOUND_CLIENT);
         }
 
-        //TODO 계정 아이디를 등록해주면 된다.
+        Hub hub = hubService.getHub(createClientRequest.managedHubId()).orElseThrow(() -> new BusinessClientException(ClientErrorCode.NOT_FOUND_HUB));
+
         //업체 등록
         Client client = clientRepository.save(new Client(
                 createClientRequest.name(),
                 ClientType.valueOf(createClientRequest.clientType()),
-                createClientRequest.managedHubId(),
+                hub.hubId(),
                 createClientRequest.address(),
-                "계정아이디"));
+                email));
         return new CreateClientResponse(client);
     }
 
     @Transactional
-    public boolean updateClient(UUID clientId, UpdateClientRequest request) {
+    public boolean updateClient(String email, String role, UUID clientId, UpdateClientRequest request) {
         if (clientRepository.findByNameAndDeleteByIsNull(request.name())
                 .filter(client -> !client.getId().equals(clientId)).isPresent()) {
             throw new BusinessClientException(ClientErrorCode.NOT_FOUND_CLIENT);
         }
         Client client = clientRepository.findByIdAndDeleteByIsNull(clientId).orElseThrow(() -> new BusinessClientException(ClientErrorCode.NOT_EXITS_CLIENT));
-        client.update(request.name(), request.address(), "계정아이디");
+        checkPrincipalClient(email, role, client.getId());
+        client.update(request.name(), request.address(), email);
         return true;
     }
 
+    private void checkPrincipalClient(String email, String role, UUID clientId) {
+        // 업체가 아니라면 무시한다.
+        if(!role.contains("CLIENT")){
+            return;
+        }
+        String clientIdByUser = clientManagerService.getClientIdByUserId(email);
+        if (!clientIdByUser.equals(clientId.toString())) {
+            throw new BusinessClientException(ClientErrorCode.NOT_PRINCIPAL_CLIENT);
+        }
+    }
+
     @Transactional
-    public boolean deleteClient(UUID id) {
+    public boolean deleteClient(String email, UUID id) {
         Client client = clientRepository.findByIdAndDeleteByIsNull(id).orElseThrow(() -> new BusinessClientException(ClientErrorCode.NOT_EXITS_CLIENT));
-        //TODO 삭제시 계정 ID를 가져온다.
-        return client.delete("계정아이디");
+        return client.delete(email);
     }
 
     @Transactional

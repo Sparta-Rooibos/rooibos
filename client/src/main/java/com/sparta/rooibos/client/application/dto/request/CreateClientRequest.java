@@ -1,3 +1,8 @@
 package com.sparta.rooibos.client.application.dto.request;
 
-public record CreateClientRequest(String name, String clientType, String managedHubId, String address) {}
+import jakarta.validation.constraints.NotNull;
+
+public record CreateClientRequest(@NotNull String name,
+                                  @NotNull String clientType,
+                                  @NotNull String managedHubId,
+                                  @NotNull String address) {}

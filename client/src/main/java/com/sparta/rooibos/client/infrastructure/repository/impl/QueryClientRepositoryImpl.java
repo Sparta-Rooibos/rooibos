@@ -23,12 +23,12 @@ public class QueryClientRepositoryImpl implements QueryClientRepository {
     private final QClient client = QClient.client;
 
     @Override
-    public Page<Client> getClientList(Pageable pageable, String name, String address, String type, Boolean deleteCheck) {
-        List<Client> content = query.select(client)
-                .where(nullNameCheck(name),
-                        nullAddressCheck(address),
-                        nullTypeCheck(type),
-                        nullDeleteCheck(deleteCheck)
+    public Pagination<Client> searchClient(ClientCriteria criteria) {
+        List<Client> result = query.select(client)
+                .where(nullNameCheck(criteria.name()),
+                        nullAddressCheck(criteria.address()),
+                        nullTypeCheck(criteria.type()),
+                        nullDeleteCheck(criteria.isDeleted())
                 )
                 .from(client)
                 .offset(pageable.getOffset())
