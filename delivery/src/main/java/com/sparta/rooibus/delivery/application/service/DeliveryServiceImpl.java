@@ -50,22 +50,22 @@ public class DeliveryServiceImpl {
     public CreateDeliveryResponse createDelivery(CreateDeliveryRequest request) {
         String email = "userName1@naver.com";
         String username = "userName1";
-        String role = "ROLE_MASTER";
+        String feignRole = "ROLE_MASTER";
         UUID departure = clientService.getClient(
-                email,username,role,request.requestClientId()
+                email,username,feignRole,request.requestClientId()
             ).getBody().manageHub().id();
 
         GetClientResponse getClientResponse = clientService.getClient(
-            email,username,role,request.receiveClientId()
+            email,username,feignRole,request.receiveClientId()
         ).getBody();
         UUID arrival = getClientResponse.manageHub().id();
         String address = getClientResponse.address();
 
         UUID recipient = clientService.getClientManager(
-            email,username,role,request.requestClientId()
+            email,username,feignRole,request.requestClientId()
         ).getBody().clientManagerId();
 
-        String slackAccount = userService.getUser(GetUserRequest.from(recipient)).slackAccount();
+        String slackAccount = userService.getUser(feignRole,recipient).getBody().slackAccount();
 
         UUID clientDeliverId = deliveryAgentService.getDeliver(GetDeliverRequest.from(request.requestClientId())).deliverId();
 
