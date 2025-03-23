@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import sparta.rooibos.hub.application.dto.hubManager.request.CreateHubManagerRequest;
 import sparta.rooibos.hub.application.dto.hubManager.response.CreateHubManagerResponse;
-import sparta.rooibos.hub.application.dto.hubManager.response.GetHubManagerHubIdResponse;
 import sparta.rooibos.hub.application.exception.BusinessHubManagerException;
 import sparta.rooibos.hub.application.exception.custom.HubManagerErrorCode;
 import sparta.rooibos.hub.application.port.in.HubManagerService;
@@ -28,17 +27,15 @@ public class HubManagerServiceImpl implements HubManagerService {
     }
 
     @Override
-    public GetHubManagerHubIdResponse getHubIdByUserId(UUID userId) {
-        HubManager targetHubManger = getHubManager(userId);
-
-        return GetHubManagerHubIdResponse.from(targetHubManger);
+    public UUID getHubIdByUserId(UUID userId) {
+        return hubManagerRepository.getHubIdByUserId(userId)
+                .orElseThrow(() -> new BusinessHubManagerException(HubManagerErrorCode.HUB_MANAGER_NOT_FOUND));
     }
 
     @Override
-    public GetHubManagerHubIdResponse getHubIdByEmail(String email) {
-        HubManager targetHubManger = getHubManager(email);
-
-        return GetHubManagerHubIdResponse.from(targetHubManger);
+    public UUID getHubIdByEmail(String email) {
+        return hubManagerRepository.getHubIdByEmail(email)
+                .orElseThrow(() -> new BusinessHubManagerException(HubManagerErrorCode.HUB_MANAGER_NOT_FOUND));
     }
 
     @Override
@@ -50,11 +47,6 @@ public class HubManagerServiceImpl implements HubManagerService {
 
     private HubManager getHubManager(UUID userId) {
         return hubManagerRepository.getHubManagerByUserId(userId)
-                .orElseThrow(() -> new BusinessHubManagerException(HubManagerErrorCode.HUB_MANAGER_NOT_FOUND));
-    }
-
-    private HubManager getHubManager(String email) {
-        return hubManagerRepository.getHubManagerByEmail(email)
                 .orElseThrow(() -> new BusinessHubManagerException(HubManagerErrorCode.HUB_MANAGER_NOT_FOUND));
     }
 }

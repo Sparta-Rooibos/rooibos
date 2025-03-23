@@ -8,7 +8,9 @@ import java.util.UUID;
 public interface HubManagerRepository {
     HubManager createHubManager(UUID userId, UUID hubId);
 
-    Optional<HubManager> getHubManagerByUserId(UUID userId);
+    Optional<UUID> getHubIdByUserId(UUID userId);
 
-    Optional<HubManager> getHubManagerByEmail(String email);
+    Optional<UUID> getHubIdByEmail(String email);
+
+    Optional<HubManager> getHubManagerByUserId(UUID userId);
 }
