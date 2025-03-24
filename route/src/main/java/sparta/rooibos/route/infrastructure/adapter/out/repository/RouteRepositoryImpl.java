@@ -87,7 +87,7 @@ public class RouteRepositoryImpl implements RouteRepository {
             return QRoute.route.timeCost.asc();
         }
 
-        return QRoute.route.createAt.desc();
+        return QRoute.route.createdAt.desc();
     }
 
     // TODO distance, timeCost 타입 숫자형으로 리팩토링 필요
@@ -105,7 +105,7 @@ public class RouteRepositoryImpl implements RouteRepository {
         }
 
         else if (lastCreatedAt != null) {
-            return QRoute.route.createAt.loe(lastCreatedAt);
+            return QRoute.route.createdAt.loe(lastCreatedAt);
         }
 
         return null; // 첫 페이지인 경우

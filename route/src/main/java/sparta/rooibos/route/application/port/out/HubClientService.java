@@ -1,6 +1,6 @@
 package sparta.rooibos.route.application.port.out;
 
-import sparta.rooibos.route.application.dto.response.Hub.HubClientResponse;
+import sparta.rooibos.route.application.dto.response.hub.HubClientResponse;
 
 import java.util.UUID;
 

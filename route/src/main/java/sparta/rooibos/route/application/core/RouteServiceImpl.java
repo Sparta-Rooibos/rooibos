@@ -1,16 +1,14 @@
 package sparta.rooibos.route.application.core;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import sparta.rooibos.route.application.dto.request.direction.GetGeoDirectionRequest;
 import sparta.rooibos.route.application.dto.request.route.CreateRouteRequest;
 import sparta.rooibos.route.application.dto.request.route.GetOptimizedRouteRequest;
 import sparta.rooibos.route.application.dto.request.route.SearchRouteRequest;
 import sparta.rooibos.route.application.dto.request.route.UpdateRouteRequest;
-import sparta.rooibos.route.application.dto.response.Hub.HubClientResponse;
 import sparta.rooibos.route.application.dto.response.direction.GetGeoDirectionResponse;
+import sparta.rooibos.route.application.dto.response.hub.HubClientResponse;
 import sparta.rooibos.route.application.dto.response.route.*;
 import sparta.rooibos.route.application.port.in.RouteService;
 import sparta.rooibos.route.application.port.out.GeoDirectionService;
@@ -35,7 +33,11 @@ public class RouteServiceImpl implements RouteService {
     public CreateRouteResponse createRoute(CreateRouteRequest createRouteRequest) {
         UUID fromHubId = createRouteRequest.fromHubId();
         UUID toHubId = createRouteRequest.toHubId();
-        Route newRoute = Route.of(fromHubId, toHubId);
+
+        HubClientResponse fromHub = getHubByHubId(fromHubId);
+        HubClientResponse toHub = getHubByHubId(toHubId);
+
+        Route newRoute = Route.of(fromHubId, toHubId, fromHub.name(), toHub.name());
 
         GetGeoDirectionResponse result = getDirectionResult(getCoordinates(fromHubId), getCoordinates(toHubId));
         newRoute.setDistanceAndDuration(result.getDistance(), result.getDuration());
@@ -53,7 +55,7 @@ public class RouteServiceImpl implements RouteService {
     }
 
     private GetGeoDirectionResponse getDirectionResult(String fromCoordinates, String toCoordinates) {
-        return geoDirectionService.getGeoDirection(GetGeoDirectionRequest.of(fromCoordinates, toCoordinates));
+        return geoDirectionService.getGeoDirection(fromCoordinates, toCoordinates);
     }
 
     @Override
@@ -88,12 +90,22 @@ public class RouteServiceImpl implements RouteService {
     public GetOptimizedRouteResponse getOptimizedRoute(GetOptimizedRouteRequest getOptimizedRouteRequest) {
         DijkstraAlgorithm.Result result = dijkstraAlgorithm.getOptimizedRoutes(
                 getOptimizedRouteRequest.fromHubId(),
-                getOptimizedRouteRequest.toHubID(),
+                getOptimizedRouteRequest.toHubId(),
                 getOptimizedRouteRequest.priorityType(),
                 getAllRoutesForServer()
         );
 
-        return GetOptimizedRouteResponse.from(result);
+        List<GetOptimizedRouteResponse.RouteInfo> routeInfos = result.getPath().stream()
+                .map(this::getRouteForServer)
+                .map(route -> GetOptimizedRouteResponse.RouteInfo.of(
+                        route.getFromHubName(),
+                        route.getToHubName(),
+                        route.getDistance(),
+                        route.getTimeCost()
+                ))
+                .toList();
+
+        return GetOptimizedRouteResponse.from(result, routeInfos);
     }
 
     @Override
@@ -103,7 +115,11 @@ public class RouteServiceImpl implements RouteService {
 
         UUID fromHubId = updateRouteRequest.fromHubId();
         UUID toHubId = updateRouteRequest.toHubId();
-        Route sourceRoute = Route.of(fromHubId, toHubId);
+
+        HubClientResponse fromHub = getHubByHubId(fromHubId);
+        HubClientResponse toHub = getHubByHubId(toHubId);
+
+        Route sourceRoute = Route.of(fromHubId, toHubId, fromHub.name(), toHub.name());
         Route updatedRoute = targetRoute.update(sourceRoute);
 
         GetGeoDirectionResponse result = getDirectionResult(getCoordinates(fromHubId), getCoordinates(toHubId));
