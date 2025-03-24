@@ -3,6 +3,7 @@ package sparta.rooibos.route.application.dto.response.route;
 import sparta.rooibos.route.application.core.DijkstraAlgorithm;
 
 import java.util.List;
+import java.util.UUID;
 
 public record GetOptimizedRouteResponse(
         DijkstraAlgorithm.Result result,
@@ -18,13 +19,17 @@ public record GetOptimizedRouteResponse(
     }
 
     public record RouteInfo(
+            UUID fromHubId,
             String fromHubName,
+            UUID toHubId,
             String toHubName,
             Integer distance,
             Integer timeCost
     ) {
-        public static RouteInfo of(String fromHubName, String toHubName, Integer distance, Integer timeCost) {
-            return new RouteInfo(fromHubName, toHubName, distance, timeCost);
+        public static RouteInfo of(
+                UUID fromHubId, String fromHubName, UUID toHubId, String toHubName, Integer distance, Integer timeCost
+        ) {
+            return new RouteInfo(fromHubId, fromHubName, toHubId, toHubName, distance, timeCost);
         }
     }
 }

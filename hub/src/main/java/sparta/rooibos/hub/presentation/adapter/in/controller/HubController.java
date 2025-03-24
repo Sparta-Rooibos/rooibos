@@ -1,4 +1,4 @@
-package sparta.rooibos.hub.presentation.controller;
+package sparta.rooibos.hub.presentation.adapter.in.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

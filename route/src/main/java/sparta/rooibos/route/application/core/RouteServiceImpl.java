@@ -98,7 +98,9 @@ public class RouteServiceImpl implements RouteService {
         List<GetOptimizedRouteResponse.RouteInfo> routeInfos = result.getPath().stream()
                 .map(this::getRouteForServer)
                 .map(route -> GetOptimizedRouteResponse.RouteInfo.of(
+                        route.getFromHubId(),
                         route.getFromHubName(),
+                        route.getToHubId(),
                         route.getToHubName(),
                         route.getDistance(),
                         route.getTimeCost()
