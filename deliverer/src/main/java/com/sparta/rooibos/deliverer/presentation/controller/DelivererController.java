@@ -5,6 +5,7 @@ import com.sparta.rooibos.deliverer.application.dto.request.DelivererSearchReque
 import com.sparta.rooibos.deliverer.application.dto.response.DelivererListResponse;
 import com.sparta.rooibos.deliverer.application.dto.response.DelivererResponse;
 import com.sparta.rooibos.deliverer.application.service.port.DelivererService;
+import com.sparta.rooibos.deliverer.domain.entity.DelivererType;
 import com.sparta.rooibos.deliverer.infrastructure.aop.RoleCheck;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -25,24 +26,24 @@ public class DelivererController {
         return ResponseEntity.ok(delivererService.createDeliverer(request));
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/{delivererId}")
     @RoleCheck({"ROLE_MASTER, ROLE_HUB"})
     public ResponseEntity<DelivererResponse> updateDeliverer(
-            @PathVariable UUID id,
+            @PathVariable UUID delivererId,
             @RequestBody @Valid DelivererRequest request) {
-        return ResponseEntity.ok(delivererService.updateDeliverer(id, request));
+        return ResponseEntity.ok(delivererService.updateDeliverer(delivererId, request));
     }
 
     @RoleCheck({"ROLE_MASTER, ROLE_HUB, ROLE_DELIBERY"})
-    @GetMapping("/{id}")
-    public ResponseEntity<DelivererResponse> getDeliverer(@PathVariable UUID id) {
-        return ResponseEntity.ok(delivererService.getDeliverer(id));
+    @GetMapping("/{delivererId}")
+    public ResponseEntity<DelivererResponse> getDeliverer(@PathVariable UUID delivererId) {
+        return ResponseEntity.ok(delivererService.getDeliverer(delivererId));
     }
 
-    @PatchMapping("/{id}")
+    @PatchMapping("/{delivererId}")
     @RoleCheck({"ROLE_MASTER, ROLE_HUB"})
-    public ResponseEntity<Void> deleteDeliverer(@PathVariable UUID id) {
-        delivererService.deleteDeliverer(id);
+    public ResponseEntity<Void> deleteDeliverer(@PathVariable UUID delivererId) {
+        delivererService.deleteDeliverer(delivererId);
         return ResponseEntity.noContent().build();
     }
 
@@ -50,5 +51,23 @@ public class DelivererController {
     @RoleCheck({"ROLE_MASTER, ROLE_HUB, ROLE_DELIBERY"})
     public ResponseEntity<DelivererListResponse> searchDeliverers(@ModelAttribute DelivererSearchRequest request) {
         return ResponseEntity.ok(delivererService.searchDeliverers(request));
+    }
+
+    @GetMapping("/assign")
+    @RoleCheck({"ROLE_MASTER, ROLE_HUB, ROLE_DELIBERY"})
+    public ResponseEntity<DelivererResponse> assignDeliverer(
+            @RequestParam UUID hubId,
+            @RequestParam DelivererType type
+    ) {
+        DelivererResponse assigned = delivererService.assignNextDeliverer(hubId, type);
+        return ResponseEntity.ok(assigned);
+    }
+
+    @PatchMapping("/unassign/{delivererId}")
+    public ResponseEntity<Void> cancelAssignment(
+            @PathVariable UUID delivererId
+    ) {
+        delivererService.cancelAssignment(delivererId);
+        return ResponseEntity.ok().build();
     }
 }

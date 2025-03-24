@@ -42,8 +42,12 @@ public class Deliverer extends BaseEntity {
 
     private boolean hidden;
 
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private DelivererStatus status;
+
     public static Deliverer create(UUID id, String username, String email, String slackAccount, String phone, DelivererType type, UUID hubId, int order) {
-        return new Deliverer(id, username, email, slackAccount, phone, type, hubId, order, false);
+        return new Deliverer(id, username, email, slackAccount, phone, type, hubId, order, false, DelivererStatus.UNASSIGNED);
     }
 
     public void update(DelivererType type, UUID hubId) {
@@ -54,5 +58,13 @@ public class Deliverer extends BaseEntity {
     public void delete(String deletedBy) {
         this.hidden = true;
         this.markAsDeleted(deletedBy);
+    }
+
+    public void assign() {
+        this.status = DelivererStatus.ASSIGNED;
+    }
+
+    public void unassign() {
+        this.status = DelivererStatus.UNASSIGNED;
     }
 }
