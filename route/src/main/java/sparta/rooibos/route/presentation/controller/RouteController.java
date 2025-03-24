@@ -36,7 +36,7 @@ public class RouteController {
 
     @GetMapping("/recommend")
     public ResponseEntity<GetOptimizedRouteResponse> recommendRoute(
-            @ModelAttribute GetOptimizedRouteRequest getOptimizedRouteRequest
+            @RequestBody GetOptimizedRouteRequest getOptimizedRouteRequest
     ) {
         return ResponseEntity.ok(routeService.getOptimizedRoute(getOptimizedRouteRequest));
     }
