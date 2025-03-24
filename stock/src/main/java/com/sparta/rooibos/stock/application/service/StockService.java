@@ -29,8 +29,8 @@ public class StockService {
         return SearchStockResponse.from(stock);
     }
 
-    public GetStockResponse getStock(UUID stockId) {
-        Stock stock = repository.findByIdAndDeleteByIsNull(stockId).orElseThrow(() -> new BusinessStockException(StockErrorCode.STOCK_NOT_FOUND));
+    public GetStockResponse getStock(String productId) {
+        Stock stock = repository.findByProductIdAndDeleteByIsNull(productId).orElseThrow(() -> new BusinessStockException(StockErrorCode.STOCK_NOT_FOUND));
         return GetStockResponse.from(stock);
     }
 
