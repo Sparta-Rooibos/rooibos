@@ -4,12 +4,13 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import sparta.rooibos.hub.application.dto.GeoLocation.response.GetCoordinatesResponse;
+import sparta.rooibos.hub.infrastructure.config.FeignClientRetryConfig;
 import sparta.rooibos.hub.infrastructure.config.NaverFeignClientConfig;
 
 @FeignClient(
         name = "naverGeocodingClient",
         url = "https://maps.apigw.ntruss.com",
-        configuration = NaverFeignClientConfig.class
+        configuration = {NaverFeignClientConfig.class, FeignClientRetryConfig.class}
 )
 public interface NaverGeocodingClient {
 

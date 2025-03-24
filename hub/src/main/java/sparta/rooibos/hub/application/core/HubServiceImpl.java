@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.json.JsonParseException;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -50,16 +51,15 @@ public class HubServiceImpl implements HubService {
         return CreateHubResponse.from(hubRepository.createHub(newHub));
     }
 
-    // TODO compose.yml 작성하기
-//    @Cacheable(
-//            cacheNames = "getHub",
-//            key = "'getHub:' + #hubId"
-//    )
     @Override
     public GetHubResponse getHub(UUID hubId) {
         return GetHubResponse.from(getHubForServer(hubId));
     }
 
+    @Override
+    public boolean isExistingHub(UUID hubId) {
+        return hubRepository.getHub(hubId).isPresent();
+    }
 
     @Override
     public GetHubResponse getHubByRegion(String region) {
@@ -69,12 +69,12 @@ public class HubServiceImpl implements HubService {
         return GetHubResponse.from(findHub);
     }
 
-    //    @Cacheable(
+//    @Cacheable(
 //            cacheNames = "searchHub",
-//            key = "'searchHub:' + (#searchHubRequest.name() ?: '') + ':' + (#searchHubRequest.region() ?: '')"
+//            key = "'searchHub:' + #email + (#searchHubRequest.name() ?: '') + ':' + (#searchHubRequest.region() ?: '')"
 //    )
     @Override
-    public SearchHubResponse searchHub(SearchHubRequest searchHubRequest) {
+    public SearchHubResponse searchHub(String email, SearchHubRequest searchHubRequest) {
         Pagination<Hub> hubPagination = hubRepository.searchHub(
                 searchHubRequest.name(),
                 searchHubRequest.region(),

@@ -14,7 +14,7 @@ public interface RouteService {
 
     GetRouteResponse getRoute(UUID routeId);
 
-    SearchRouteResponse searchRoute(SearchRouteRequest searchRouteRequest);
+    SearchRouteResponse searchRoute(String email, SearchRouteRequest searchRouteRequest);
 
     GetOptimizedRouteResponse getOptimizedRoute(GetOptimizedRouteRequest getOptimizedRouteRequest);
 
