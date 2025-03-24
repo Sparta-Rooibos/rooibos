@@ -30,10 +30,11 @@ public class DeliveryLogServiceImpl {
         DeliveryLog deliveryLog = DeliveryLog.of(
             request.departure(),
             request.arrival(),
+            request.departureName(),
+            request.arrivalName(),
             request.sequence(),
             request.expectedDistance(),
-            request.expectedTime(),
-            request.deliverId()
+            request.expectedTime()
         );
         deliveryLogRepository.save(deliveryLog);
         return CreateDeliveryLogResponse.from(deliveryLog);

@@ -50,7 +50,7 @@ public class DeliveryLogRepositoryImpl implements DeliveryLogRepository {
         }
 
         if ("arrival".equalsIgnoreCase(filterKey) && !filterValue.isEmpty()) {
-            builder.and(deliveryLog.arrival.eq(UUID.fromString(filterValue)));
+//            builder.and(deliveryLog.arrival.eq(UUID.fromString(filterValue)));
         }
         OrderSpecifier<?> sortDelivery = sort.equalsIgnoreCase("desc")
             ? deliveryLog.createdAt.desc()

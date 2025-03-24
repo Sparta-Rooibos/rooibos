@@ -57,8 +57,8 @@ public record SearchDeliveryLogResponse(
             return new SearchDeliveryLog(
                 deliveryLog.getId(),
                 deliveryLog.getDeliveryId(),
-                deliveryLog.getDeparture(),
-                deliveryLog.getArrival(),
+                deliveryLog.getFromHubId(),
+                deliveryLog.getToHubId(),
                 deliveryLog.getSequence(),
                 deliveryLog.getExpectedDistance(),
                 deliveryLog.getExpectedTime(),
