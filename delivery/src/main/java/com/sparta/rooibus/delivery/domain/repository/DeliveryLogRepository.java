@@ -23,4 +23,6 @@ public interface DeliveryLogRepository {
     Pagination<DeliveryLog> searchDeliveryLogs(String keyword, String filterKey, String filterValue, String sort, int page, int size);
 
     List<DeliveryLog> findAllByDeliveryId(UUID deliveryId);
+
+    List<DeliveryLog> saveAll(List<DeliveryLog> deliveryLogs);
 }

@@ -6,7 +6,7 @@ public record CreateDeliveryLogRequest(
     UUID deliveryId,
     UUID departure,
     UUID arrival,
-    String sequence,
+    int sequence,
     String expectedDistance,
     String expectedTime,
     UUID deliverId

@@ -4,9 +4,14 @@ import java.util.List;
 import java.util.UUID;
 
 public record GetRouteResponse(
-    List<UUID> routeList,
-    String expected_distance,
-    String expected_time
+    List<RouteResponse> routeList
+    ) {
+    public record RouteResponse(
+        UUID fromHubId,
+        UUID toHubId,
+        Integer distance,
+        Integer timeCost
     ) {
 
+    }
 }

@@ -26,7 +26,10 @@ import com.sparta.rooibus.delivery.domain.repository.DeliveryLogRepository;
 import com.sparta.rooibus.delivery.domain.repository.DeliveryRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.ws.rs.BadRequestException;
+import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
@@ -50,7 +53,7 @@ public class DeliveryServiceImpl {
 //        TODO : 배송자 지정 서비스, 루트 서비스 실제 로직으로 변경하기
         String email = userContext.getEmail();
         String username = userContext.getName();
-        String loginUserRole =userContext.getRole();
+        String loginUserRole = userContext.getRole();
         String feignRole = "ROLE_MASTER";
 
         UUID departure = null;
@@ -60,20 +63,21 @@ public class DeliveryServiceImpl {
         UUID clientDeliverId = null;
         try {
             departure = clientService.getClient(
-                    email,username,loginUserRole,request.requestClientId()
-                ).getBody().manageHub().id();
+                email, username, loginUserRole, request.requestClientId()
+            ).getBody().manageHub().id();
 
             getClientResponse = clientService.getClient(
-                email,username,loginUserRole,request.receiveClientId()
+                email, username, loginUserRole, request.receiveClientId()
             ).getBody();
 
             recipient = clientService.getClientManager(
-                email,username,feignRole,request.receiveClientId()
+                email, username, feignRole, request.receiveClientId()
             ).getBody().clientManagerId();
 
-            slackAccount = userService.getUser(feignRole,recipient).getBody().slackAccount();
+            slackAccount = userService.getUser(feignRole, recipient).getBody().slackAccount();
 
-            clientDeliverId = deliveryAgentService.getDeliver(GetDeliverRequest.from(request.requestClientId())).deliverId();
+            clientDeliverId = deliveryAgentService.getDeliver(
+                GetDeliverRequest.from(request.requestClientId())).deliverId();
         } catch (Exception e) {
             throw new RuntimeException("");
         }
@@ -90,44 +94,38 @@ public class DeliveryServiceImpl {
             slackAccount,
             clientDeliverId
         );
-        deliveryRepository.save(delivery);
 
         GetRouteResponse routeResponse = null;
-        String expectedDistance  =null;
-        String expectedTime = null;
-        String sequence = null;
-
         try {
-            routeResponse = routeService.getRoute(GetRouteRequest.of(departure,arrival));
-            expectedDistance = routeResponse.expected_distance();
-            expectedTime = routeResponse.expected_time();
-            sequence = routeResponse.routeList().toString();
+            routeResponse = routeService.getRoute(departure, arrival).getBody();
         } catch (Exception e) {
 //           TODO : 업체 배송 담당자 지정하는 부분에서 뭔가를 바꿧다면 그걸 다시 바꾸는 로직 추가
             throw new RuntimeException(e);
         }
-
+        AtomicInteger index = new AtomicInteger(0);
+        List<DeliveryLog> deliveryLogs;
         try {
             GetHubDeliverResponse deliverResponse = deliveryAgentService.getHubDeliver(
                 GetHubDeliverRequest.from(departure));
             UUID deliverId = deliverResponse.deliverId();
 
-            DeliveryLog deliveryLog = DeliveryLog.of(
-                delivery.getId(),
-                departure,
-                arrival,
-                sequence,
-                expectedDistance,
-                expectedTime,
-                deliverId
-            );
-
-            deliveryLogRepository.save(deliveryLog);
+            deliveryLogs = routeResponse.routeList().stream()
+                .map(route ->
+                    DeliveryLog.of(
+                        route.fromHubId(),
+                        route.toHubId(),
+                        index.incrementAndGet(),
+                        route.distance().toString(),
+                        route.timeCost().toString(),
+                        deliverId
+                    )).collect(Collectors.toList());
         } catch (Exception e) {
 //           TODO : 업체 배송 담당자 지정하는 부분에서 뭔가를 바꿧다면 그걸 다시 바꾸는 로직 추가
 //           TODO : 허브 배송 담당자 지정하는 부분에서 뭔가를 바꿧다면 그걸 다시 바꾸는 로직 추가
             throw new RuntimeException(e);
         }
+        deliveryLogRepository.saveAll(deliveryLogs);
+        deliveryRepository.save(delivery);
 
         return CreateDeliveryResponse.from(delivery);
     }
@@ -225,7 +223,7 @@ public class DeliveryServiceImpl {
         String role = userContext.getRole();
         String userEmail = userContext.getEmail();
         String userName = userContext.getName();
-        UUID userId = UUID.randomUUID();
+        UUID userId = userContext.getUserId();
 
         switch (role){
 //            TODO : feign client로 hubId

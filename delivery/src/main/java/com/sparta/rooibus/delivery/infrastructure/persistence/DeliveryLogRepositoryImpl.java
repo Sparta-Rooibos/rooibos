@@ -76,4 +76,9 @@ public class DeliveryLogRepositoryImpl implements DeliveryLogRepository {
     public List<DeliveryLog> findAllByDeliveryId(UUID deliveryId) {
         return jpaRepository.findAllByDeliveryIdAndDeletedAtIsNull(deliveryId);
     }
+
+    @Override
+    public List<DeliveryLog> saveAll(List<DeliveryLog> deliveryLogs) {
+        return jpaRepository.saveAll(deliveryLogs);
+    }
 }

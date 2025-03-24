@@ -1,12 +1,13 @@
 package com.sparta.rooibus.delivery.domain.entity;
 
 import com.sparta.rooibus.delivery.domain.model.DeliveryLogEnum;
-import com.sparta.rooibus.delivery.domain.model.DeliveryStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -40,7 +41,7 @@ public class DeliveryLog {
     private UUID arrival;
 
     @Column(name = "sequence", length = 255)
-    private String sequence;
+    private int sequence;
 
     @Column(name = "expected_distance", length = 50)
     private String expectedDistance;
@@ -82,9 +83,8 @@ public class DeliveryLog {
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
 
-    public static DeliveryLog of(UUID deliveryId, UUID departure, UUID arrival, String sequence, String expectedDistance, String expectedTime, UUID deliverId) {
+    public static DeliveryLog of( UUID departure, UUID arrival, int sequence, String expectedDistance, String expectedTime, UUID deliverId) {
         DeliveryLog deliveryLog = new DeliveryLog();
-        deliveryLog.deliveryId = deliveryId;
         deliveryLog.departure = departure;
         deliveryLog.arrival = arrival;
         deliveryLog.sequence = sequence;

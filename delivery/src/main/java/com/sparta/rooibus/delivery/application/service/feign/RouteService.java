@@ -2,10 +2,12 @@ package com.sparta.rooibus.delivery.application.service.feign;
 
 import com.sparta.rooibus.delivery.application.dto.response.feign.route.GetRouteResponse;
 import com.sparta.rooibus.delivery.application.dto.request.feign.route.GetRouteRequest;
+import java.util.UUID;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 @Component
 public interface RouteService {
 
-    GetRouteResponse getRoute(GetRouteRequest request);
+    ResponseEntity<GetRouteResponse> getRoute(UUID fromHubId, UUID toHubId);
 }
