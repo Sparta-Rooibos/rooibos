@@ -33,6 +33,11 @@ public class HubController {
         return ResponseEntity.ok(hubService.getHub(hubId));
     }
 
+    @GetMapping("/{hubId}/check")
+    public ResponseEntity<Boolean> checkHub(@PathVariable UUID hubId) {
+        return ResponseEntity.ok(hubService.isExistingHub(hubId));
+    }
+
     @GetMapping("/region")
     public ResponseEntity<GetHubResponse> getHubByRegion(@RequestParam String region) {
         return ResponseEntity.ok(hubService.getHubByRegion(region));

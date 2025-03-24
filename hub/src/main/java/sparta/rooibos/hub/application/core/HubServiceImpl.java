@@ -60,6 +60,10 @@ public class HubServiceImpl implements HubService {
         return GetHubResponse.from(getHubForServer(hubId));
     }
 
+    @Override
+    public boolean isExistingHub(UUID hubId) {
+        return hubRepository.getHub(hubId).isPresent();
+    }
 
     @Override
     public GetHubResponse getHubByRegion(String region) {
