@@ -17,6 +17,15 @@ spring:
           uri: lb://user-service
           predicates:
             - Path=/user/**
+        - id: delivery-service
+          uri: lb://delivery-service
+          predicates:
+            - Path=/delivery/**
+            - Path=/deliveryLog/**
+        - id: order-service
+          uri: lb://order-service
+          predicates:
+            - Path=/order/**
       discovery:
         locator:
           enabled: true
