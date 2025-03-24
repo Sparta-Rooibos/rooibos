@@ -4,6 +4,7 @@ import com.sparta.rooibus.delivery.domain.model.DeliveryLogEnum;
 import com.sparta.rooibus.delivery.domain.model.DeliveryStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
@@ -12,11 +13,17 @@ import java.util.UUID;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
 @Table(name = "p_deliverylog")
 @Getter
 @NoArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
 public class DeliveryLog {
     @Id
     @GeneratedValue
@@ -53,15 +60,19 @@ public class DeliveryLog {
     @Column(name = "deliver")
     private UUID deliver;
 
+    @CreatedBy
     @Column(name = "created_by", length = 50)
     private String createdBy;
 
+    @CreatedDate
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
+    @LastModifiedBy
     @Column(name = "updated_by", length = 50)
     private String updatedBy;
 
+    @LastModifiedDate
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
@@ -89,7 +100,8 @@ public class DeliveryLog {
         this.status = deliveryStatus;
     }
 
-    public void delete() {
+    public void delete(String email) {
         this.deletedAt =LocalDateTime.now();
+        this.deletedBy = email;
     }
 }

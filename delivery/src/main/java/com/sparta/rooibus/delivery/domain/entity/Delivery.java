@@ -3,6 +3,7 @@ package com.sparta.rooibus.delivery.domain.entity;
 import com.sparta.rooibus.delivery.domain.model.DeliveryStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
@@ -15,12 +16,18 @@ import java.util.UUID;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Where;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
 @Table(name = "p_delivery")
 @Where(clause = "deleted_at IS NULL")
 @Getter
 @NoArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
 public class Delivery {
     @Id
     @GeneratedValue
@@ -52,15 +59,19 @@ public class Delivery {
     @Column(name = "client_deliver_id" )
     private UUID clientDeliver;
 
+    @CreatedDate
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
+    @CreatedBy
     @Column(name = "created_by", length = 50)
     private String createdBy;
 
+    @LastModifiedDate
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    @LastModifiedBy
     @Column(name = "updated_by", length = 50)
     private String updatedBy;
 
@@ -82,32 +93,18 @@ public class Delivery {
         return delivery;
     }
 
-    @PrePersist
-    public void prePersist() {
-        if (this.id == null) {
-            this.id = UUID.randomUUID();
-        }
-        this.createdAt = LocalDateTime.now();
-        this.updatedAt = LocalDateTime.now();
-    }
-
-    @PreUpdate
-    public void preUpdate() {
-        this.updatedAt = LocalDateTime.now();
-    }
-
     public void updateStatus(DeliveryStatus status) {
         this.status = status;
     }
 
-    public void delete(){
+    public void delete(String email){
         this.deletedAt = LocalDateTime.now();
-        this.deletedBy = "취소한 사람";// TODO: 로그인한 사람
+        this.deletedBy = email;
     }
 
     public void validateDeletable() {
-        if (this.status != DeliveryStatus.PENDING) {
-            throw new IllegalStateException("배송 중이거나 완료된 주문은 삭제할 수 없습니다.");
+        if (this.status != DeliveryStatus.PENDING && this.status==DeliveryStatus.CANCELED) {
+            throw new IllegalStateException("허브 대기중인 상태에서만 삭제할 수 있습니다.");
         }
     }
 

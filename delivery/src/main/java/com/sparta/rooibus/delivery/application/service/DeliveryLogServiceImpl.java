@@ -69,7 +69,7 @@ public class DeliveryLogServiceImpl {
         DeliveryLog deliveryLog = deliveryLogRepository.findById(deliveryLogId).orElseThrow(
             ()-> new EntityNotFoundException("찾는거 없음")
         );
-        deliveryLog.delete();
+        deliveryLog.delete(userContext.getUserId().toString());
         return DeleteDeliveryLogResponse.from(deliveryLog);
     }
 

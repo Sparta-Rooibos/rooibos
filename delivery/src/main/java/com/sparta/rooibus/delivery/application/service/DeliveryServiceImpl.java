@@ -166,10 +166,10 @@ public class DeliveryServiceImpl {
         }
         Delivery delivery = findDelivery(deliveryId);
         delivery.validateDeletable();
-        delivery.delete();
+        delivery.delete(userContext.getUserId().toString());
 
         deliveryLogRepository.findAllByDeliveryId(deliveryId)
-            .forEach(deliveryLog -> deliveryLog.delete());
+            .forEach(deliveryLog -> deliveryLog.delete(userContext.getUserId().toString()));
 
         return delivery.getId();
     }
