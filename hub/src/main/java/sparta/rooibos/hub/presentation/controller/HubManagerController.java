@@ -5,8 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import sparta.rooibos.hub.application.dto.hubManager.request.CreateHubManagerRequest;
 import sparta.rooibos.hub.application.dto.hubManager.response.CreateHubManagerResponse;
-import sparta.rooibos.hub.application.dto.hubManager.response.GetHubManagerHubIdResponse;
-import sparta.rooibos.hub.application.service.port.HubManagerService;
+import sparta.rooibos.hub.application.port.in.HubManagerService;
 
 import java.util.UUID;
 
@@ -24,13 +23,18 @@ public class HubManagerController {
         return ResponseEntity.ok(hubManagerService.createHubManager(createHubManagerRequest));
     }
 
-    @GetMapping
-    public ResponseEntity<GetHubManagerHubIdResponse> getHubIdByUserId(@RequestParam UUID userId) {
+    @GetMapping("/{userId}")
+    public ResponseEntity<UUID> getHubIdByUserId(@PathVariable UUID userId) {
         return ResponseEntity.ok(hubManagerService.getHubIdByUserId(userId));
     }
 
-    @PatchMapping
-    public ResponseEntity<Void> deleteHubManager(@RequestParam UUID userId) {
+    @GetMapping("/{email}")
+    public ResponseEntity<UUID> getHubIdByEmail(@PathVariable String email) {
+        return ResponseEntity.ok(hubManagerService.getHubIdByEmail(email));
+    }
+
+    @PatchMapping("/{userId}")
+    public ResponseEntity<Void> deleteHubManager(@PathVariable UUID userId) {
         hubManagerService.deleteHubManager(userId);
 
         return ResponseEntity.noContent().build();

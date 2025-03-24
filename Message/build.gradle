@@ -57,6 +57,9 @@ dependencies {
     implementation 'io.micrometer:micrometer-tracing-bridge-brave'
     implementation 'io.github.openfeign:feign-micrometer'
     implementation 'io.zipkin.reporter2:zipkin-reporter-brave'
+
+    implementation 'com.slack.api:slack-api-client:1.39.3'
+    implementation 'org.json:json:20240303'
 }
 
 tasks.named('test') {
