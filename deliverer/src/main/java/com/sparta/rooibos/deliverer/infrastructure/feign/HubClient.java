@@ -9,8 +9,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.UUID;
 
 @FeignClient(name = "hub-service")
-public interface HubManagerClient {
+public interface HubClient {
 
     @GetMapping("/api/v1/hubManager/email")
     UUID getHubIdByEmail(@RequestParam String email);
+
+    @GetMapping("api/v1/hub/{hubId}/check")
+    boolean checkHub(@PathVariable UUID hubId);
 }
+

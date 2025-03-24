@@ -10,7 +10,7 @@ version = '0.0.1-SNAPSHOT'
 
 bootJar {
     enabled = true
-    mainClass = 'com.sparta.rooibos..user.UserApplication'
+    mainClass = 'com.sparta.rooibos.user.UserApplication'
 }
 
 
