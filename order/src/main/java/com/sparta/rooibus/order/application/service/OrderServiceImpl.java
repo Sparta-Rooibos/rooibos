@@ -1,8 +1,11 @@
 package com.sparta.rooibus.order.application.service;
 
+import com.fasterxml.jackson.databind.introspect.AnnotationMap;
 import com.sparta.rooibus.order.application.aop.UserContextRequestBean;
+import com.sparta.rooibus.order.application.dto.request.CreateMessageRequest;
 import com.sparta.rooibus.order.application.dto.request.CreateOrderRequest;
 import com.sparta.rooibus.order.application.dto.request.SearchRequest;
+import com.sparta.rooibus.order.application.dto.request.UpdateDeliveryRequest;
 import com.sparta.rooibus.order.application.dto.response.CreateDeliveryResponse;
 import com.sparta.rooibus.order.application.dto.response.DeleteOrderResponse;
 import com.sparta.rooibus.order.application.dto.request.CreateDeliveryRequest;
@@ -14,6 +17,7 @@ import com.sparta.rooibus.order.application.exception.BusinessOrderException;
 import com.sparta.rooibus.order.application.exception.custom.OrderErrorCode;
 import com.sparta.rooibus.order.application.service.feign.DeliveryService;
 import com.sparta.rooibus.order.application.service.feign.HubService;
+import com.sparta.rooibus.order.application.service.feign.MessageService;
 import com.sparta.rooibus.order.application.service.feign.StockService;
 import com.sparta.rooibus.order.domain.entity.Order;
 import com.sparta.rooibus.order.domain.model.OrderStatus;
@@ -40,6 +44,7 @@ public class OrderServiceImpl implements OrderService {
     private final DeliveryService deliveryService;
     private final HubService hubService;
     private final StockService stockService;
+    private final MessageService messageService;
     private final UserContextRequestBean userContext;
 
     @Transactional
@@ -51,28 +56,35 @@ public class OrderServiceImpl implements OrderService {
             request.quantity(),
             request.requirement()
             );
+
+        String email = userContext.getEmail();
+        String username = userContext.getName();
+        String role = userContext.getRole();
+        UUID userId = userContext.getUserId();
+
         order.setStatus(OrderStatus.PENDING);
         orderRepository.save(order);
 
         boolean orderConfirmed = true;
+        GetStockResponse stockResponse;
+        int stockQuantity;
         try {
-            orderConfirmed = stockService.checkStock(request.productId(),request.quantity());
-//            TODO : 재고 서비스에서 productid로 재고 가져와서 주문하려는 양보다 많으면
-//              재고 업데이트 활용해서 재고 차감시키는 방식으로 해야함. 한번에 재고파악과 차감이 이뤄지는게 아닌 상태
+             stockResponse = stockService.getStock(email,username,role,request.productId()).getBody();
+            stockQuantity= stockResponse.productQuantity();
+            orderConfirmed = request.quantity()>stockQuantity?true:false;
         } catch (Exception e) {
             throw new BusinessOrderException(OrderErrorCode.FEIGN_STOCK_ERROR);
         }
         if (orderConfirmed) {
+            stockService.updateStock(email,username,role,stockResponse.id(),stockQuantity-request.quantity());
             order.setStatus(OrderStatus.CONFIRMED);
         } else {
-            order.setStatus(OrderStatus.CANCELED);
+            order.setStatus(OrderStatus.DENIED);
             return null;
         }
-
         CreateDeliveryResponse deliveryFeignResult = null;
         try {
-            deliveryFeignResult = deliveryService.createDelivery(CreateDeliveryRequest.from(order),
-                userContext.getRole());
+            deliveryFeignResult = deliveryService.createDelivery(userId,username,role,CreateDeliveryRequest.from(order)).getBody();
         } catch (Exception e) {
             throw new BusinessOrderException(OrderErrorCode.FEIGN_DELIVERY_ERROR);
         }
@@ -81,7 +93,9 @@ public class OrderServiceImpl implements OrderService {
         order.setStatus(OrderStatus.SHIPPED);
         order.setDeliveryInfo(deliveryId,departureId);
 
-//        TODO : 슬랙 메세지 보내기 (수령자 Id(수령 업체), 발송자 Id(공급업체), {상품명-상품 클라이언트 서비스} {수량}개 출고 완료. 다음 목적지 )
+        messageService.createMessage(email,username,role,
+            CreateMessageRequest.of(request.requestClientId().toString(),request.receiveClientId().toString(),
+            "상품번호"+request.productId()+"을 "+request.quantity()+"개 주문 완료했습니다."));
         return CreateOrderResponse.from(order);
     }
 
@@ -94,10 +108,12 @@ public class OrderServiceImpl implements OrderService {
 
         Order targetOrder = findOrder(request.id());
         targetOrder.update(
-            request.receiveClientId(),
-            request.quantity(),
-            request.requirement()
+            request.status()
         );
+        String feignRole = "ROLE_MASTER";
+        if(request.status()==OrderStatus.CANCELED){
+            deliveryService.cancelDelivery(UpdateDeliveryRequest.of(targetOrder.getDeliveryId(),"CANCELLED"),feignRole);
+        }
 
         return UpdateOrderResponse.from(targetOrder);
     }
@@ -113,7 +129,8 @@ public class OrderServiceImpl implements OrderService {
 
         Order targetOrder = findOrder(orderId);
         targetOrder.delete(userContext.getUserId().toString());
-
+        String feignRole = "ROLE_MASTER";
+        deliveryService.deleteDelivery(targetOrder.getDeliveryId(),feignRole);
         return DeleteOrderResponse.from(targetOrder);
     }
 

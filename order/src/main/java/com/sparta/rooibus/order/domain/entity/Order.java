@@ -94,16 +94,8 @@ public class Order {
     }
 
     public void update(
-        UUID receiveClientId,
-        Integer quantity,
-        String requirement) {
-        if(receiveClientId!=null)
-            this.receiveClientId = receiveClientId;
-        if(quantity!=null)
-            this.quantity = quantity;
-        if(requirement!=null)
-            this.requirement = requirement;
-        this.updatedAt = LocalDateTime.now();
+        OrderStatus status) {
+        this.status = status;
     }
 
 

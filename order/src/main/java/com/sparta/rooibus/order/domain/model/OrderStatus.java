@@ -7,7 +7,7 @@ public enum OrderStatus {
     PROCESSING,   // 배송중
     DELIVERED,    // 배송 완료됨
     CANCELED,     // 주문 취소됨
-    RETURNED;     // 반품됨
+    RETURNED, DENIED;     // 반품됨
 
     public static OrderStatus fromString(String value) {
         for (OrderStatus status : values()) {
