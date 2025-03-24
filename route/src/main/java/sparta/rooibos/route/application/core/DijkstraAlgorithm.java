@@ -4,6 +4,8 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import sparta.rooibos.route.application.exception.BusinessRouteException;
+import sparta.rooibos.route.application.exception.custom.RouteErrorCode;
 import sparta.rooibos.route.domain.model.Route;
 
 import java.util.*;
@@ -101,7 +103,7 @@ public class DijkstraAlgorithm {
         }
 
         if (cost.get(toHubId) == Integer.MAX_VALUE) {
-            throw new IllegalArgumentException("No path found");
+            throw new BusinessRouteException(RouteErrorCode.NO_CONNECTED_PATH);
         }
 
         List<UUID> routeIdPath = new ArrayList<>();
@@ -109,7 +111,7 @@ public class DijkstraAlgorithm {
         while (!currentHub.equals(fromHubId)) {
             Edge edge = predecessorEdge.get(currentHub);
             if (edge == null) {
-                throw new IllegalStateException("Path reconstruction failed");
+                throw new BusinessRouteException(RouteErrorCode.FAIL_TO_CREATE_PATH);
             }
             routeIdPath.add(edge.getRouteId());
             currentHub = edge.getFromHubId();

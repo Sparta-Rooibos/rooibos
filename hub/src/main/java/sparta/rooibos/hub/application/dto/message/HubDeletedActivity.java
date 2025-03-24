@@ -1,4 +1,4 @@
-package sparta.rooibos.hub.infrastructure.adapter.out.message;
+package sparta.rooibos.hub.application.dto.message;
 
 import java.time.LocalDateTime;
 import java.util.UUID;

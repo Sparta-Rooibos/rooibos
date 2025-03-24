@@ -1,7 +1,10 @@
 package sparta.rooibos.hub.application.core;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.json.JsonParseException;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sparta.rooibos.hub.application.dto.GeoLocation.request.GetCoordinatesRequest;
@@ -13,6 +16,7 @@ import sparta.rooibos.hub.application.dto.hub.response.CreateHubResponse;
 import sparta.rooibos.hub.application.dto.hub.response.GetHubResponse;
 import sparta.rooibos.hub.application.dto.hub.response.SearchHubResponse;
 import sparta.rooibos.hub.application.dto.hub.response.UpdateHubResponse;
+import sparta.rooibos.hub.application.dto.message.HubDeletedActivity;
 import sparta.rooibos.hub.application.exception.BusinessHubException;
 import sparta.rooibos.hub.application.exception.custom.HubErrorCode;
 import sparta.rooibos.hub.application.port.in.HubService;
@@ -23,14 +27,14 @@ import sparta.rooibos.hub.domain.respository.HubRepository;
 
 import java.util.UUID;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
-// TODO 도메인에 VO 만들어서 하나씩 보내고 있는 거 정리하기
 public class HubServiceImpl implements HubService {
 
     private final GeoLocationService geoLocationService;
     private final HubRepository hubRepository;
+    private final KafkaTemplate<String, String> kafkaTemplate;
+    private final ObjectMapper objectMapper;
 
     @Override
     @Transactional
@@ -108,6 +112,17 @@ public class HubServiceImpl implements HubService {
     public void deleteHub(UUID hubId) {
         Hub targetHub = getHubForServer(hubId);
         targetHub.delete();
+
+        HubDeletedActivity hubDeletedActivity = getHubDeletedActivity(targetHub);
+        try {
+            kafkaTemplate.send("hub.deleted", objectMapper.writeValueAsString(hubDeletedActivity));
+        } catch (JsonProcessingException e) {
+            throw new JsonParseException(e);
+        }
+    }
+
+    private HubDeletedActivity getHubDeletedActivity(Hub targetHub) {
+        return new HubDeletedActivity(targetHub.getHubId(), targetHub.getRegion(), targetHub.getDeletedAt());
     }
 
     /**
@@ -122,7 +137,5 @@ public class HubServiceImpl implements HubService {
         GetCoordinatesResponse coordinates =
                 geoLocationService.getCoordinates(GetCoordinatesRequest.from(hub.getAddress()));
         hub.setCoordinates(coordinates.addresses().get(0).latitude(), coordinates.addresses().get(0).longitude());
-
-        log.info("네이버 geocoding 호출 성공: {}, {}", hub.getLatitude(), hub.getLongitude());
     }
 }

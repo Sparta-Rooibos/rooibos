@@ -21,4 +21,6 @@ public interface RouteService {
     UpdateRouteResponse updateRoute(UUID routeId, UpdateRouteRequest updateRouteRequest);
 
     void deleteRoute(UUID routeId);
+
+    void deleteRouteByHubDeletedActivity(UUID hubId);
 }
