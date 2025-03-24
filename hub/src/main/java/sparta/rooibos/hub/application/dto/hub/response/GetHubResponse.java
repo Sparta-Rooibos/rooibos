@@ -4,6 +4,7 @@ import sparta.rooibos.hub.domain.model.Hub;
 
 import java.util.UUID;
 
+// TODO merge 하면 자꾸 사라진다...!!
 public record GetHubResponse(
         UUID hubId,
         String name,
