@@ -32,8 +32,11 @@ public class RouteController {
     }
 
     @GetMapping
-    public ResponseEntity<SearchRouteResponse> searchRoute(@ModelAttribute SearchRouteRequest searchRouteRequest) {
-        return ResponseEntity.ok(routeService.searchRoute(searchRouteRequest));
+    public ResponseEntity<SearchRouteResponse> searchRoute(
+            @RequestHeader("X-User-Email") String email,
+            @ModelAttribute SearchRouteRequest searchRouteRequest
+    ) {
+        return ResponseEntity.ok(routeService.searchRoute(email, searchRouteRequest));
     }
 
     @GetMapping("/recommend")
