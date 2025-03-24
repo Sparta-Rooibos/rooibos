@@ -1,26 +1,24 @@
 package com.sparta.rooibus.delivery.application.aop;
 
 import java.util.UUID;
+import lombok.Getter;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Component;
 
+@Getter
 @Component
 @Scope(value = "request",proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class UserContextRequestBean {
 
-    private UUID userId;
+    private String email;
     private String role;
+    private String name;
 
-    public void set(String role, UUID userId) {
+    public void set(String role, String email, String name) {
         this.role = role;
-        this.userId = userId;
-    }
-    public String getRole() {
-        return role;
+        this.email = email;
+        this.name = name;
     }
 
-    public UUID getUserId() {
-        return userId;
-    }
 }

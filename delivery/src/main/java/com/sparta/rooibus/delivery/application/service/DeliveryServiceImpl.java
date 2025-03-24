@@ -48,8 +48,9 @@ public class DeliveryServiceImpl {
     @Transactional
     public CreateDeliveryResponse createDelivery(CreateDeliveryRequest request) {
 //        TODO : 배송자 지정 서비스, 루트 서비스 실제 로직으로 변경하기
-        String email = "userName1@naver.com";
-        String username = "userName1";
+        String email = userContext.getEmail();
+        String username = userContext.getName();
+        String loginUserRole =userContext.getRole();
         String feignRole = "ROLE_MASTER";
 
         UUID departure = null;
@@ -59,15 +60,15 @@ public class DeliveryServiceImpl {
         UUID clientDeliverId = null;
         try {
             departure = clientService.getClient(
-                    email,username,feignRole,request.requestClientId()
+                    email,username,loginUserRole,request.requestClientId()
                 ).getBody().manageHub().id();
 
             getClientResponse = clientService.getClient(
-                email,username,feignRole,request.receiveClientId()
+                email,username,loginUserRole,request.receiveClientId()
             ).getBody();
 
             recipient = clientService.getClientManager(
-                email,username,feignRole,request.requestClientId()
+                email,username,feignRole,request.receiveClientId()
             ).getBody().clientManagerId();
 
             slackAccount = userService.getUser(feignRole,recipient).getBody().slackAccount();
@@ -166,10 +167,10 @@ public class DeliveryServiceImpl {
         }
         Delivery delivery = findDelivery(deliveryId);
         delivery.validateDeletable();
-        delivery.delete(userContext.getUserId().toString());
+        delivery.delete(userContext.getName());
 
         deliveryLogRepository.findAllByDeliveryId(deliveryId)
-            .forEach(deliveryLog -> deliveryLog.delete(userContext.getUserId().toString()));
+            .forEach(deliveryLog -> deliveryLog.delete(userContext.getName()));
 
         return delivery.getId();
     }
@@ -190,8 +191,8 @@ public class DeliveryServiceImpl {
 
     private Delivery findDelivery(UUID deliveryId){
         String role = userContext.getRole();
-        UUID userId = userContext.getUserId();
-
+        String userEmail = userContext.getEmail();
+        UUID userId = UUID.randomUUID();// 유저 페인 클라이언트에서 이메일로 userId를 알아오기
         switch (role){
 //            TODO : feignclient로 hubid
             case "ROLE_MASTER"->{
@@ -204,6 +205,10 @@ public class DeliveryServiceImpl {
             }
             case "ROLE_DELIVERY"->{
 //                TODO : 허브 배송자 인지, 업체 배송자인지 확인을 페인 클라이언트 처리
+//                role이 허브 배송자 이면 로그 테이블에서
+//                배송을 맡은 사람이 로그인한 사람의 userId인 것들을 찾고
+//                그 중에서 찾는 deliveryId와 일치하는 값이 있으면
+//                배송 테이블에서 deliveryId를 통해 배송을 찾아서 보여줌
                 return deliveryRepository.findByDeliver(userId,deliveryId);
             }
             case "ROLE_CLIENT"->{
@@ -218,7 +223,9 @@ public class DeliveryServiceImpl {
 
     private Pagination<Delivery> searchDeliveries(String keyword,String filterKey,String filterValue,String sort,int page,int size){
         String role = userContext.getRole();
-        UUID userId = userContext.getUserId();
+        String userEmail = userContext.getEmail();
+        String userName = userContext.getName();
+        UUID userId = UUID.randomUUID();
 
         switch (role){
 //            TODO : feign client로 hubId
@@ -226,11 +233,15 @@ public class DeliveryServiceImpl {
                 return deliveryRepository.searchDeliveries(keyword,filterKey,filterValue,sort,page,size);
             }
             case "ROLE_HUB"->{
-                UUID hubId = UUID.randomUUID();
+                UUID hubId = UUID.randomUUID(); // TODO : 로그인한 사람의 소속 허브를 가져옴
                 return deliveryRepository.findAllByDeparture(hubId,keyword,filterKey,filterValue,sort,page,size);
             }
             case "ROLE_DELIVERY"->{
 //                TODO : 허브 배송자 인지, 업체 배송자인지 확인을 페인 클라이언트로 해야함.
+//                role이 허브 배송자 이면 로그 테이블에서
+//                배송을 맡은 사람이 로그인한 사람의 userId인 것들을 찾고
+//                그 중에서 찾는 deliveryId와 일치하는 값이 있으면
+//                배송 테이블에서 deliveryId를 통해 배송을 찾아서 보여줌
                 UUID deliverId = UUID.randomUUID();
                 return deliveryRepository.searchDeliveriesByDeliver(deliverId,keyword,filterKey,filterValue,sort,page,size);
             }
