@@ -8,14 +8,14 @@ spring:
       port: 6379
 
   datasource:
-    url: jdbc:postgresql://localhost:5433/rooibos-route
+    url: jdbc:postgresql://localhost:5440/route_db
     username: root
     password: 1234
     driver-class-name: org.postgresql.Driver
 
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
     properties:
       hibernate:
         show_sql: true
@@ -42,3 +42,10 @@ naver:
     id: ${API_KEY_ID}
     secret: ${API_SECRET_KEY}
 
+management:
+  zipkin:
+    tracing:
+      endpoint: http://localhost:9411/api/v2/spans
+  tracing:
+    sampling:
+      probability: 0.1
