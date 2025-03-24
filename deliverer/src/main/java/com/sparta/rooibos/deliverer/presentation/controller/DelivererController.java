@@ -64,6 +64,7 @@ public class DelivererController {
     }
 
     @PatchMapping("/unassign/{delivererId}")
+    @RoleCheck({"ROLE_MASTER, ROLE_HUB, ROLE_DELIBERY"})
     public ResponseEntity<Void> cancelAssignment(
             @PathVariable UUID delivererId
     ) {
