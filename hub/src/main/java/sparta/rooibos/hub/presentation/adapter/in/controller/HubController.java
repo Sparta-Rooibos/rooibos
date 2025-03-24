@@ -44,8 +44,11 @@ public class HubController {
     }
 
     @GetMapping
-    public ResponseEntity<SearchHubResponse> searchHub(@ModelAttribute SearchHubRequest searchHubRequest) {
-        return ResponseEntity.ok(hubService.searchHub(searchHubRequest));
+    public ResponseEntity<SearchHubResponse> searchHub(
+            @RequestHeader("X-User-Email") String email,
+            @ModelAttribute SearchHubRequest searchHubRequest
+    ) {
+        return ResponseEntity.ok(hubService.searchHub(email, searchHubRequest));
     }
 
     @RoleCheck({"MASTER"})
