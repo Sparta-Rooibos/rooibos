@@ -38,6 +38,11 @@ public class RouteRepositoryImpl implements RouteRepository {
         return jpaRouteRepository.getAllRoutes();
     }
 
+    @Override
+    public List<Route> getAllRoutesByHubId(UUID hubId) {
+        return jpaRouteRepository.getAllRoutesByHubId(hubId);
+    }
+
     /**
      * 다익스트라 알고리즘을 적용한 전체 경로가 아닌,
      * 시작 허브와 도착 허브로 구성된 허브 경로를 검색.
