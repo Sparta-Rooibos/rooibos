@@ -33,7 +33,6 @@ public class OrderController {
     private final OrderService orderService;
     @PostMapping
     public ResponseEntity<String> createOrder(@Valid @RequestBody CreateOrderRequest request) {
-        //TODO : 헤더의 'role' 로 권한 체크 하는거 맞는지 확인
         CreateOrderResponse response = orderService.createOrder(request);
         return ResponseEntity.ok(
             "Order(" + response.orderId() + ") " + ",Delivery(" +

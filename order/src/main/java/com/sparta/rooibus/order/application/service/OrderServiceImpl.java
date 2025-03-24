@@ -57,6 +57,8 @@ public class OrderServiceImpl implements OrderService {
         boolean orderConfirmed = true;
         try {
             orderConfirmed = stockService.checkStock(request.productId(),request.quantity());
+//            TODO : 재고 서비스에서 productid로 재고 가져와서 주문하려는 양보다 많으면
+//              재고 업데이트 활용해서 재고 차감시키는 방식으로 해야함. 한번에 재고파악과 차감이 이뤄지는게 아닌 상태
         } catch (Exception e) {
             throw new BusinessOrderException(OrderErrorCode.FEIGN_STOCK_ERROR);
         }
@@ -110,7 +112,7 @@ public class OrderServiceImpl implements OrderService {
         }
 
         Order targetOrder = findOrder(orderId);
-        targetOrder.delete();
+        targetOrder.delete(userContext.getUserId().toString());
 
         return DeleteOrderResponse.from(targetOrder);
     }
