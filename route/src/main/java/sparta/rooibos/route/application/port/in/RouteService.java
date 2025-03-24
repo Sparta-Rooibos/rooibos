@@ -14,11 +14,13 @@ public interface RouteService {
 
     GetRouteResponse getRoute(UUID routeId);
 
-    SearchRouteResponse searchRoute(SearchRouteRequest searchRouteRequest);
+    SearchRouteResponse searchRoute(String email, SearchRouteRequest searchRouteRequest);
 
     GetOptimizedRouteResponse getOptimizedRoute(GetOptimizedRouteRequest getOptimizedRouteRequest);
 
     UpdateRouteResponse updateRoute(UUID routeId, UpdateRouteRequest updateRouteRequest);
 
     void deleteRoute(UUID routeId);
+
+    void deleteRouteByHubDeletedActivity(UUID hubId);
 }

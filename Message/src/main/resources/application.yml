@@ -33,3 +33,6 @@ slack:
   token: ${token}
 ai:
   token: ${ai_token}
+
+server:
+  port: 19099

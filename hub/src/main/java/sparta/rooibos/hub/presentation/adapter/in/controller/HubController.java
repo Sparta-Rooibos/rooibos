@@ -3,6 +3,7 @@ package sparta.rooibos.hub.presentation.adapter.in.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import sparta.rooibos.hub.application.aop.RoleCheck;
 import sparta.rooibos.hub.application.dto.hub.request.CreateHubRequest;
 import sparta.rooibos.hub.application.dto.hub.request.SearchHubRequest;
 import sparta.rooibos.hub.application.dto.hub.request.UpdateHubRequest;
@@ -21,6 +22,7 @@ public class HubController {
 
     private final HubService hubService;
 
+    @RoleCheck({"MASTER"})
     @PostMapping
     public ResponseEntity<CreateHubResponse> createHub(@RequestBody CreateHubRequest createHubRequest) {
         return ResponseEntity.ok(hubService.createHub(createHubRequest));
@@ -31,23 +33,34 @@ public class HubController {
         return ResponseEntity.ok(hubService.getHub(hubId));
     }
 
+    @GetMapping("/{hubId}/check")
+    public ResponseEntity<Boolean> checkHub(@PathVariable UUID hubId) {
+        return ResponseEntity.ok(hubService.isExistingHub(hubId));
+    }
+
     @GetMapping("/region")
     public ResponseEntity<GetHubResponse> getHubByRegion(@RequestParam String region) {
         return ResponseEntity.ok(hubService.getHubByRegion(region));
     }
 
     @GetMapping
-    public ResponseEntity<SearchHubResponse> searchHub(@ModelAttribute SearchHubRequest searchHubRequest) {
-        return ResponseEntity.ok(hubService.searchHub(searchHubRequest));
+    public ResponseEntity<SearchHubResponse> searchHub(
+            @RequestHeader("X-User-Email") String email,
+            @ModelAttribute SearchHubRequest searchHubRequest
+    ) {
+        return ResponseEntity.ok(hubService.searchHub(email, searchHubRequest));
     }
 
+    @RoleCheck({"MASTER"})
     @PatchMapping("/{hubId}")
     public ResponseEntity<UpdateHubResponse> updateHub(
+            @RequestHeader("X-User-Role") String role,
             @PathVariable UUID hubId,
             @RequestBody UpdateHubRequest updateHubRequest) {
         return ResponseEntity.ok(hubService.updateHub(hubId, updateHubRequest));
     }
 
+    @RoleCheck({"MASTER"})
     @PatchMapping("/{hubId}/delete")
     public ResponseEntity<Void> deleteHub(@PathVariable UUID hubId) {
         hubService.deleteHub(hubId);

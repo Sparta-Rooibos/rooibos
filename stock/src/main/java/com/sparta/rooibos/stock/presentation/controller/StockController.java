@@ -32,14 +32,14 @@ public class StockController {
         return ResponseEntity.ok(stockService.searchStock(request));
     }
 
-    @GetMapping("/{stockId}")
+    @GetMapping("/{productId}")
     @RoleCheck({Role.MASTER, Role.HUB, Role.DELIVERY, Role.CLIENT})
     public ResponseEntity<GetStockResponse> getStock(
             @RequestHeader("X-User-Email") String email,
             @RequestHeader("X-User-Name") String username,
             @RequestHeader("X-User-Role") String role,
-            @PathVariable UUID stockId) {
-        return ResponseEntity.ok(stockService.getStock(stockId));
+            @PathVariable String productId) {
+        return ResponseEntity.ok(stockService.getStock(productId));
     }
 
     @PostMapping
