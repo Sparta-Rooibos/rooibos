@@ -16,7 +16,7 @@ public class AuditorAwareImpl implements AuditorAware<String> {
 
     private String getUserFromHeader() {
         return Optional.ofNullable(RequestContextHolder.getRequestAttributes())
-            .map(attrs -> ((ServletRequestAttributes) attrs).getRequest().getHeader("X-User-Id"))
+            .map(attrs -> ((ServletRequestAttributes) attrs).getRequest().getHeader("X-User-Email"))
             .orElse("system"); // 기본값 설정
     }
 }
