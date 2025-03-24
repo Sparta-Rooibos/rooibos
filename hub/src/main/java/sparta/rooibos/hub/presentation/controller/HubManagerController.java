@@ -23,13 +23,15 @@ public class HubManagerController {
         return ResponseEntity.ok(hubManagerService.createHubManager(createHubManagerRequest));
     }
 
-    @GetMapping("/{userId}")
-    public ResponseEntity<UUID> getHubIdByUserId(@PathVariable UUID userId) {
+    // TODO RequestHeader -> email 로 하나 만들기 (용훈님과 통일)
+
+    @GetMapping("/userId")
+    public ResponseEntity<UUID> getHubIdByUserId(@RequestParam UUID userId) {
         return ResponseEntity.ok(hubManagerService.getHubIdByUserId(userId));
     }
 
-    @GetMapping("/{email}")
-    public ResponseEntity<UUID> getHubIdByEmail(@PathVariable String email) {
+    @GetMapping("/email")
+    public ResponseEntity<UUID> getHubIdByEmail(@RequestParam String email) {
         return ResponseEntity.ok(hubManagerService.getHubIdByEmail(email));
     }
 
