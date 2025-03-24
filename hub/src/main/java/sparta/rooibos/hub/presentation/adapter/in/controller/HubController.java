@@ -3,6 +3,7 @@ package sparta.rooibos.hub.presentation.adapter.in.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import sparta.rooibos.hub.application.aop.RoleCheck;
 import sparta.rooibos.hub.application.dto.hub.request.CreateHubRequest;
 import sparta.rooibos.hub.application.dto.hub.request.SearchHubRequest;
 import sparta.rooibos.hub.application.dto.hub.request.UpdateHubRequest;
@@ -21,6 +22,7 @@ public class HubController {
 
     private final HubService hubService;
 
+    @RoleCheck({"MASTER"})
     @PostMapping
     public ResponseEntity<CreateHubResponse> createHub(@RequestBody CreateHubRequest createHubRequest) {
         return ResponseEntity.ok(hubService.createHub(createHubRequest));
@@ -41,13 +43,16 @@ public class HubController {
         return ResponseEntity.ok(hubService.searchHub(searchHubRequest));
     }
 
+    @RoleCheck({"MASTER"})
     @PatchMapping("/{hubId}")
     public ResponseEntity<UpdateHubResponse> updateHub(
+            @RequestHeader("X-User-Role") String role,
             @PathVariable UUID hubId,
             @RequestBody UpdateHubRequest updateHubRequest) {
         return ResponseEntity.ok(hubService.updateHub(hubId, updateHubRequest));
     }
 
+    @RoleCheck({"MASTER"})
     @PatchMapping("/{hubId}/delete")
     public ResponseEntity<Void> deleteHub(@PathVariable UUID hubId) {
         hubService.deleteHub(hubId);
