@@ -97,7 +97,7 @@ public class DeliveryServiceImpl {
 
         GetRouteResponse routeResponse = null;
         try {
-            routeResponse = routeService.getRoute(departure, arrival).getBody();
+            routeResponse = routeService.getRoute(GetRouteRequest.of(departure,arrival)).getBody();
         } catch (Exception e) {
 //           TODO : 업체 배송 담당자 지정하는 부분에서 뭔가를 바꿧다면 그걸 다시 바꾸는 로직 추가
             throw new RuntimeException(e);

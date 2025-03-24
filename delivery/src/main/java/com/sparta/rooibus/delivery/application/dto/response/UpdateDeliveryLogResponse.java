@@ -8,7 +8,7 @@ public record UpdateDeliveryLogResponse(
     UUID deliveryId,
     UUID departure,
     UUID arrival,
-    String sequence,
+    int sequence,
     String expectedDistance,
     String expectedTime,
     String takenDistance,

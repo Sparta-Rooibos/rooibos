@@ -12,7 +12,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Repository;
 
+@Repository
 @RequiredArgsConstructor
 public class DeliveryLogRepositoryImpl implements DeliveryLogRepository {
 
@@ -44,7 +46,7 @@ public class DeliveryLogRepositoryImpl implements DeliveryLogRepository {
         builder.and(deliveryLog.deletedAt.isNull());
 
         if (!keyword.isEmpty()) {
-            builder.and(deliveryLog.sequence.containsIgnoreCase(keyword));
+//            builder.and(deliveryLog.sequence==keyword));
         }
 
         if ("arrival".equalsIgnoreCase(filterKey) && !filterValue.isEmpty()) {

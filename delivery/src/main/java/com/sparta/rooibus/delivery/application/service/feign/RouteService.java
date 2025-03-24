@@ -9,5 +9,5 @@ import org.springframework.stereotype.Component;
 @Component
 public interface RouteService {
 
-    ResponseEntity<GetRouteResponse> getRoute(UUID fromHubId, UUID toHubId);
+    ResponseEntity<GetRouteResponse> getRoute(GetRouteRequest request);
 }
