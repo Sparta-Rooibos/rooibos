@@ -33,6 +33,14 @@ spring:
           uri: lb://stock-service
           predicates:
             - Path=/stock/**
+        - id: hub-service
+          uri: lb://hub-service
+          predicates:
+            - Path=/hub/**
+        - id: route-service
+          uri: lb://route-service
+          predicates:
+            - Path=/route/**
       discovery:
         locator:
           enabled: true
