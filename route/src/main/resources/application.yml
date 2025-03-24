@@ -27,7 +27,7 @@ eureka:
       defaultZone: http://localhost:19090/eureka
 
 server:
-  port: 0
+  port: 19101
 
 naver:
   coordinate:
