@@ -28,6 +28,10 @@ public class Route {
 
     private UUID toHubId;
 
+    private String fromHubName;
+
+    private String toHubName;
+
     private Integer distance;
 
     private Integer timeCost;
@@ -54,10 +58,12 @@ public class Route {
     @Column
     private String deletedBy;
 
-    public static Route of(UUID fromHubId, UUID toHubId) {
+    public static Route of(UUID fromHubId, UUID toHubId, String fromHubName, String toHubName) {
         return Route.builder()
                 .fromHubId(fromHubId)
                 .toHubId(toHubId)
+                .fromHubName(fromHubName)
+                .toHubName(toHubName)
                 .build();
     }
 
@@ -69,6 +75,8 @@ public class Route {
     public Route update(Route route) {
         this.fromHubId = route.getFromHubId();
         this.toHubId = route.getToHubId();
+        this.fromHubName = route.getFromHubName();
+        this.toHubName = route.getToHubName();
         this.distance = route.getDistance();
         this.timeCost = route.getTimeCost();
 
