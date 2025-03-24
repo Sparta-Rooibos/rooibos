@@ -1,0 +1,31 @@
+spring:
+  application:
+    name: user
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/user
+    username: postgres
+    password: "0000"
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 4
+
+  jpa:
+    database: postgresql
+    hibernate:
+      ddl-auto: create
+
+  data:
+    redis:
+      host: redis-user
+      port: 6379
+      username: default
+      password: systempass
+
+server:
+  port: 19093
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:19090/eureka/

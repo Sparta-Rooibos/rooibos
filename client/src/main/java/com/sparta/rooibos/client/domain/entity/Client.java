@@ -11,7 +11,6 @@ import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.LastModifiedBy;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -22,7 +21,8 @@ import java.util.UUID;
 public class Client {
 
     @Id
-    @UuidGenerator
+    @GeneratedValue
+    @Column(columnDefinition = "UUID DEFAULT gen_random_uuid()")
     private UUID id;
 
     private String name;
@@ -56,19 +56,13 @@ public class Client {
     @Column
     private String deleteBy;
 
-    @OneToMany(mappedBy = "id", cascade = CascadeType.ALL, orphanRemoval = true)
-    List<Client> clientManagers;
     //생성
-    public Client(String name, ClientType type, String managedHubId, String address, String username) {
+    public Client(String name, ClientType type, String managedHubId, String address,String username) {
         this.name = name;
         this.type = type;
         this.managedHubId = managedHubId;
         this.clientAddress = address;
         this.createBy = username;
-    }
-
-    public Client(UUID clientId) {
-        this.id = clientId;
     }
 
     public void update(String name, String address, String username) {

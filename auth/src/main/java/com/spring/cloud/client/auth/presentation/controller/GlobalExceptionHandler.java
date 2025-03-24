@@ -23,10 +23,10 @@ public class GlobalExceptionHandler {
         return ErrorResponse.toResponseEntity(CommonErrorCode.INTERNAL_SERVER_ERROR);
     }
 
-    // sqlException처리
+    // sql exception처리
     @ExceptionHandler(BadSqlGrammarException.class)
     public ResponseEntity<ErrorResponse> handleSqlBadRequestException(BadSqlGrammarException e) {
-        log.error("error :", e);
+        log.warn("error :", e);
         return ErrorResponse.toResponseEntity(CommonErrorCode.SQL_ERROR);
     }
 
@@ -34,27 +34,14 @@ public class GlobalExceptionHandler {
     // json이 틀렸을 경우
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ErrorResponse> handleHttpMessageNotReadableException(HttpMessageNotReadableException e) {
-        log.error("error :", e);
+        log.warn("error :", e);
         return ErrorResponse.toResponseEntity(CommonErrorCode.JSON_PARSING_ERROR);
-    }
-
-    // 리소스가 존재하지 않는경우
-    @ExceptionHandler(NoResourceFoundException.class)
-    public ResponseEntity<ErrorResponse> handleNoHandlerFoundException(NoResourceFoundException e) {
-        log.error("error :", e);
-        return ErrorResponse.toResponseEntity(CommonErrorCode.RESOURCE_NOT_FOUND);
-    }
-
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
-        log.error("error :", e);
-        return ErrorResponse.toResponseEntity(CommonErrorCode.INVALID_CODE);
     }
 
     // 비즈니스 예외
     @ExceptionHandler(BusinessAuthException.class)
     public ResponseEntity<ErrorResponse> handleCustomException(BusinessAuthException e) {
-        log.error("error :", e);
+        log.warn("error :", e);
         return ErrorResponse.toResponseEntity(e.getErrorCode());
     }
 }

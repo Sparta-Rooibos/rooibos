@@ -1,0 +1,35 @@
+spring:
+  application:
+    name: message-service
+
+  datasource:
+    url: jdbc:postgresql://localhost:5437/message_db
+    username: root
+    password: 1234
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 10
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:19090/eureka
+
+management:
+  zipkin:
+    tracing:
+      endpoint: http://localhost:9411/api/v2/spans
+  tracing:
+    sampling:
+      probability: 0.1
+
+slack:
+  token: ${token}
+ai:
+  token: ${ai_token}

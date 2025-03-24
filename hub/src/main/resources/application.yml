@@ -15,16 +15,21 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create-drop
     properties:
       hibernate:
         show_sql: true
         format_sql: true
 
 server:
-  port: 0
+  port: 19100
 
 eureka:
   client:
     service-url:
       defaultZone: http://localhost:19090/eureka
+
+naver:
+  coordinate:
+    id: ${API_KEY_ID}
+    secret: ${API_SECRET_KEY}

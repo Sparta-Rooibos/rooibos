@@ -26,6 +26,10 @@ public class JwtValidator {
                 .getPayload();
     }
 
+    public String getUsername(String token) {
+        return parseClaims(token).get("username", String.class);
+    }
+
     public String getEmail(String token) {
         return parseClaims(token).get("email", String.class);
     }

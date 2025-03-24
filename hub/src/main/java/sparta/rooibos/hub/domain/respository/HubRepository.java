@@ -11,5 +11,7 @@ public interface HubRepository {
 
     Optional<Hub> getHub(UUID hubId);
 
+    Optional<Hub> getHubByRegion(String region);
+
     Pagination<Hub> searchHub(String name, String region, int page, int size);
 }

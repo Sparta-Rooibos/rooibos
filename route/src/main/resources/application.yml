@@ -1,0 +1,36 @@
+spring:
+  application:
+    name: route-service
+
+  data:
+    redis:
+      host: route-redis
+      port: 6379
+
+  datasource:
+    url: jdbc:postgresql://localhost:5433/rooibos-route
+    username: root
+    password: 1234
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:19090/eureka
+
+server:
+  port: 19101
+
+naver:
+  coordinate:
+    id: ${API_KEY_ID}
+    secret: ${API_SECRET_KEY}
+
