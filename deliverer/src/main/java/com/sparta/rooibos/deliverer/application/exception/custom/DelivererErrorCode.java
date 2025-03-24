@@ -15,7 +15,8 @@ public enum DelivererErrorCode implements ErrorCodeProvider {
     FORBIDDEN_ACCESS(HttpStatus.FORBIDDEN, "DLV-04", "접근 권한이 없습니다."),
     NO_DELIVERER_AVAILABLE(HttpStatus.NOT_FOUND, "DLV-05", "배정 가능한 배송자가 존재하지 않습니다."),
     ALREADY_DELETED_DELIVERER(HttpStatus.BAD_REQUEST, "DLV-06", "이미 삭제된 배송 담당자입니다."),
-    ALREADY_NOT_ASSIGNED(HttpStatus.BAD_REQUEST, "DLV-07", "이미 배정되지 않은 상태입니다.");
+    ALREADY_NOT_ASSIGNED(HttpStatus.BAD_REQUEST, "DLV-07", "이미 배정되지 않은 상태입니다."),
+    HUB_NOT_FOUND(HttpStatus.BAD_REQUEST, "DLV-08", "존재하지 않는 허브입니다.");
 
     private final HttpStatus status;
     private final String code;

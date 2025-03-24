@@ -13,7 +13,7 @@ import com.sparta.rooibos.deliverer.domain.entity.DelivererType;
 import com.sparta.rooibos.deliverer.domain.model.Pagination;
 import com.sparta.rooibos.deliverer.domain.repository.DelivererRepository;
 import com.sparta.rooibos.deliverer.infrastructure.auditing.UserAuditorContext;
-import com.sparta.rooibos.deliverer.infrastructure.feign.HubManagerClient;
+import com.sparta.rooibos.deliverer.infrastructure.feign.HubClient;
 import com.sparta.rooibos.deliverer.infrastructure.feign.UserClient;
 import com.sparta.rooibos.deliverer.infrastructure.feign.dto.UserResponse;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +27,7 @@ import java.util.UUID;
 public class DelivererServiceImpl implements DelivererService {
     private final DelivererRepository delivererRepository;
     private final UserClient userClient;
-    private final HubManagerClient hubManagerClient;
+    private final HubClient hubClient;
 
     @Transactional
     public DelivererResponse createDeliverer(DelivererRequest request) {
@@ -37,9 +37,13 @@ public class DelivererServiceImpl implements DelivererService {
 
         UUID hubId;
         if ("ROLE_HUB".equals(UserAuditorContext.getRole())) {
-            hubId = hubManagerClient.getHubIdByEmail(UserAuditorContext.getEmail());
+            hubId = hubClient.getHubIdByEmail(UserAuditorContext.getEmail());
         } else {
             hubId = request.hubId();
+        }
+
+        if (!hubClient.checkHub(hubId)) {
+            throw new BusinessDelivererException(DelivererErrorCode.HUB_NOT_FOUND);
         }
 
         int count = delivererRepository.countByHubIdAndTypeAndHiddenFalse(hubId, request.type());
@@ -79,16 +83,20 @@ public class DelivererServiceImpl implements DelivererService {
             throw new BusinessDelivererException(DelivererErrorCode.MAX_DELIVERER_REACHED);
         }
 
-        if ("ROLE_HUB".equalsIgnoreCase(UserAuditorContext.getRole())) {
-            UUID myHubId = hubManagerClient.getHubIdByEmail(UserAuditorContext.getEmail());
-            if (!deliverer.getHubId().equals(myHubId)) {
-                throw new BusinessDelivererException(DelivererErrorCode.FORBIDDEN_ACCESS);
-            }
+        UUID hubId;
+        if ("ROLE_HUB".equals(UserAuditorContext.getRole())) {
+            hubId = hubClient.getHubIdByEmail(UserAuditorContext.getEmail());
+        } else {
+            hubId = request.hubId();
+        }
+
+        if (!hubClient.checkHub(hubId)) {
+            throw new BusinessDelivererException(DelivererErrorCode.HUB_NOT_FOUND);
         }
 
         deliverer.update(
                 request.type(),
-                request.hubId()
+                hubId
         );
 
         delivererRepository.save(deliverer);
@@ -101,7 +109,7 @@ public class DelivererServiceImpl implements DelivererService {
                 .orElseThrow(() -> new BusinessDelivererException(DelivererErrorCode.DELIVERER_NOT_FOUND));
 
         if ("ROLE_HUB".equalsIgnoreCase(UserAuditorContext.getRole())) {
-            UUID myHubId = hubManagerClient.getHubIdByEmail(UserAuditorContext.getEmail());
+            UUID myHubId = hubClient.getHubIdByEmail(UserAuditorContext.getEmail());
             if (!deliverer.getHubId().equals(myHubId)) {
                 throw new BusinessDelivererException(DelivererErrorCode.FORBIDDEN_ACCESS);
             }
@@ -118,7 +126,7 @@ public class DelivererServiceImpl implements DelivererService {
                 .orElseThrow(() -> new BusinessDelivererException(DelivererErrorCode.DELIVERER_NOT_FOUND));
         switch (UserAuditorContext.getRole()) {
             case "ROLE_HUB" -> {
-                UUID myHubId = hubManagerClient.getHubIdByEmail(UserAuditorContext.getEmail());
+                UUID myHubId = hubClient.getHubIdByEmail(UserAuditorContext.getEmail());
                 if (!deliverer.getHubId().equals(myHubId)) {
                     throw new BusinessDelivererException(DelivererErrorCode.FORBIDDEN_ACCESS);
                 }
@@ -168,6 +176,5 @@ public class DelivererServiceImpl implements DelivererService {
 
         deliverer.unassign();
         delivererRepository.save(deliverer);
-        return DelivererResponse.from(deliverer);
     }
 }
