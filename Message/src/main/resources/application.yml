@@ -3,7 +3,7 @@ spring:
     name: message-service
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/postgres
+    url: jdbc:postgresql://localhost:5437/message_db
     username: root
     password: 1234
     driver-class-name: org.postgresql.Driver
@@ -30,4 +30,6 @@ management:
       probability: 0.1
 
 slack:
-  token: {token}
+  token: ${token}
+ai:
+  token: ${ai_token}
