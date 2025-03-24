@@ -14,11 +14,12 @@ public class UserContextRequestBean {
     private String email;
     private String role;
     private String name;
+    private UUID userId;
 
-    public void set(String role, String email, String name) {
+    public void set(String role, String email, String name, UUID userId) {
         this.role = role;
         this.email = email;
         this.name = name;
+        this.userId = userId;
     }
-
 }

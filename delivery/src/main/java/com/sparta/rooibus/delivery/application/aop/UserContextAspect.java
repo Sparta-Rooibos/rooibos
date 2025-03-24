@@ -26,9 +26,11 @@ public class UserContextAspect {
         String name  = request.getHeader("X-User-Name");
         String email = request.getHeader("X-User-Email");
 
+
         if (role != null && name != null && email != null) {
             try {
-                userContext.set(role,email,name);
+                UUID userId = UUID.fromString(request.getHeader("X-User-Id"));
+                userContext.set(role,email,name,userId);
                 System.out.println("UserContext에 값 저장됨: Role=" + role + ", email=" + email+", name=" + name);
             } catch (Exception e) {
                 System.out.println("UserContext에 값 저장하는 과정중에 에러 발생");
