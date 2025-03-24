@@ -55,28 +55,34 @@ public class RouteDataGenerator {
                     )
             );
 
-          for (Map.Entry<String, List<String>> region : regions.entrySet()) {
-              String fromHubRegion = region.getKey();
-              List<String> toHubRegions = region.getValue();
+            for (Map.Entry<String, List<String>> region : regions.entrySet()) {
+                String fromHubRegion = region.getKey();
+                List<String> toHubRegions = region.getValue();
 
-              HubClientResponse fromHub = hubFeignClient.getHubByRegion(fromHubRegion);
-              UUID fromHubId = fromHub.hubId();
-              String start = fromHub.getCoordinates();
+                HubClientResponse fromHub = hubFeignClient.getHubByRegion(fromHubRegion);
+                UUID fromHubId = fromHub.hubId();
+                String fromHubName = fromHub.name();
+                String start = fromHub.getCoordinates();
 
-              for (String toHubRegion : toHubRegions) {
-                  HubClientResponse toHub = hubFeignClient.getHubByRegion(toHubRegion);
-                  UUID toHubId = toHub.hubId();
-                  String goal = toHub.getCoordinates();
+                for (String toHubRegion : toHubRegions) {
+                    HubClientResponse toHub = hubFeignClient.getHubByRegion(toHubRegion);
+                    UUID toHubId = toHub.hubId();
+                    String toHubName = toHub.name();
+                    String goal = toHub.getCoordinates();
 
-                  GetGeoDirectionResponse result =
-                          geoDirectionService.getGeoDirection(start, goal);
+                    GetGeoDirectionResponse result =
+                            geoDirectionService.getGeoDirection(start, goal);
 
-                  Route route = Route.of(fromHubId, toHubId);
-                  route.setDistanceAndDuration(result.getDistance(), result.getDuration());
+                    Route forwardRoute = Route.of(fromHubId, toHubId, fromHubName, toHubName);
+                    forwardRoute.setDistanceAndDuration(result.getDistance(), result.getDuration());
+                    routeRepository.createRoute(forwardRoute);
 
-                  routeRepository.createRoute(route);
-              }
-          }
+                    Route reverseRoute = Route.of(toHubId, fromHubId, toHubName, fromHubName);
+                    reverseRoute.setDistanceAndDuration(result.getDistance(), result.getDuration());
+                    routeRepository.createRoute(reverseRoute);
+                }
+            }
+
         };
     }
 }
