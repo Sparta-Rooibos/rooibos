@@ -4,12 +4,13 @@ import com.sparta.rooibus.delivery.application.dto.request.feign.deliverAgent.Ge
 import com.sparta.rooibus.delivery.application.dto.request.feign.deliverAgent.GetHubDeliverRequest;
 import com.sparta.rooibus.delivery.application.dto.response.feign.deliverAgent.GetDeliverResponse;
 import com.sparta.rooibus.delivery.application.dto.response.feign.deliverAgent.GetHubDeliverResponse;
+import java.util.UUID;
 import org.springframework.stereotype.Component;
 
 @Component
 public interface DeliveryAgentService {
 
-    GetDeliverResponse getDeliver(GetDeliverRequest from);
+    GetDeliverResponse getDeliver(UUID departureHubId,String type,String role);
 
-    GetHubDeliverResponse getHubDeliver(GetHubDeliverRequest request);
+    void cancelDeliver(UUID deliver);
 }

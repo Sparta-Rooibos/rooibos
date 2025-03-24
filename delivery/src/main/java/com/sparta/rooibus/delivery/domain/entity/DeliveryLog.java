@@ -35,10 +35,16 @@ public class DeliveryLog {
     private UUID deliveryId;
 
     @Column(name = "departure")
-    private UUID departure;
+    private String departure;
+
+    @Column(name = "fromHubId")
+    private UUID fromHubId;
 
     @Column(name = "arrival")
-    private UUID arrival;
+    private String arrival;
+
+    @Column(name = "toHubId")
+    private UUID toHubId;
 
     @Column(name = "sequence", length = 255)
     private int sequence;
@@ -83,16 +89,21 @@ public class DeliveryLog {
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
 
-    public static DeliveryLog of( UUID departure, UUID arrival, int sequence, String expectedDistance, String expectedTime, UUID deliverId) {
+    public static DeliveryLog of( UUID fromHubId, UUID toHubId, String departure, String arrival, int sequence, String expectedDistance, String expectedTime) {
         DeliveryLog deliveryLog = new DeliveryLog();
+        deliveryLog.fromHubId = fromHubId;
+        deliveryLog.toHubId = toHubId;
         deliveryLog.departure = departure;
         deliveryLog.arrival = arrival;
         deliveryLog.sequence = sequence;
         deliveryLog.expectedDistance = expectedDistance;
         deliveryLog.expectedTime = expectedTime;
-        deliveryLog.deliver = deliverId;
         deliveryLog.status = DeliveryLogEnum.PENDING;
         return deliveryLog;
+    }
+// 마스터 권한으로 배송자 배정
+    public void setDeliver(UUID deliverId){
+        this.deliver = deliverId;
     }
 
     public void setStatus(String status) {

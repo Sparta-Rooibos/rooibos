@@ -81,7 +81,7 @@ public class Delivery {
     @Column(name = "deleted_by", length = 50)
     private String deletedBy;
 
-    public static Delivery of(UUID orderId, UUID departure, UUID arrival, String address, UUID recipient, String slackAccount, UUID clientDeliverID) {
+    public static Delivery of(UUID orderId, UUID departure, UUID arrival, String address, UUID recipient, String slackAccount) {
         Delivery delivery = new Delivery();
         delivery.orderId = orderId;
         delivery.departure = departure;
@@ -89,8 +89,11 @@ public class Delivery {
         delivery.address = address;
         delivery.recipient = recipient;
         delivery.slackAccount = slackAccount;
-        delivery.clientDeliver = clientDeliverID;
         return delivery;
+    }
+
+    public void setClientDeliver(UUID clientDeliver){
+        this.clientDeliver = clientDeliver;
     }
 
     public void updateStatus(DeliveryStatus status) {

@@ -2,9 +2,12 @@ package com.sparta.rooibus.delivery.application.dto.request.feign.deliverAgent;
 
 import java.util.UUID;
 
-public record GetDeliverRequest(UUID clientId) {
+public record GetDeliverRequest(
+    String type,
+    UUID hubId
+) {
 
-    public static GetDeliverRequest from(UUID clientId) {
-        return new GetDeliverRequest(clientId);
+    public static GetDeliverRequest of(String type,UUID hubId) {
+        return new GetDeliverRequest(type,hubId);
     }
 }

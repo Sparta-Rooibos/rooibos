@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 // [CRUD][도메인][req/res][pre-dto/app x] dto 규칙
@@ -59,5 +60,10 @@ public class DeliveryController {
         @ModelAttribute SearchRequest request
         ) {
         return ResponseEntity.ok(deliveryServiceImpl.searchDeliveries(request));
+    }
+
+    @PostMapping("/assignDeliver/{deliveryId}")
+    public ResponseEntity<UUID> assignDeliver(@PathVariable UUID deliveryId,@RequestParam UUID startHubId){
+        return ResponseEntity.ok(deliveryServiceImpl.assignClientDeliver(deliveryId,startHubId));
     }
 }
