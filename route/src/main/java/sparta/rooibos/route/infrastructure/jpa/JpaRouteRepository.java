@@ -4,6 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import sparta.rooibos.route.domain.model.Route;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -14,4 +15,10 @@ public interface JpaRouteRepository extends JpaRepository<Route, UUID> {
                     "AND r.deletedAt IS NULL"
     )
     Optional<Route> getRoute(UUID routeId);
+
+    @Query(
+            value = "SELECT r FROM Route r " +
+                    "WHERE r.deletedAt IS NULL"
+    )
+    List<Route> getAllRoutes();
 }
