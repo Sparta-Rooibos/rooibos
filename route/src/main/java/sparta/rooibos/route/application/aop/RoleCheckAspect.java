@@ -26,6 +26,14 @@ public class RoleCheckAspect {
         HttpServletRequest request = ((ServletRequestAttributes) requestAttributes).getRequest();
         String requestRole = request.getHeader("X-User-Role");
 
+        if (requestRole == null || requestRole.isBlank()) {
+            throw new SecurityException("헤더에 사용자 역할 정보가 없습니다.");
+        }
+
+        if (requestRole.startsWith("ROLE_")) {
+            requestRole = requestRole.substring("ROLE_".length());
+        }
+
         List<String> allowedRoles = Arrays.asList(roleCheck.value());
         if (!allowedRoles.contains(requestRole)) {
             throw new SecurityException(requestRole + ": 요청 권한이 없습니다.");
