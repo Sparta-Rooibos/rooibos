@@ -25,7 +25,7 @@ public record GetDeliveryResponse(
             delivery.getAddress(),
             delivery.getRecipient(),
             delivery.getSlackAccount(),
-            delivery.getDeliverId(),
+            delivery.getClientDeliver(),
             delivery.getCreatedAt(),
             delivery.getUpdatedAt()
         );

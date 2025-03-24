@@ -1,30 +1,37 @@
 package com.sparta.rooibus.delivery.domain.entity;
 
-import com.sparta.rooibus.delivery.application.dto.request.UpdateDeliveryRequest;
 import com.sparta.rooibus.delivery.domain.model.DeliveryStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
-import java.util.Optional;
 import java.util.UUID;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Where;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
 @Table(name = "p_delivery")
 @Where(clause = "deleted_at IS NULL")
 @Getter
 @NoArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
 public class Delivery {
     @Id
-    @Column(name = "delivery_id", nullable = false)
+    @GeneratedValue
+    @Column(name = "delivery_id", nullable = false, columnDefinition = "UUID DEFAULT gen_random_uuid()")
     private UUID id;
 
     @Column(name = "order_id" )
@@ -43,24 +50,28 @@ public class Delivery {
     @Column(name = "address", length = 50)
     private String address;
 
-    @Column(name = "recipient" )
+    @Column(name = "recipient_id" )
     private UUID recipient;
 
-    @Column(name = "slack_acoount", length = 50)
+    @Column(name = "slack_account", length = 50)
     private String slackAccount;
 
-    @Column(name = "deliver_id" )
-    private UUID deliverId;
+    @Column(name = "client_deliver_id" )
+    private UUID clientDeliver;
 
+    @CreatedDate
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
+    @CreatedBy
     @Column(name = "created_by", length = 50)
     private String createdBy;
 
+    @LastModifiedDate
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    @LastModifiedBy
     @Column(name = "updated_by", length = 50)
     private String updatedBy;
 
@@ -70,52 +81,33 @@ public class Delivery {
     @Column(name = "deleted_by", length = 50)
     private String deletedBy;
 
-    @PrePersist
-    public void prePersist() {
-        if (this.id == null) {
-            this.id = UUID.randomUUID();
-        }
-        this.createdAt = LocalDateTime.now();
-        this.updatedAt = LocalDateTime.now();
+    public static Delivery of(UUID orderId, UUID departure, UUID arrival, String address, UUID recipient, String slackAccount) {
+        Delivery delivery = new Delivery();
+        delivery.orderId = orderId;
+        delivery.departure = departure;
+        delivery.arrival = arrival;
+        delivery.address = address;
+        delivery.recipient = recipient;
+        delivery.slackAccount = slackAccount;
+        return delivery;
     }
 
-    @PreUpdate
-    public void preUpdate() {
-        this.updatedAt = LocalDateTime.now();
+    public void setClientDeliver(UUID clientDeliver){
+        this.clientDeliver = clientDeliver;
     }
 
-    public Delivery(UUID departure, UUID arrival, String address, UUID recipient, UUID orderId, String slackAccount, UUID deliverId) {
-        this.departure = departure;
-        this.arrival = arrival;
-        this.address = address;
-        this.recipient = recipient;
-        this.orderId = orderId;
-        this.slackAccount = slackAccount;
-        this.deliverId = deliverId;
-        this.status = DeliveryStatus.PENDING;
-        this.createdAt = LocalDateTime.now();
-        this.updatedAt = LocalDateTime.now();
+    public void updateStatus(DeliveryStatus status) {
+        this.status = status;
     }
 
-    public void update(UpdateDeliveryRequest request) {
-        Optional.ofNullable(request.departure()).ifPresent(dep -> this.departure = dep);
-        Optional.ofNullable(request.arrival()).ifPresent(arr -> this.arrival = arr);
-        Optional.ofNullable(request.address()).ifPresent(addr -> this.address = addr);
-        Optional.ofNullable(request.recipient()).ifPresent(rec -> this.recipient = rec);
-        Optional.ofNullable(request.slackAccount()).ifPresent(slack -> this.slackAccount = slack);
-        Optional.ofNullable(request.deliverId()).ifPresent(deliver -> this.deliverId = deliver);
-//      TODO : status 변경하는 로직 ???하는게 맞다하면 만들기
-    }
-
-    public void delete(){
-        this.status = DeliveryStatus.CANCELED;
+    public void delete(String email){
         this.deletedAt = LocalDateTime.now();
-        this.deletedBy = "취소한 사람";// TODO: 로그인한 사람
+        this.deletedBy = email;
     }
 
     public void validateDeletable() {
-        if (this.status == DeliveryStatus.IN_PROGRESS || this.status == DeliveryStatus.COMPLETED) {
-            throw new IllegalStateException("배송 중이거나 완료된 주문은 삭제할 수 없습니다.");
+        if (this.status != DeliveryStatus.PENDING && this.status==DeliveryStatus.CANCELED) {
+            throw new IllegalStateException("허브 대기중인 상태에서만 삭제할 수 있습니다.");
         }
     }
 
