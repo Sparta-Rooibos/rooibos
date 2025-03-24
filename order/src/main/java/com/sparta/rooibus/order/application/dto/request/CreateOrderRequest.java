@@ -4,13 +4,11 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import java.util.UUID;
 
-public record UpdateOrderRequestDTO(
-    @NotNull UUID id,
-    UUID requestClientId,
-    UUID responseClientId,
-    UUID productId,
-    @Min(1) Integer quantity,
+public record CreateOrderRequest(
+    @NotNull UUID requestClientId,
+    @NotNull UUID receiveClientId,
+    @NotNull UUID productId,
+    @Min(1) int quantity,
     String requirement
 ) {
-
 }
