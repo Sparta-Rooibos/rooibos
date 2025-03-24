@@ -8,7 +8,6 @@ import java.util.UUID;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.context.annotation.Primary;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,11 +26,9 @@ public interface DeliveryClient extends DeliveryService {
         CreateDeliveryRequest request);
 
     @PutMapping
-    ResponseEntity<UpdateDeliveryResponse> updateDelivery(
-        @RequestHeader("X-User-Id") UUID userId,
-        @RequestHeader("X-User-Name") String username,
-        @RequestHeader("X-User-Role") String role,
-        @RequestBody UpdateDeliveryRequest request
+    ResponseEntity<UpdateDeliveryResponse> cancelDelivery(
+        @RequestBody UpdateDeliveryRequest request,
+        @RequestHeader("X-User-Role") String feignRole
     );
 
     @DeleteMapping("/{deliveryId}")
