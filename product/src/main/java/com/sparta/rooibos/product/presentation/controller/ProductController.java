@@ -43,7 +43,7 @@ public class ProductController {
             @RequestHeader(value = "X-User-Email") String email,
             @RequestHeader(value = "X-User-Name") String username,
             @RequestHeader(value = "X-User-Role") String role,
-            @PathVariable UUID productId) {
+            @PathVariable(value = "productId") UUID productId) {
         return ResponseEntity.ok(productService.getProduct(productId));
     }
 
@@ -63,7 +63,7 @@ public class ProductController {
             @RequestHeader(value = "X-User-Email") String email,
             @RequestHeader(value = "X-User-Name") String username,
             @RequestHeader(value = "X-User-Role") String role,
-            @PathVariable UUID productId, @RequestBody @Valid UpdateProductRequest request) {
+            @PathVariable(value = "productId") UUID productId, @RequestBody @Valid UpdateProductRequest request) {
         return ResponseEntity.ok(productService.updateProduct(email, productId, request));
     }
 
@@ -73,7 +73,7 @@ public class ProductController {
             @RequestHeader(value = "X-User-Email") String email,
             @RequestHeader(value = "X-User-Name") String username,
             @RequestHeader(value = "X-User-Role") String role,
-            @PathVariable UUID productId) {
+            @PathVariable(value = "productId") UUID productId) {
         return ResponseEntity.ok(productService.deleteProduct(email, productId));
     }
 

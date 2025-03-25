@@ -15,6 +15,8 @@ public interface RouteRepository {
 
     List<Route> getAllRoutes();
 
+    List<Route> getAllRoutesByHubId(UUID hubId);
+
     List<Route> searchRoute(
             UUID fromHubId,
             UUID toHubId,

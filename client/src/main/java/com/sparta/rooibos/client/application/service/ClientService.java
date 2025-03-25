@@ -20,8 +20,6 @@ import com.sparta.rooibos.client.domain.model.Pagination;
 import com.sparta.rooibos.client.domain.repository.ClientRepository;
 import com.sparta.rooibos.client.domain.repository.QueryClientRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -46,8 +44,8 @@ public class ClientService {
                                 client.getManagedHubId(),
                                 client.getClientAddress(),
                                 client.getDeleteBy() != null)).toList(),
-                clients.getTotalElements(),
-                clients.getNumber() + 1,
+                clients.getTotal(),
+                clients.getPage(),
                 clients.getSize());
     }
 

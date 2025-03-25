@@ -1,19 +1,21 @@
 package com.sparta.rooibus.order.domain.model;
 
 public enum OrderStatus {
-    PENDING("주문 접수"),
-    PROCESSING("주문 처리중"),
-    DELIVERING("배송 중"),
-    DELIVERED("배송 완료"),
-    CANCELLED("취소");
+    PENDING,      // 주문 생성 후 승인 대기 중
+    CONFIRMED,    // 주문 확인됨
+    SHIPPED,      // 출고됨
+    PROCESSING,   // 배송중
+    DELIVERED,    // 배송 완료됨
+    CANCELED,     // 주문 취소됨
+    RETURNED, DENIED;     // 반품됨
 
-    private final String description;
-
-    OrderStatus(String description) {
-        this.description = description;
-    }
-
-    public String getDescription() {
-        return this.description;
+    public static OrderStatus fromString(String value) {
+        for (OrderStatus status : values()) {
+            if (status.name().equalsIgnoreCase(value)) {
+                return status;
+            }
+        }
+        throw new IllegalArgumentException("Unknown status: " + value);
     }
 }
+

@@ -35,7 +35,12 @@ public class RouteRepositoryImpl implements RouteRepository {
 
     @Override
     public List<Route> getAllRoutes() {
-        return jpaRouteRepository.findAll();
+        return jpaRouteRepository.getAllRoutes();
+    }
+
+    @Override
+    public List<Route> getAllRoutesByHubId(UUID hubId) {
+        return jpaRouteRepository.getAllRoutesByHubId(hubId);
     }
 
     /**

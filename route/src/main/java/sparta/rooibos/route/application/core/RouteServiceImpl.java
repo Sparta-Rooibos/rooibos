@@ -1,6 +1,7 @@
 package sparta.rooibos.route.application.core;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sparta.rooibos.route.application.dto.request.route.CreateRouteRequest;
@@ -10,6 +11,8 @@ import sparta.rooibos.route.application.dto.request.route.UpdateRouteRequest;
 import sparta.rooibos.route.application.dto.response.direction.GetGeoDirectionResponse;
 import sparta.rooibos.route.application.dto.response.hub.HubClientResponse;
 import sparta.rooibos.route.application.dto.response.route.*;
+import sparta.rooibos.route.application.exception.BusinessRouteException;
+import sparta.rooibos.route.application.exception.custom.RouteErrorCode;
 import sparta.rooibos.route.application.port.in.RouteService;
 import sparta.rooibos.route.application.port.out.GeoDirectionService;
 import sparta.rooibos.route.application.port.out.HubClientService;
@@ -65,10 +68,10 @@ public class RouteServiceImpl implements RouteService {
 
 //    @Cacheable(
 //            cacheNames = "searchRoute",
-//            key = "'searchRoute' + (#searchRouteRequest.sort()) + ':' + (#searchRouteRequest.size())"
+//            key = "'searchRoute' + #email + (#searchRouteRequest.sort()) + ':' + (#searchRouteRequest.size())"
 //    )
     @Override
-    public SearchRouteResponse searchRoute(SearchRouteRequest searchRouteRequest) {
+    public SearchRouteResponse searchRoute(String email, SearchRouteRequest searchRouteRequest) {
         List<Route> routes = routeRepository.searchRoute(
                 searchRouteRequest.fromHubId(),
                 searchRouteRequest.toHubId(),
@@ -98,7 +101,9 @@ public class RouteServiceImpl implements RouteService {
         List<GetOptimizedRouteResponse.RouteInfo> routeInfos = result.getPath().stream()
                 .map(this::getRouteForServer)
                 .map(route -> GetOptimizedRouteResponse.RouteInfo.of(
+                        route.getFromHubId(),
                         route.getFromHubName(),
+                        route.getToHubId(),
                         route.getToHubName(),
                         route.getDistance(),
                         route.getTimeCost()
@@ -134,13 +139,18 @@ public class RouteServiceImpl implements RouteService {
         targetRoute.delete();
     }
 
+    @Override
+    @Transactional
+    public void deleteRouteByHubDeletedActivity(UUID hubId) {
+        routeRepository.getAllRoutesByHubId(hubId).forEach(Route::delete);
+    }
+
     /**
      * 서버에서만 사용하는 단건 및 전체 조회 메서드
      */
-    // TODO 도메인 커스텀 예외로 전환
     private Route getRouteForServer(UUID routeId) {
         return routeRepository.getRoute(routeId)
-                .orElseThrow(() -> new IllegalArgumentException("Route not found"));
+                .orElseThrow(() -> new BusinessRouteException(RouteErrorCode.ROUTE_NOT_FOUND));
     }
 
     private List<Route> getAllRoutesForServer() {

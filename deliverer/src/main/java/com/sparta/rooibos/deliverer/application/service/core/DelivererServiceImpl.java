@@ -8,10 +8,12 @@ import com.sparta.rooibos.deliverer.application.exception.BusinessDelivererExcep
 import com.sparta.rooibos.deliverer.application.exception.custom.DelivererErrorCode;
 import com.sparta.rooibos.deliverer.application.service.port.DelivererService;
 import com.sparta.rooibos.deliverer.domain.entity.Deliverer;
+import com.sparta.rooibos.deliverer.domain.entity.DelivererStatus;
+import com.sparta.rooibos.deliverer.domain.entity.DelivererType;
 import com.sparta.rooibos.deliverer.domain.model.Pagination;
 import com.sparta.rooibos.deliverer.domain.repository.DelivererRepository;
 import com.sparta.rooibos.deliverer.infrastructure.auditing.UserAuditorContext;
-import com.sparta.rooibos.deliverer.infrastructure.feign.HubManagerClient;
+import com.sparta.rooibos.deliverer.infrastructure.feign.HubClient;
 import com.sparta.rooibos.deliverer.infrastructure.feign.UserClient;
 import com.sparta.rooibos.deliverer.infrastructure.feign.dto.UserResponse;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +27,7 @@ import java.util.UUID;
 public class DelivererServiceImpl implements DelivererService {
     private final DelivererRepository delivererRepository;
     private final UserClient userClient;
-    private final HubManagerClient hubManagerClient;
+    private final HubClient hubClient;
 
     @Transactional
     public DelivererResponse createDeliverer(DelivererRequest request) {
@@ -33,16 +35,20 @@ public class DelivererServiceImpl implements DelivererService {
             throw new BusinessDelivererException(DelivererErrorCode.DUPLICATE_DELIVERER);
         }
 
-        int count = delivererRepository.countByHubIdAndHiddenFalse(request.hubId());
-        if (count >= 10) {
-            throw new BusinessDelivererException(DelivererErrorCode.MAX_DELIVERER_REACHED);
-        }
-
         UUID hubId;
         if ("ROLE_HUB".equals(UserAuditorContext.getRole())) {
-            hubId = hubManagerClient.getHubIdByEmail(UserAuditorContext.getEmail());
+            hubId = hubClient.getHubIdByEmail(UserAuditorContext.getEmail());
         } else {
             hubId = request.hubId();
+        }
+
+        if (!hubClient.checkHub(hubId)) {
+            throw new BusinessDelivererException(DelivererErrorCode.HUB_NOT_FOUND);
+        }
+
+        int count = delivererRepository.countByHubIdAndTypeAndHiddenFalse(hubId, request.type());
+        if (count >= 10) {
+            throw new BusinessDelivererException(DelivererErrorCode.MAX_DELIVERER_REACHED);
         }
 
         int maxOrder = delivererRepository.findMaxOrderByHubId(hubId);
@@ -67,8 +73,8 @@ public class DelivererServiceImpl implements DelivererService {
     }
 
     @Transactional
-    public DelivererResponse updateDeliverer(UUID id, DelivererRequest request) {
-        Deliverer deliverer = delivererRepository.findById(id)
+    public DelivererResponse updateDeliverer(UUID delivererId, DelivererRequest request) {
+        Deliverer deliverer = delivererRepository.findById(delivererId)
                 .orElseThrow(() -> new BusinessDelivererException(DelivererErrorCode.DELIVERER_NOT_FOUND));
 
 
@@ -77,16 +83,20 @@ public class DelivererServiceImpl implements DelivererService {
             throw new BusinessDelivererException(DelivererErrorCode.MAX_DELIVERER_REACHED);
         }
 
-        if ("ROLE_HUB".equalsIgnoreCase(UserAuditorContext.getRole())) {
-            UUID myHubId = hubManagerClient.getHubIdByEmail(UserAuditorContext.getEmail());
-            if (!deliverer.getHubId().equals(myHubId)) {
-                throw new BusinessDelivererException(DelivererErrorCode.FORBIDDEN_ACCESS);
-            }
+        UUID hubId;
+        if ("ROLE_HUB".equals(UserAuditorContext.getRole())) {
+            hubId = hubClient.getHubIdByEmail(UserAuditorContext.getEmail());
+        } else {
+            hubId = request.hubId();
+        }
+
+        if (!hubClient.checkHub(hubId)) {
+            throw new BusinessDelivererException(DelivererErrorCode.HUB_NOT_FOUND);
         }
 
         deliverer.update(
                 request.type(),
-                request.hubId()
+                hubId
         );
 
         delivererRepository.save(deliverer);
@@ -94,12 +104,12 @@ public class DelivererServiceImpl implements DelivererService {
     }
 
     @Transactional
-    public void deleteDeliverer(UUID id) {
-        Deliverer deliverer = delivererRepository.findById(id)
+    public void deleteDeliverer(UUID delivererId) {
+        Deliverer deliverer = delivererRepository.findById(delivererId)
                 .orElseThrow(() -> new BusinessDelivererException(DelivererErrorCode.DELIVERER_NOT_FOUND));
 
         if ("ROLE_HUB".equalsIgnoreCase(UserAuditorContext.getRole())) {
-            UUID myHubId = hubManagerClient.getHubIdByEmail(UserAuditorContext.getEmail());
+            UUID myHubId = hubClient.getHubIdByEmail(UserAuditorContext.getEmail());
             if (!deliverer.getHubId().equals(myHubId)) {
                 throw new BusinessDelivererException(DelivererErrorCode.FORBIDDEN_ACCESS);
             }
@@ -111,12 +121,12 @@ public class DelivererServiceImpl implements DelivererService {
     }
 
     @Transactional(readOnly = true)
-    public DelivererResponse getDeliverer(UUID id) {
-        Deliverer deliverer = delivererRepository.findById(id)
+    public DelivererResponse getDeliverer(UUID delivererId) {
+        Deliverer deliverer = delivererRepository.findById(delivererId)
                 .orElseThrow(() -> new BusinessDelivererException(DelivererErrorCode.DELIVERER_NOT_FOUND));
         switch (UserAuditorContext.getRole()) {
             case "ROLE_HUB" -> {
-                UUID myHubId = hubManagerClient.getHubIdByEmail(UserAuditorContext.getEmail());
+                UUID myHubId = hubClient.getHubIdByEmail(UserAuditorContext.getEmail());
                 if (!deliverer.getHubId().equals(myHubId)) {
                     throw new BusinessDelivererException(DelivererErrorCode.FORBIDDEN_ACCESS);
                 }
@@ -134,5 +144,37 @@ public class DelivererServiceImpl implements DelivererService {
     public DelivererListResponse searchDeliverers(DelivererSearchRequest request) {
         Pagination<Deliverer> resultPage = delivererRepository.searchDeliverers(request);
         return DelivererListResponse.from(resultPage);
+    }
+
+    @Transactional(readOnly = true)
+    public DelivererResponse assignNextDeliverer(UUID hubId, DelivererType type) {
+        Deliverer deliverer = delivererRepository.findNextAvailableDeliverer(hubId, type)
+                .orElseThrow(() -> new BusinessDelivererException(DelivererErrorCode.NO_DELIVERER_AVAILABLE));
+
+        if (deliverer.isHidden()) {
+            throw new BusinessDelivererException(DelivererErrorCode.NO_DELIVERER_AVAILABLE);
+        }
+
+        deliverer.assign();
+        delivererRepository.save(deliverer);
+
+        return DelivererResponse.from(deliverer);
+    }
+
+    @Transactional
+    public void cancelAssignment(UUID delivererId) {
+        Deliverer deliverer = delivererRepository.findById(delivererId)
+                .orElseThrow(() -> new BusinessDelivererException(DelivererErrorCode.DELIVERER_NOT_FOUND));
+
+        if (deliverer.isHidden()) {
+            throw new BusinessDelivererException(DelivererErrorCode.ALREADY_DELETED_DELIVERER);
+        }
+
+        if (deliverer.getStatus() == DelivererStatus.UNASSIGNED) {
+            throw new BusinessDelivererException(DelivererErrorCode.ALREADY_NOT_ASSIGNED);
+        }
+
+        deliverer.unassign();
+        delivererRepository.save(deliverer);
     }
 }

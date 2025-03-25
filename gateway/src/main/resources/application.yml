@@ -44,11 +44,7 @@ spring:
       discovery:
         locator:
           enabled: true
-  zipkin:
-    base-url: http://localhost:9411
-  sleuth:
-    sampler:
-      probability: 1.0
+
 
   data:
     redis:
@@ -66,7 +62,9 @@ eureka:
       defaultZone: http://localhost:19090/eureka/
 
 management:
-  endpoints:
-    web:
-      exposure:
-        include: "*"
+  zipkin:
+    tracing:
+      endpoint: http://localhost:9411/api/v2/spans
+  tracing:
+    sampling:
+      probability: 0.1
