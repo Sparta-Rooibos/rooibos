@@ -8,6 +8,4 @@ public interface RedisProvider {
     void createUserInfo(UserAuthDTO userAuthDTO);
     Optional<UserAuthDTO> getUserInfo(String email);
     void deleteUserInfo(String email);
-    void addToBlacklist(String email);
-    boolean isTokenBlacklisted(String email);
 }
