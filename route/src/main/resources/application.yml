@@ -4,8 +4,8 @@ spring:
 
   data:
     redis:
-      host: route_redis
-      port: 6379
+      host: localhost
+      port: 6380
 
   datasource:
     url: jdbc:postgresql://localhost:5440/route_db
