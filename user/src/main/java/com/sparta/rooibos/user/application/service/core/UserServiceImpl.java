@@ -2,6 +2,7 @@ package com.sparta.rooibos.user.application.service.core;
 
 import com.sparta.rooibos.user.application.dto.UserAuthDTO;
 import com.sparta.rooibos.user.application.dto.request.UserRequest;
+import com.sparta.rooibos.user.application.dto.request.UserUpdateRequest;
 import com.sparta.rooibos.user.application.dto.response.UserResponse;
 import com.sparta.rooibos.user.application.exception.BusinessUserException;
 import com.sparta.rooibos.user.application.exception.custom.UserErrorCode;
@@ -10,7 +11,6 @@ import com.sparta.rooibos.user.application.service.port.UserService;
 import com.sparta.rooibos.user.domain.entity.User;
 import com.sparta.rooibos.user.domain.repository.UserRepository;
 import com.sparta.rooibos.user.infrastructure.auditing.UserAuditorContext;
-import com.sparta.rooibos.user.infrastructure.redis.BlacklistManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -54,17 +54,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Transactional
-    public UserResponse updateUser(UserRequest userRequest) {
+    public UserResponse updateUser(UserUpdateRequest request) {
         String email = UserAuditorContext.getEmail();
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new BusinessUserException(UserErrorCode.USER_NOT_FOUND));
 
-        user.updateUser(
-                userRequest.email(),
-                userRequest.slackAccount(),
-                passwordEncoder.encode(userRequest.password()),
-                userRequest.phone(),
-                userRequest.role()
+        if (user.isHidden()) {
+            throw new BusinessUserException(UserErrorCode.DELETED_USER_CANNOT_UPDATE);
+        }
+
+        user.update(
+                request.slackAccount(),
+                request.password() != null ? passwordEncoder.encode(request.password()) : null,
+                request.phone()
         );
 
         User updatedUser = userRepository.save(user);

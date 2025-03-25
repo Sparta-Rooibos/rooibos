@@ -3,6 +3,7 @@ package com.sparta.rooibos.user.application.service.core;
 import com.sparta.rooibos.user.application.dto.UserAuthDTO;
 import com.sparta.rooibos.user.application.dto.request.UserRequest;
 import com.sparta.rooibos.user.application.dto.request.UserSearchRequest;
+import com.sparta.rooibos.user.application.dto.request.UserUpdateRequest;
 import com.sparta.rooibos.user.application.dto.response.UserListResponse;
 import com.sparta.rooibos.user.application.dto.response.UserResponse;
 import com.sparta.rooibos.user.application.exception.BusinessUserException;
@@ -13,7 +14,6 @@ import com.sparta.rooibos.user.domain.entity.User;
 import com.sparta.rooibos.user.domain.entity.UserRoleStatus;
 import com.sparta.rooibos.user.domain.model.Pagination;
 import com.sparta.rooibos.user.domain.repository.UserRepository;
-import com.sparta.rooibos.user.infrastructure.redis.BlacklistManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -60,16 +60,14 @@ public class MasterServiceImpl implements MasterService {
     }
 
     @Transactional
-    public UserResponse updateUserByMaster(UUID userId, UserRequest userRequest) {
+    public UserResponse updateUserByMaster(UUID userId, UserUpdateRequest request) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new BusinessUserException(UserErrorCode.USER_NOT_FOUND));
 
-        user.updateUser(
-                userRequest.email(),
-                userRequest.slackAccount(),
-                passwordEncoder.encode(userRequest.password()),
-                userRequest.phone(),
-                userRequest.role()
+        user.update(
+                request.slackAccount(),
+                passwordEncoder.encode(request.password()),
+                request.phone()
         );
 
         User updatedUser = userRepository.save(user);
