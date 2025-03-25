@@ -26,7 +26,8 @@
 <img src="https://github.com/yewon-Noh/readme-template/blob/main/skills/SpringBoot.png?raw=true" width="80">
 <img src="https://github.com/yewon-Noh/readme-template/blob/main/skills/SpringSecurity.png?raw=true" width="80">
 <img src="https://github.com/yewon-Noh/readme-template/blob/main/skills/SpringDataJPA.png?raw=true" width="80">
-<img src="https://github.com/yewon-Noh/readme-template/blob/main/skills/SpringDataJPA.png?raw=true" width="80">
+<img src="https://github.com/yewon-Noh/readme-template/blob/main/skills/Redis.png?raw=true" width="80">    
+<img src="https://velog.velcdn.com/images/choidongkuen/post/3fe75f8b-f7bc-4eb5-88d0-f327d7889141/image.jpeg?raw=true" width="80">    
 <img src="https://github.com/Sparta-Rooibos/images/blob/main/postgre.jpg" width="80">    
 </div>
 
