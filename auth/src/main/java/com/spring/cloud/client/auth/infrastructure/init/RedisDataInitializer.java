@@ -27,6 +27,17 @@ public class RedisDataInitializer {
             userCacheRedisTemplate.opsForValue().set(redisKey, dto);
 
             System.out.println("[✅ Redis 초기화] 마스터 계정 캐싱 완료: " + redisKey);
+
+            String hubusername = "hub";
+            String hubemail = "hub01";
+            String hubpassword = "$2a$10$TbdzfMn69mOrYdZL9uhEvu94IiOwaBhgASzCIvCDyKDDe4xlSJ/3K"; // 같은 암호화된 비번 사용
+            String hubrole = "ROLE_HUB";
+
+
+            UserAuthDTO hubdto = new UserAuthDTO(hubusername, hubemail, hubpassword, hubrole);
+            String redisKey2 = "user:" + hubemail;
+            userCacheRedisTemplate.opsForValue().set(redisKey2, hubdto);
+            System.out.println("[✅ Redis 초기화] 고객 계정 캐싱 완료: user:" + redisKey2);
         };
     }
 }
