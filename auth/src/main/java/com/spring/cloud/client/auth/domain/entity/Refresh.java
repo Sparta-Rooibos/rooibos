@@ -3,12 +3,14 @@ package com.spring.cloud.client.auth.domain.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
+import java.util.UUID;
 
 @Entity
 @Getter
@@ -16,8 +18,9 @@ import java.util.Date;
 @NoArgsConstructor
 public class Refresh {
     @Id
+    @GeneratedValue
     @Column(name = "refresh_id", columnDefinition = "UUID DEFAULT gen_random_uuid()")
-    private Long id;
+    private UUID id;
 
     @Column(nullable = false, unique = true)
     private String email;

@@ -22,6 +22,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class User extends BaseEntity {
     @Id
+    @GeneratedValue
     @Column(name = "user_id", columnDefinition = "UUID DEFAULT gen_random_uuid()")
     private UUID id;
 
