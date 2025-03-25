@@ -5,19 +5,16 @@
 
 </div> 
 
-## 📝 소개
-물류시스템을 보다 정확하게 업체에게 전달해 줄 수 있는 B2B 서비스입니다.
-
-다음과 같은 내용을 작성할 수 있습니다.
+## 개요
 - 프로젝트 소개
-- 프로젝트 화면 구성 또는 프로토 타입
-- 프로젝트 API 설계
 - 사용한 기술 스택
-- 프로젝트 아키텍쳐
+- 인프라 아키텍쳐
 - 기술적 이슈와 해결 과정
 - 프로젝트 팀원
 
-필요한 기술 스택에 대한 logo는 [skills 폴더](/skills/)에서 다운로드 받을 수 있습니다.
+## 📝 소개
+물류시스템을 보다 정확하게 업체에게 전달해 줄 수 있는 B2B 서비스입니다.
+
 
 <br />
 
@@ -48,13 +45,15 @@
 <br />
 
 ## 🤔 기술적 이슈와 해결 과정
-- 
+- 제고 시스템 락킹
+    - [제고 시스템 락킹적용](https://b-programmer.tistory.com/406)
 
 
 <br />
 
 ## 💁‍♂️ 프로젝트 팀원
-|Backend|Backend|Backend|Backend|
+|주문,배송|유레카,업체,상품,재고,메시지(슬랙)|계정,Auth,게이트웨이,배송담당자|허브,허브간이동거리|
 |:---:|:---:|:---:|:---:|
-| ![](https://github.com/yewon-Noh.png?size=120) | ![](https://github.com/SeongHo-C.png?size=120) | ![](https://github.com/yewon-Noh.png?size=120) | ![](https://github.com/SeongHo-C.png?size=120) |
-|[박태훈](https://github.com/yewon-Noh)|[박용훈](https://github.com/SeongHo-C)|[임소라](https://github.com/SeongHo-C)|[정우준](https://github.com/SeongHo-C)|
+| ![]() | ![](https://github.com/asqwklop12.png?size=120) | ![](https://github.com/luz315.png?size=120) | ![](https://github.com/orkrj.png?size=120) |
+|[박태훈](https://github.com/ekdh0858)|[박용훈](https://github.com/asqwklop12)|[임소라](https://github.com/luz315)|[정우준](https://github.com/orkrj)|
+
