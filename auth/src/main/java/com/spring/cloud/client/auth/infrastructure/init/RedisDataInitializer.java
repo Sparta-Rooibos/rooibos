@@ -37,7 +37,29 @@ public class RedisDataInitializer {
             UserAuthDTO hubdto = new UserAuthDTO(hubusername, hubemail, hubpassword, hubrole);
             String redisKey2 = "user:" + hubemail;
             userCacheRedisTemplate.opsForValue().set(redisKey2, hubdto);
-            System.out.println("[✅ Redis 초기화] 고객 계정 캐싱 완료: user:" + redisKey2);
+            System.out.println("[✅ Redis 초기화] 허브 계정 캐싱 완료: user:" + redisKey2);
+
+            String deliveryusername = "delivery";
+            String deliveryemail = "delivery01";
+            String deliverypassword = "$2a$10$TbdzfMn69mOrYdZL9uhEvu94IiOwaBhgASzCIvCDyKDDe4xlSJ/3K"; // 같은 암호화된 비번 사용
+            String deliveryrole = "ROLE_DELIVERY";
+
+
+            UserAuthDTO deliverydto = new UserAuthDTO(deliveryusername, deliveryemail, deliverypassword, deliveryrole);
+            String redisKey3 = "user:" + deliveryemail;
+            userCacheRedisTemplate.opsForValue().set(redisKey3, hubdto);
+            System.out.println("[✅ Redis 초기화] 배달 계정 캐싱 완료: user:" + redisKey3);
+
+            String clientusername = "client";
+            String clientemail = "client01";
+            String clientpassword = "$2a$10$TbdzfMn69mOrYdZL9uhEvu94IiOwaBhgASzCIvCDyKDDe4xlSJ/3K"; // 같은 암호화된 비번 사용
+            String clientrole = "ROLE_HUB";
+
+
+            UserAuthDTO clientdto = new UserAuthDTO(clientusername, clientemail, clientpassword, clientrole);
+            String redisKey4 = "user:" + clientemail;
+            userCacheRedisTemplate.opsForValue().set(redisKey4, clientdto);
+            System.out.println("[✅ Redis 초기화] 업체 계정 캐싱 완료: user:" + redisKey4);
         };
     }
 }
