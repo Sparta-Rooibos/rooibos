@@ -29,12 +29,12 @@ public class HubController {
     }
 
     @GetMapping("/{hubId}")
-    public ResponseEntity<GetHubResponse> getHub(@PathVariable UUID hubId) {
+    public ResponseEntity<GetHubResponse> getHub(@PathVariable("hubId") UUID hubId) {
         return ResponseEntity.ok(hubService.getHub(hubId));
     }
 
     @GetMapping("/{hubId}/check")
-    public ResponseEntity<Boolean> checkHub(@PathVariable UUID hubId) {
+    public ResponseEntity<Boolean> checkHub(@PathVariable("hubId") UUID hubId) {
         return ResponseEntity.ok(hubService.isExistingHub(hubId));
     }
 
@@ -55,14 +55,14 @@ public class HubController {
     @PatchMapping("/{hubId}")
     public ResponseEntity<UpdateHubResponse> updateHub(
             @RequestHeader("X-User-Role") String role,
-            @PathVariable UUID hubId,
+            @PathVariable("hubId") UUID hubId,
             @RequestBody UpdateHubRequest updateHubRequest) {
         return ResponseEntity.ok(hubService.updateHub(hubId, updateHubRequest));
     }
 
     @RoleCheck({"MASTER"})
     @PatchMapping("/{hubId}/delete")
-    public ResponseEntity<Void> deleteHub(@PathVariable UUID hubId) {
+    public ResponseEntity<Void> deleteHub(@PathVariable("hubId") UUID hubId) {
         hubService.deleteHub(hubId);
 
         return ResponseEntity.noContent().build();

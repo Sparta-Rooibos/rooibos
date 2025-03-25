@@ -69,7 +69,7 @@ public class OrderServiceImpl implements OrderService {
         GetStockResponse stockResponse;
         int stockQuantity;
         try {
-             stockResponse = stockService.getStock(email,username,role,request.productId()).getBody();
+            stockResponse = stockService.getStock(email,username,role,request.productId()).getBody();
             stockQuantity= stockResponse.productQuantity();
             orderConfirmed = request.quantity()>stockQuantity?true:false;
         } catch (Exception e) {

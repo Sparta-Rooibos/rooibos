@@ -37,7 +37,7 @@ public class HubManagerController {
 
     @RoleCheck({"MASTER"})
     @PatchMapping("/{userId}")
-    public ResponseEntity<Void> deleteHubManager(@PathVariable UUID userId) {
+    public ResponseEntity<Void> deleteHubManager(@PathVariable("userId") UUID userId) {
         hubManagerService.deleteHubManager(userId);
 
         return ResponseEntity.noContent().build();

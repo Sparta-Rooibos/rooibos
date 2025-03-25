@@ -27,7 +27,7 @@ public class RouteController {
     }
 
     @GetMapping("/{routeId}")
-    public ResponseEntity<GetRouteResponse> getRoute(@PathVariable UUID routeId) {
+    public ResponseEntity<GetRouteResponse> getRoute(@PathVariable("routeId") UUID routeId) {
         return ResponseEntity.ok(routeService.getRoute(routeId));
     }
 
@@ -49,7 +49,7 @@ public class RouteController {
     @RoleCheck({"MASTER"})
     @PatchMapping("/{routeId}")
     public ResponseEntity<UpdateRouteResponse> updateRoute(
-            @PathVariable UUID routeId,
+            @PathVariable("routeId") UUID routeId,
             @RequestBody UpdateRouteRequest updateRouteRequest
     ) {
         return ResponseEntity.ok(routeService.updateRoute(routeId, updateRouteRequest));
@@ -57,7 +57,7 @@ public class RouteController {
 
     @RoleCheck({"MASTER"})
     @PatchMapping("/{routeId}/delete")
-    public ResponseEntity<Void> deleteRoute(@PathVariable UUID routeId) {
+    public ResponseEntity<Void> deleteRoute(@PathVariable("routeId") UUID routeId) {
         routeService.deleteRoute(routeId);
 
         return ResponseEntity.noContent().build();
