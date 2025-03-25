@@ -11,7 +11,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class RedisProviderImpl implements RedisProvider {
     private final AuthCacheService authCacheService;
-    private final BlacklistService blacklistService;
 
     @Override
     public void createUserInfo(UserAuthDTO user) {
@@ -26,15 +25,5 @@ public class RedisProviderImpl implements RedisProvider {
     @Override
     public void deleteUserInfo(String username) {
         authCacheService.deleteUserInfo(username);
-    }
-
-    @Override
-    public void addToBlacklist(String email) {
-        blacklistService.addToBlacklist(email);
-    }
-
-    @Override
-    public boolean isTokenBlacklisted(String email) {
-        return blacklistService.isTokenBlacklisted(email);
     }
 }

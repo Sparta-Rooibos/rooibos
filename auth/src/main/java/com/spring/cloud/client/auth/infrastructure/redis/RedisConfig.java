@@ -25,4 +25,18 @@ public class RedisConfig {
         return template;
     }
 
+    @Bean
+    public RedisTemplate<String, UserAuthDTO> userAuthRedisTemplate(RedisConnectionFactory redisConnectionFactory) {
+        RedisTemplate<String, UserAuthDTO> template = new RedisTemplate<>();
+        template.setConnectionFactory(redisConnectionFactory);
+
+        Jackson2JsonRedisSerializer<UserAuthDTO> serializer = new Jackson2JsonRedisSerializer<>(UserAuthDTO.class);
+        template.setKeySerializer(new StringRedisSerializer());
+        template.setValueSerializer(serializer);
+        template.setHashKeySerializer(new StringRedisSerializer());
+        template.setHashValueSerializer(serializer);
+
+        return template;
+    }
+
 }

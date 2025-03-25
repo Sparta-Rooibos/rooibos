@@ -13,10 +13,13 @@ import com.spring.cloud.client.auth.domain.repository.RefreshRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.Optional;
 
 @Service
@@ -27,14 +30,20 @@ public class AuthServiceImpl implements AuthService {
     private final RedisProvider redisProvider;
     private final BCryptPasswordEncoder passwordEncoder;
     private final CookieProvider cookieProvider;
+    private final RedisTemplate<String, String> redisTemplate;
 
     @Override
     @Transactional
     public void login(LoginRequest loginRequest, HttpServletRequest request, HttpServletResponse response) {
-        if (redisProvider.isTokenBlacklisted(loginRequest.email())) {
-            throw new BusinessAuthException(AuthErrorCode.BLOCKED_ACCOUNT);
-        }
+        String key = "blacklist:" + loginRequest.email();
+        String blockedAtStr = redisTemplate.opsForValue().get(key);
 
+        if (blockedAtStr != null) {
+            Instant blockedAt = Instant.ofEpochSecond(Long.parseLong(blockedAtStr));
+            if (Instant.now().isBefore(blockedAt)) {
+                throw new BusinessAuthException(AuthErrorCode.BLOCKED_ACCOUNT);
+            }
+        }
         Optional<UserAuthDTO> cachedUser = redisProvider.getUserInfo(loginRequest.email());
         if (cachedUser.isEmpty()) {
             throw new BusinessAuthException(AuthErrorCode.INVALID_CREDENTIALS);

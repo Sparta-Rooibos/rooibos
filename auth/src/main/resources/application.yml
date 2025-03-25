@@ -3,9 +3,9 @@ spring:
     name: auth-service
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/auth_db
-    username: root
-    password: 1234
+    url: jdbc:postgresql://localhost:5432/auth
+    username: postgres
+    password: "0000"
     driver-class-name: org.postgresql.Driver
     hikari:
       maximum-pool-size: 4
@@ -13,11 +13,11 @@ spring:
   jpa:
     database: postgresql
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
 
   data:
     redis:
-      host: redis-auth
+      host: localhost
       port: 6379
       username: default
       password: systempass
@@ -30,13 +30,6 @@ eureka:
     service-url:
       defaultZone: http://localhost:19090/eureka/
 
-management:
-  zipkin:
-    tracing:
-      endpoint: http://localhost:9411/api/v2/spans
-  tracing:
-    sampling:
-      probability: 0.1
 
 server:
   port: 19092
