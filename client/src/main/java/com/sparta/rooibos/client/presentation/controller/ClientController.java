@@ -41,7 +41,7 @@ public class ClientController {
             @RequestHeader("X-User-Email") String email,
             @RequestHeader("X-User-Name") String username,
             @RequestHeader("X-User-Role") String role,
-            @PathVariable UUID clientId) {
+            @PathVariable(value = "clientId") UUID clientId) {
         return ResponseEntity.ok(clientService.getClient(clientId));
     }
 
@@ -62,7 +62,7 @@ public class ClientController {
             @RequestHeader("X-User-Email") String email,
             @RequestHeader("X-User-Name") String username,
             @RequestHeader("X-User-Role") String role,
-            @PathVariable UUID clientId, @RequestBody UpdateClientRequest request) {
+            @PathVariable(value = "clientId") UUID clientId, @RequestBody UpdateClientRequest request) {
         return ResponseEntity.ok(clientService.updateClient(email, role, clientId, request));
     }
 
@@ -72,7 +72,7 @@ public class ClientController {
             @RequestHeader("X-User-Email") String email,
             @RequestHeader("X-User-Name") String username,
             @RequestHeader("X-User-Role") String role,
-            @PathVariable UUID clientId) {
+            @PathVariable(value = "clientId") UUID clientId) {
         return ResponseEntity.ok(clientService.deleteClient(email, clientId));
     }
 
@@ -84,7 +84,7 @@ public class ClientController {
             @RequestHeader("X-User-Email") String email,
             @RequestHeader("X-User-Name") String username,
             @RequestHeader("X-User-Role") String role,
-            @PathVariable UUID clientId, @RequestBody UpdateHubIdRequest request) {
+            @PathVariable(value = "clientId") UUID clientId, @RequestBody UpdateHubIdRequest request) {
         return ResponseEntity.ok(clientService.changeUsedHub(clientId, request));
     }
 }

@@ -43,7 +43,7 @@ public class MessageController {
             @RequestHeader("X-User-Email") String email,
             @RequestHeader("X-User-Name") String username,
             @RequestHeader("X-User-Role") String role,
-            @PathVariable UUID messageId) {
+            @PathVariable(value = "messageId") UUID messageId) {
         return ResponseEntity.ok(messageService.getMessage(messageId));
     }
 
@@ -53,7 +53,7 @@ public class MessageController {
             @RequestHeader("X-User-Email") String email,
             @RequestHeader("X-User-Name") String username,
             @RequestHeader("X-User-Role") String role,
-            @PathVariable UUID messageId) {
+            @PathVariable(value = "messageId") UUID messageId) {
         messageService.deleteMessage(email, messageId);
         return ResponseEntity.noContent().build();
     }
