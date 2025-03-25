@@ -13,8 +13,7 @@
 - 프로젝트 팀원
 
 ## 📝 소개
-물류시스템을 보다 정확하게 업체에게 전달해 줄 수 있는 B2B 서비스입니다.
-
+물류시스템을 업체에게 전달해 줄 수 있는 B2B 서비스입니다.
 
 <br />
 
@@ -27,6 +26,8 @@
 <img src="https://github.com/yewon-Noh/readme-template/blob/main/skills/SpringBoot.png?raw=true" width="80">
 <img src="https://github.com/yewon-Noh/readme-template/blob/main/skills/SpringSecurity.png?raw=true" width="80">
 <img src="https://github.com/yewon-Noh/readme-template/blob/main/skills/SpringDataJPA.png?raw=true" width="80">
+<img src="https://github.com/yewon-Noh/readme-template/blob/main/skills/SpringDataJPA.png?raw=true" width="80">
+<img src="https://github.com/Sparta-Rooibos/images/blob/main/postgre.jpg" width="80">    
 </div>
 
 
@@ -39,7 +40,7 @@
 <br />
 
 ## 🛠️ 인프라 아키텍쳐
-
+<img src="https://github.com/Sparta-Rooibos/images/blob/main/%E1%84%8B%E1%85%B5%E1%86%AB%E1%84%91%E1%85%B3%E1%84%85%E1%85%A1.jpg">
 
 
 <br />
