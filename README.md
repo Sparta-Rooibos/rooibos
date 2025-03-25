@@ -46,8 +46,8 @@
 <br />
 
 ## 🤔 기술적 이슈와 해결 과정
-- 제고 시스템 락킹
-    - [제고 시스템 락킹적용](https://b-programmer.tistory.com/406)
+- 재고 시스템 락킹
+    - [재고 시스템 락킹적용](https://b-programmer.tistory.com/406)
 
 
 <br />
