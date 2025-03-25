@@ -3,6 +3,7 @@ package com.sparta.rooibus.delivery.infrastructure.client;
 import com.sparta.rooibus.delivery.application.dto.response.feign.client.GetClientManagerResponse;
 import com.sparta.rooibus.delivery.application.dto.response.feign.client.GetClientResponse;
 import com.sparta.rooibus.delivery.application.service.feign.ClientService;
+import com.sparta.rooibus.delivery.infrastructure.config.FeignRetryConfig;
 import java.util.UUID;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.context.annotation.Primary;
@@ -12,9 +13,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
 
 @Primary
-@FeignClient(name = "client-service", url = "http://localhost:19094")
+@FeignClient(name = "client-service", url = "http://localhost:19094",configuration = FeignRetryConfig.class)
 public interface ClientClient extends ClientService {
-    @GetMapping("/client/{clientId}")
+    @GetMapping("/api/v1/client/{clientId}")
     ResponseEntity<GetClientResponse> getClient(
         @RequestHeader("X-User-Email") String email,
         @RequestHeader("X-User-Name") String username,
@@ -22,7 +23,7 @@ public interface ClientClient extends ClientService {
         @PathVariable("clientId") UUID clientId
     );
 
-    @GetMapping("/client/{clientId}")
+    @GetMapping("/api/v1/client/manager/{clientId}")
     ResponseEntity<GetClientManagerResponse> getClientManager(
         @RequestHeader("X-User-Email") String email,
         @RequestHeader("X-User-Name") String username,
