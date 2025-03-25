@@ -3,9 +3,9 @@ spring:
     name: delivery-service
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/delivery-service
-    username: taehun
-    password: 0858
+    url: jdbc:postgresql://localhost:5436/delivery_db
+    username: root
+    password: 1234
     driver-class-name: org.postgresql.Driver
     hikari:
       maximum-pool-size: 10
