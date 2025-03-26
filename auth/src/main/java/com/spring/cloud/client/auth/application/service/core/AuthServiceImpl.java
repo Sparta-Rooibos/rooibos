@@ -13,7 +13,6 @@ import com.spring.cloud.client.auth.domain.repository.RefreshRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -65,16 +64,19 @@ public class AuthServiceImpl implements AuthService {
     @Override
     @Transactional
     public void logout(HttpServletRequest request, HttpServletResponse response) {
-        String refreshToken = cookieProvider.getRefreshToken(request);
-
-        if (refreshToken == null) {
-            throw new BusinessAuthException(AuthErrorCode.INVALID_REFRESH_TOKEN);
+        String token = request.getHeader("Authorization");
+        if (token == null || !token.startsWith("Bearer ")) {
+            throw new BusinessAuthException(AuthErrorCode.INVALID_ACCESS_TOKEN);
         }
 
-        refreshRepository.deleteByRefresh(refreshToken);
+        token = token.substring(7);
+        if (jwtProvider.isExpired(token)) {
+            throw new BusinessAuthException(AuthErrorCode.EXPIRED_ACCESS_TOKEN);
+        }
 
+        String email = jwtProvider.getEmail(token);
+        refreshRepository.deleteByEmail(email);
         cookieProvider.deleteRefreshToken(response);
-        response.setHeader("Authorization", "");
     }
 
     @Override

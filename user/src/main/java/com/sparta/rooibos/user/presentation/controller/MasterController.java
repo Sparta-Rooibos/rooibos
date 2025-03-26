@@ -2,6 +2,7 @@ package com.sparta.rooibos.user.presentation.controller;
 
 import com.sparta.rooibos.user.application.dto.request.UserRequest;
 import com.sparta.rooibos.user.application.dto.request.UserSearchRequest;
+import com.sparta.rooibos.user.application.dto.request.UserUpdateRequest;
 import com.sparta.rooibos.user.application.dto.response.UserListResponse;
 import com.sparta.rooibos.user.application.dto.response.UserResponse;
 import com.sparta.rooibos.user.application.service.port.MasterService;
@@ -34,8 +35,8 @@ public class MasterController {
 
     @MasterOnlyCheck
     @PutMapping("/{userId}")
-    public ResponseEntity<UserResponse> updateUserByMaster(@PathVariable UUID userId, @RequestBody @Valid UserRequest userRequest) {
-        return ResponseEntity.ok(masterService.updateUserByMaster(userId, userRequest));
+    public ResponseEntity<UserResponse> updateUserByMaster(@PathVariable UUID userId, @RequestBody @Valid UserUpdateRequest request) {
+        return ResponseEntity.ok(masterService.updateUserByMaster(userId, request));
     }
 
     @MasterOnlyCheck

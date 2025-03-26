@@ -1,6 +1,7 @@
 package com.sparta.rooibos.user.presentation.controller;
 
 import com.sparta.rooibos.user.application.dto.request.UserRequest;
+import com.sparta.rooibos.user.application.dto.request.UserUpdateRequest;
 import com.sparta.rooibos.user.application.dto.response.UserResponse;
 import com.sparta.rooibos.user.application.service.port.UserService;
 import jakarta.validation.Valid;
@@ -14,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
     private final UserService userService;
 
-    @PostMapping()
+    @PostMapping("/signup")
     public ResponseEntity<UserResponse> signup(@RequestBody @Valid UserRequest userRequest) {
         return ResponseEntity.ok(userService.createUser(userRequest));
     }
@@ -25,8 +26,8 @@ public class UserController {
     }
 
     @PutMapping()
-    public ResponseEntity<UserResponse> updateUser(@RequestBody @Valid UserRequest userRequest) {
-        return ResponseEntity.ok(userService.updateUser(userRequest));
+    public ResponseEntity<UserResponse> updateUser(@RequestBody @Valid UserUpdateRequest request) {
+        return ResponseEntity.ok(userService.updateUser(request));
     }
 
     @PatchMapping("/delete")

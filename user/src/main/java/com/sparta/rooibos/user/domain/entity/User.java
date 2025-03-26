@@ -22,6 +22,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class User extends BaseEntity {
     @Id
+    @GeneratedValue
     @Column(name = "user_id", columnDefinition = "UUID DEFAULT gen_random_uuid()")
     private UUID id;
 
@@ -57,12 +58,10 @@ public class User extends BaseEntity {
         return new User(null, username, email, password, slackAccount, phone, role, false, status);
     }
 
-    public void updateUser(String email, String slackAccount, String password, String phone, Role role) {
-        this.email = email;
-        this.slackAccount = slackAccount;
-        this.password = password;
-        this.phone = phone;
-        this.role = role;
+    public void update(String slackAccount, String password, String phone) {
+        if (slackAccount != null) this.slackAccount = slackAccount;
+        if (password != null) this.password = password;
+        if (phone != null) this.phone = phone;
     }
 
     public void delete(String deletedBy) {

@@ -14,7 +14,9 @@ public enum AuthErrorCode implements ErrorCodeProvider {
     BLOCKED_ACCOUNT(HttpStatus.FORBIDDEN, "AUT-03", "해당 계정은 보안 조치로 로그인할 수 없습니다."),
     INVALID_REFRESH_TOKEN(HttpStatus.BAD_REQUEST, "AUT-04", "유효하지 않은 Refresh Token입니다."),
     EXPIRED_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED, "AUT-05", "리프레시 토큰이 만료되었습니다."),
-    LOGIN_REQUIRED(HttpStatus.UNAUTHORIZED, "AUT-06", "로그인이 필요합니다.");
+    INVALID_ACCESS_TOKEN(HttpStatus.BAD_REQUEST, "AUT-06", "유효하지 않은 Access Token입니다."),
+    EXPIRED_ACCESS_TOKEN(HttpStatus.UNAUTHORIZED, "AUT-07", "액세스 토큰이 만료되었습니다."),
+    LOGIN_REQUIRED(HttpStatus.UNAUTHORIZED, "AUT-08", "로그인이 필요합니다.");
 
     private final HttpStatus status;
     private final String code;
