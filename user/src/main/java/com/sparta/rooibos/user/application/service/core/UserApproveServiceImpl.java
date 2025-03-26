@@ -9,11 +9,13 @@ import com.sparta.rooibos.user.domain.entity.User;
 import com.sparta.rooibos.user.domain.repository.UserRepository;
 import com.sparta.rooibos.user.infrastructure.auditing.UserAuditorContext;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserApproveServiceImpl implements UserApproveService {
@@ -27,6 +29,8 @@ public class UserApproveServiceImpl implements UserApproveService {
 
         String approver = UserAuditorContext.getRole();
         String pending = user.getRole().getAuthority();
+        log.info("👤 Approver Role = {}", approver);
+        log.info("📝 Pending User Role (Authority) = {}", pending);
 
         if (!approver.equals("ROLE_MASTER") && !approver.equals(pending)) {
             throw new BusinessUserException(UserErrorCode.FORBIDDEN_USER_ACCESS);
