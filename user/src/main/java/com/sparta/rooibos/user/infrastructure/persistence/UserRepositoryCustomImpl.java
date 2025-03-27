@@ -1,6 +1,7 @@
 package com.sparta.rooibos.user.infrastructure.persistence;
 
 
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.sparta.rooibos.user.application.dto.request.UserSearchRequest;
@@ -10,7 +11,6 @@ import com.sparta.rooibos.user.domain.entity.User;
 import com.sparta.rooibos.user.domain.model.Pagination;
 import com.sparta.rooibos.user.domain.repository.UserRepositoryCustom;
 import lombok.RequiredArgsConstructor;
-import com.querydsl.core.BooleanBuilder;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

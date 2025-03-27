@@ -1,8 +1,9 @@
 package com.sparta.rooibus.delivery.application.service.feign;
 
-import java.util.UUID;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+
+import java.util.UUID;
 
 @Component
 public interface HubService {

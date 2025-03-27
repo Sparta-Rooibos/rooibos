@@ -1,10 +1,10 @@
 package com.sparta.rooibus.delivery.infrastructure.config;
 
-import static java.util.concurrent.TimeUnit.SECONDS;
-
 import feign.Retryer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import static java.util.concurrent.TimeUnit.SECONDS;
 
 @Configuration
 public class FeignRetryConfig {

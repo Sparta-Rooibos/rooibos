@@ -3,9 +3,9 @@ package com.sparta.rooibos.deliverer.infrastructure.persistence;
 import com.sparta.rooibos.deliverer.application.dto.request.DelivererSearchRequest;
 import com.sparta.rooibos.deliverer.domain.entity.Deliverer;
 import com.sparta.rooibos.deliverer.domain.entity.DelivererType;
+import com.sparta.rooibos.deliverer.domain.model.Pagination;
 import com.sparta.rooibos.deliverer.domain.repository.DelivererRepository;
 import com.sparta.rooibos.deliverer.domain.repository.DelivererRepositoryCustom;
-import com.sparta.rooibos.deliverer.domain.model.Pagination;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 

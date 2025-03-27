@@ -2,13 +2,14 @@ package com.sparta.rooibus.delivery.infrastructure.user;
 
 import com.sparta.rooibus.delivery.application.dto.response.feign.user.GetUserResponse;
 import com.sparta.rooibus.delivery.application.service.feign.UserService;
-import java.util.UUID;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.context.annotation.Primary;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
+
+import java.util.UUID;
 
 @Primary
 @FeignClient(name = "user-service", url = "http://localhost:19093")

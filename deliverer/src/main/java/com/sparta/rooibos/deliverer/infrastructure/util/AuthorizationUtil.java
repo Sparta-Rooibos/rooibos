@@ -3,6 +3,7 @@ package com.sparta.rooibos.deliverer.infrastructure.util;
 import com.querydsl.core.BooleanBuilder;
 import com.sparta.rooibos.deliverer.domain.entity.QDeliverer;
 import com.sparta.rooibos.deliverer.infrastructure.auditing.UserAuditorContext;
+import com.sparta.rooibos.deliverer.infrastructure.feign.HubClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -11,7 +12,7 @@ import java.util.UUID;
 @Component
 @RequiredArgsConstructor
 public class AuthorizationUtil {
-    private final HubManagerClient hubManagerClient;
+    private final HubClient hubManagerClient;
     public BooleanBuilder getPermissionWhereClause(QDeliverer deliverer) {
         BooleanBuilder builder = new BooleanBuilder();
         String role = UserAuditorContext.getRole();

@@ -17,7 +17,6 @@ import com.sparta.rooibos.message.domain.repository.MessageRepository;
 import com.sparta.rooibos.message.domain.repository.MessageRepositoryCustom;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
-
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;
 import org.json.JSONObject;

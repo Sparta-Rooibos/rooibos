@@ -1,10 +1,11 @@
 package com.sparta.rooibus.delivery.application.aop;
 
-import java.util.UUID;
 import lombok.Getter;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Component;
+
+import java.util.UUID;
 
 @Getter
 @Component

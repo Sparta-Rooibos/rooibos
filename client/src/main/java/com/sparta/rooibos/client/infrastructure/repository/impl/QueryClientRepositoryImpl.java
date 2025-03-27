@@ -1,19 +1,14 @@
 package com.sparta.rooibos.client.infrastructure.repository.impl;
 
 import com.querydsl.core.types.Predicate;
-import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.sparta.rooibos.client.domain.critreia.ClientCriteria;
 import com.sparta.rooibos.client.domain.entity.Client;
-import com.sparta.rooibos.client.domain.entity.QClient;
 import com.sparta.rooibos.client.domain.entity.ClientType;
+import com.sparta.rooibos.client.domain.entity.QClient;
 import com.sparta.rooibos.client.domain.model.Pagination;
 import com.sparta.rooibos.client.domain.repository.QueryClientRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

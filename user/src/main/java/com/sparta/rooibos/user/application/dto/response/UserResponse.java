@@ -1,7 +1,7 @@
 package com.sparta.rooibos.user.application.dto.response;
 
-import com.sparta.rooibos.user.domain.entity.User;
 import com.sparta.rooibos.user.domain.entity.Role;
+import com.sparta.rooibos.user.domain.entity.User;
 import com.sparta.rooibos.user.domain.entity.UserRoleStatus;
 
 import java.time.LocalDateTime;

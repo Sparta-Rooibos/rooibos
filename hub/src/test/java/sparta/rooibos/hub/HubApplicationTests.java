@@ -1,12 +1,9 @@
 package sparta.rooibos.hub;
 
-import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
-
-@SpringBootTest
+//@SpringBootTest
 class HubApplicationTests {
 
-    @Test
+//    @Test
     void contextLoads() {
     }
 

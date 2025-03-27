@@ -1,7 +1,6 @@
 package sparta.rooibos.route.application.core;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sparta.rooibos.route.application.dto.request.route.CreateRouteRequest;

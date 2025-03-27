@@ -1,16 +1,15 @@
 package com.sparta.rooibus.order.application.aop;
 
 import jakarta.servlet.http.HttpServletRequest;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+
+import java.util.UUID;
 
 @Aspect
 @Component

@@ -1,9 +1,10 @@
 package com.sparta.rooibus.order.application.service.feign;
 
 import com.sparta.rooibus.order.application.service.GetStockResponse;
-import java.util.UUID;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+
+import java.util.UUID;
 
 @Component
 public interface StockService {

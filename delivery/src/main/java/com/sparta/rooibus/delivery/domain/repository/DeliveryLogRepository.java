@@ -2,10 +2,11 @@ package com.sparta.rooibus.delivery.domain.repository;
 
 import com.sparta.rooibus.delivery.domain.entity.DeliveryLog;
 import com.sparta.rooibus.delivery.domain.model.Pagination;
+import org.springframework.stereotype.Repository;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import org.springframework.stereotype.Repository;
 
 @Repository
 public interface DeliveryLogRepository {

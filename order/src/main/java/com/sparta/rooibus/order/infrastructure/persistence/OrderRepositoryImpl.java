@@ -4,16 +4,16 @@ package com.sparta.rooibus.order.infrastructure.persistence;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.sparta.rooibus.order.application.dto.request.SearchRequest;
 import com.sparta.rooibus.order.domain.entity.Order;
 import com.sparta.rooibus.order.domain.entity.QOrder;
 import com.sparta.rooibus.order.domain.model.Pagination;
 import com.sparta.rooibus.order.domain.repository.OrderRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Repository;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Repository;
 
 @Repository
 @RequiredArgsConstructor

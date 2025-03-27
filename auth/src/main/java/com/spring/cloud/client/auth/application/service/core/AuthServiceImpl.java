@@ -1,7 +1,7 @@
 package com.spring.cloud.client.auth.application.service.core;
 
-import com.spring.cloud.client.auth.application.dto.request.LoginRequest;
 import com.spring.cloud.client.auth.application.dto.UserAuthDTO;
+import com.spring.cloud.client.auth.application.dto.request.LoginRequest;
 import com.spring.cloud.client.auth.application.exception.BusinessAuthException;
 import com.spring.cloud.client.auth.application.exception.custom.AuthErrorCode;
 import com.spring.cloud.client.auth.application.service.port.AuthService;
