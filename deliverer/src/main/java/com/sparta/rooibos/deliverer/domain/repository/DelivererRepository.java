@@ -1,6 +1,6 @@
 package com.sparta.rooibos.deliverer.domain.repository;
 
-import com.sparta.rooibos.deliverer.application.dto.request.DelivererSearchRequest;
+import com.sparta.rooibos.deliverer.domain.critia.DelivererSearchCriteria;
 import com.sparta.rooibos.deliverer.domain.entity.Deliverer;
 import com.sparta.rooibos.deliverer.domain.entity.DelivererType;
 import com.sparta.rooibos.deliverer.domain.model.Pagination;
@@ -14,7 +14,7 @@ public interface DelivererRepository {
     boolean existsById(UUID id);
     Optional<Deliverer> findById(UUID id);
     int findMaxOrderByHubId(UUID hubId);
-    Pagination<Deliverer> searchDeliverers(DelivererSearchRequest request);
+    Pagination<Deliverer> searchDeliverers(DelivererSearchCriteria request);
     int countByHubIdAndTypeAndHiddenFalse(UUID hubId, DelivererType type);
     Optional<Deliverer> findNextAvailableDeliverer(UUID hubId, DelivererType type);
 }

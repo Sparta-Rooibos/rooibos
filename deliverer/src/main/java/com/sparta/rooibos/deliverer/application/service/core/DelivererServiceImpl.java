@@ -9,13 +9,13 @@ import com.sparta.rooibos.deliverer.application.exception.BusinessDelivererExcep
 import com.sparta.rooibos.deliverer.application.exception.custom.DelivererErrorCode;
 import com.sparta.rooibos.deliverer.application.feign.HubService;
 import com.sparta.rooibos.deliverer.application.feign.UserService;
+import com.sparta.rooibos.deliverer.application.feign.dto.UserResponse;
 import com.sparta.rooibos.deliverer.application.service.port.DelivererService;
 import com.sparta.rooibos.deliverer.domain.entity.Deliverer;
 import com.sparta.rooibos.deliverer.domain.entity.DelivererStatus;
 import com.sparta.rooibos.deliverer.domain.entity.DelivererType;
 import com.sparta.rooibos.deliverer.domain.model.Pagination;
 import com.sparta.rooibos.deliverer.domain.repository.DelivererRepository;
-import com.sparta.rooibos.user.application.dto.response.UserResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -142,7 +142,7 @@ public class DelivererServiceImpl implements DelivererService {
 
     @Transactional(readOnly = true)
     public DelivererListResponse searchDeliverers(DelivererSearchRequest request) {
-        Pagination<Deliverer> resultPage = delivererRepository.searchDeliverers(request);
+        Pagination<Deliverer> resultPage = delivererRepository.searchDeliverers(request.toCriteria());
         return DelivererListResponse.from(resultPage);
     }
 
