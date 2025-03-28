@@ -1,9 +1,9 @@
 package com.sparta.rooibos.route.infrastructure.jpa;
 
-import com.sparta.rooibos.route.domain.model.Route;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import com.sparta.rooibos.route.domain.model.Route;
 
 import java.util.List;
 import java.util.Optional;

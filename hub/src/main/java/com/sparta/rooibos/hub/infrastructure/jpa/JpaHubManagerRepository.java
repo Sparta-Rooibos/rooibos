@@ -1,8 +1,8 @@
 package com.sparta.rooibos.hub.infrastructure.jpa;
 
-import com.sparta.rooibos.hub.domain.model.HubManager;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import com.sparta.rooibos.hub.domain.model.HubManager;
 
 import java.util.Optional;
 import java.util.UUID;

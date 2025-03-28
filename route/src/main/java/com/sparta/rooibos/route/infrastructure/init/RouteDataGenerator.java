@@ -1,15 +1,15 @@
 package com.sparta.rooibos.route.infrastructure.init;
 
+import lombok.RequiredArgsConstructor;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Bean;
+import org.springframework.stereotype.Component;
 import com.sparta.rooibos.route.application.dto.response.direction.GetGeoDirectionResponse;
 import com.sparta.rooibos.route.application.dto.response.hub.HubClientResponse;
 import com.sparta.rooibos.route.application.port.out.GeoDirectionService;
 import com.sparta.rooibos.route.domain.model.Route;
 import com.sparta.rooibos.route.domain.repository.RouteRepository;
 import com.sparta.rooibos.route.infrastructure.client.HubFeignClient;
-import lombok.RequiredArgsConstructor;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.context.annotation.Bean;
-import org.springframework.stereotype.Component;
 
 import java.util.*;
 

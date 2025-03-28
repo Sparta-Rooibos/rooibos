@@ -1,20 +1,20 @@
 package com.sparta.rooibos.deliverer.application.service.core;
 
+import com.sparta.rooibos.deliverer.application.auditing.UserAuditorContext;
 import com.sparta.rooibos.deliverer.application.dto.request.DelivererRequest;
 import com.sparta.rooibos.deliverer.application.dto.request.DelivererSearchRequest;
 import com.sparta.rooibos.deliverer.application.dto.response.DelivererListResponse;
 import com.sparta.rooibos.deliverer.application.dto.response.DelivererResponse;
 import com.sparta.rooibos.deliverer.application.exception.BusinessDelivererException;
 import com.sparta.rooibos.deliverer.application.exception.custom.DelivererErrorCode;
+import com.sparta.rooibos.deliverer.application.feign.HubService;
+import com.sparta.rooibos.deliverer.application.feign.UserService;
 import com.sparta.rooibos.deliverer.application.service.port.DelivererService;
 import com.sparta.rooibos.deliverer.domain.entity.Deliverer;
 import com.sparta.rooibos.deliverer.domain.entity.DelivererStatus;
 import com.sparta.rooibos.deliverer.domain.entity.DelivererType;
 import com.sparta.rooibos.deliverer.domain.model.Pagination;
 import com.sparta.rooibos.deliverer.domain.repository.DelivererRepository;
-import com.sparta.rooibos.deliverer.infrastructure.auditing.UserAuditorContext;
-import com.sparta.rooibos.deliverer.infrastructure.feign.HubClient;
-import com.sparta.rooibos.deliverer.infrastructure.feign.UserClient;
 import com.sparta.rooibos.deliverer.infrastructure.feign.dto.UserResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,8 +26,8 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class DelivererServiceImpl implements DelivererService {
     private final DelivererRepository delivererRepository;
-    private final UserClient userClient;
-    private final HubClient hubClient;
+    private final UserService userService;
+    private final HubService hubService;
 
     @Transactional
     public DelivererResponse createDeliverer(DelivererRequest request) {
@@ -37,12 +37,12 @@ public class DelivererServiceImpl implements DelivererService {
 
         UUID hubId;
         if ("ROLE_HUB".equals(UserAuditorContext.getRole())) {
-            hubId = hubClient.getHubIdByEmail(UserAuditorContext.getEmail());
+            hubId = hubService.getHubIdByEmail(UserAuditorContext.getEmail());
         } else {
             hubId = request.hubId();
         }
 
-        if (!hubClient.checkHub(hubId)) {
+        if (!hubService.checkHub(hubId)) {
             throw new BusinessDelivererException(DelivererErrorCode.HUB_NOT_FOUND);
         }
 
@@ -54,7 +54,7 @@ public class DelivererServiceImpl implements DelivererService {
         int maxOrder = delivererRepository.findMaxOrderByHubId(hubId);
         int nextOrder = (maxOrder + 1) % 10;
 
-        UserResponse user = userClient.getUserByMaster(request.userId());
+        UserResponse user = userService.getUserByMaster(request.userId());
 
         Deliverer deliverer = Deliverer.create(
                 user.id(),
@@ -85,12 +85,12 @@ public class DelivererServiceImpl implements DelivererService {
 
         UUID hubId;
         if ("ROLE_HUB".equals(UserAuditorContext.getRole())) {
-            hubId = hubClient.getHubIdByEmail(UserAuditorContext.getEmail());
+            hubId = hubService.getHubIdByEmail(UserAuditorContext.getEmail());
         } else {
             hubId = request.hubId();
         }
 
-        if (!hubClient.checkHub(hubId)) {
+        if (!hubService.checkHub(hubId)) {
             throw new BusinessDelivererException(DelivererErrorCode.HUB_NOT_FOUND);
         }
 
@@ -109,7 +109,7 @@ public class DelivererServiceImpl implements DelivererService {
                 .orElseThrow(() -> new BusinessDelivererException(DelivererErrorCode.DELIVERER_NOT_FOUND));
 
         if ("ROLE_HUB".equalsIgnoreCase(UserAuditorContext.getRole())) {
-            UUID myHubId = hubClient.getHubIdByEmail(UserAuditorContext.getEmail());
+            UUID myHubId = hubService.getHubIdByEmail(UserAuditorContext.getEmail());
             if (!deliverer.getHubId().equals(myHubId)) {
                 throw new BusinessDelivererException(DelivererErrorCode.FORBIDDEN_ACCESS);
             }
@@ -126,7 +126,7 @@ public class DelivererServiceImpl implements DelivererService {
                 .orElseThrow(() -> new BusinessDelivererException(DelivererErrorCode.DELIVERER_NOT_FOUND));
         switch (UserAuditorContext.getRole()) {
             case "ROLE_HUB" -> {
-                UUID myHubId = hubClient.getHubIdByEmail(UserAuditorContext.getEmail());
+                UUID myHubId = hubService.getHubIdByEmail(UserAuditorContext.getEmail());
                 if (!deliverer.getHubId().equals(myHubId)) {
                     throw new BusinessDelivererException(DelivererErrorCode.FORBIDDEN_ACCESS);
                 }
@@ -147,8 +147,8 @@ public class DelivererServiceImpl implements DelivererService {
     }
 
     @Transactional(readOnly = true)
-    public DelivererResponse assignNextDeliverer(UUID hubId, DelivererType type) {
-        Deliverer deliverer = delivererRepository.findNextAvailableDeliverer(hubId, type)
+    public DelivererResponse assignNextDeliverer(UUID hubId, String type) {
+        Deliverer deliverer = delivererRepository.findNextAvailableDeliverer(hubId, DelivererType.valueOf(type))
                 .orElseThrow(() -> new BusinessDelivererException(DelivererErrorCode.NO_DELIVERER_AVAILABLE));
 
         if (deliverer.isHidden()) {

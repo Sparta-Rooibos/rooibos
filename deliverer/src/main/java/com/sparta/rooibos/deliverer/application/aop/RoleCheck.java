@@ -1,4 +1,4 @@
-package com.sparta.rooibos.deliverer.infrastructure.aop;
+package com.sparta.rooibos.deliverer.application.aop;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

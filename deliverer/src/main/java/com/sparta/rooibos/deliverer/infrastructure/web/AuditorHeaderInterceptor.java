@@ -1,6 +1,6 @@
 package com.sparta.rooibos.deliverer.infrastructure.web;
 
-import com.sparta.rooibos.deliverer.infrastructure.auditing.UserAuditorContext;
+import com.sparta.rooibos.deliverer.application.auditing.UserAuditorContext;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Component;
