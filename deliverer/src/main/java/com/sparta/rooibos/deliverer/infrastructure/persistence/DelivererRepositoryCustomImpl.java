@@ -4,7 +4,6 @@ package com.sparta.rooibos.deliverer.infrastructure.persistence;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.sparta.rooibos.deliverer.application.dto.request.DelivererSearchRequest;
 import com.sparta.rooibos.deliverer.domain.critia.DelivererSearchCriteria;
 import com.sparta.rooibos.deliverer.domain.entity.Deliverer;
 import com.sparta.rooibos.deliverer.domain.entity.QDeliverer;
