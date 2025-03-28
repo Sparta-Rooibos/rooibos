@@ -1,5 +1,6 @@
-package com.sparta.rooibos.user.infrastructure.auditing;
+package com.sparta.rooibos.user.application.auditing;
 
+import com.sparta.rooibos.user.application.auditing.UserAuditorContext;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.stereotype.Component;
 
