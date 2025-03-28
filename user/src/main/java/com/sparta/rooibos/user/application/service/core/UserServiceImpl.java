@@ -10,7 +10,7 @@ import com.sparta.rooibos.user.application.service.port.EventProvider;
 import com.sparta.rooibos.user.application.service.port.UserService;
 import com.sparta.rooibos.user.domain.entity.User;
 import com.sparta.rooibos.user.domain.repository.UserRepository;
-import com.sparta.rooibos.user.infrastructure.auditing.UserAuditorContext;
+import com.sparta.rooibos.user.application.auditing.UserAuditorContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;

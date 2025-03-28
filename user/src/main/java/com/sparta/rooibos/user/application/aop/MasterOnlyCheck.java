@@ -1,4 +1,4 @@
-package com.sparta.rooibos.user.infrastructure.aop;
+package com.sparta.rooibos.user.application.aop;
 
 import java.lang.annotation.*;
 

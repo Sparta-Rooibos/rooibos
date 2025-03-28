@@ -78,7 +78,7 @@ public class MasterServiceImpl implements MasterService {
 
     @Transactional(readOnly = true)
     public UserListResponse searchUsersByMaster(UserSearchRequest request) {
-        Pagination<User> resultPage = userRepository.searchUsers(request);
+        Pagination<User> resultPage = userRepository.searchUsers(request.toCriteria());
         return UserListResponse.from(resultPage);
     }
 
