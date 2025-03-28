@@ -3,14 +3,14 @@ package com.sparta.rooibos.user.application.dto;
 import com.sparta.rooibos.user.domain.entity.Role;
 import com.sparta.rooibos.user.domain.entity.User;
 
-public record UserAuthDTO (
+public record UserStreamRequest(
         String username,
         String email,
         String password,
         Role role
 ){
-    public static UserAuthDTO fromEntity(User user) {
-        return new UserAuthDTO(
+    public static UserStreamRequest fromEntity(User user) {
+        return new UserStreamRequest(
                 user.getUsername(),
                 user.getEmail(),
                 user.getPassword(),

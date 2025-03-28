@@ -1,6 +1,6 @@
 package com.sparta.rooibos.user.application.service.core;
 
-import com.sparta.rooibos.user.application.dto.UserAuthDTO;
+import com.sparta.rooibos.user.application.dto.UserStreamRequest;
 import com.sparta.rooibos.user.application.exception.BusinessUserException;
 import com.sparta.rooibos.user.application.exception.custom.UserErrorCode;
 import com.sparta.rooibos.user.application.service.port.EventProvider;
@@ -29,8 +29,8 @@ public class UserApproveServiceImpl implements UserApproveService {
 
         String approver = UserAuditorContext.getRole();
         String pending = user.getRole().getAuthority();
-        log.info("👤 Approver Role = {}", approver);
-        log.info("📝 Pending User Role (Authority) = {}", pending);
+        log.info("Approver Role = {}", approver);
+        log.info("Pending User Role (Authority) = {}", pending);
 
         if (!approver.equals("ROLE_MASTER") && !approver.equals(pending)) {
             throw new BusinessUserException(UserErrorCode.FORBIDDEN_USER_ACCESS);
@@ -38,7 +38,7 @@ public class UserApproveServiceImpl implements UserApproveService {
 
         user.approve();
         userRepository.save(user);
-        eventProvider.sendUserInfo(UserAuthDTO.fromEntity(user));
+        eventProvider.sendUserInfo(UserStreamRequest.fromEntity(user));
     }
 
     @Transactional

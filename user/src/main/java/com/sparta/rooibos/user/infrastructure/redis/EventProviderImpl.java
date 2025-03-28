@@ -1,6 +1,6 @@
 package com.sparta.rooibos.user.infrastructure.redis;
 
-import com.sparta.rooibos.user.application.dto.UserAuthDTO;
+import com.sparta.rooibos.user.application.dto.UserStreamRequest;
 import com.sparta.rooibos.user.application.service.port.EventProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -13,8 +13,8 @@ public class EventProviderImpl implements EventProvider {
     private final UserEventProducer userEventProducer;
 
     @Override
-    public void sendUserInfo(UserAuthDTO dto) {
-        userEventProducer.sendUserInfo(dto);
+    public void sendUserInfo(UserStreamRequest request) {
+        userEventProducer.sendUserInfo(request);
     }
 
     @Override

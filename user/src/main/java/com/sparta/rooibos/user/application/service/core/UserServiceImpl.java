@@ -1,6 +1,6 @@
 package com.sparta.rooibos.user.application.service.core;
 
-import com.sparta.rooibos.user.application.dto.UserAuthDTO;
+import com.sparta.rooibos.user.application.dto.UserStreamRequest;
 import com.sparta.rooibos.user.application.dto.request.UserRequest;
 import com.sparta.rooibos.user.application.dto.request.UserUpdateRequest;
 import com.sparta.rooibos.user.application.dto.response.UserResponse;
@@ -70,7 +70,7 @@ public class UserServiceImpl implements UserService {
         );
 
         User updatedUser = userRepository.save(user);
-        eventProvider.sendUserInfo(UserAuthDTO.fromEntity(updatedUser));
+        eventProvider.sendUserInfo(UserStreamRequest.fromEntity(updatedUser));
 
         return UserResponse.from(updatedUser);
     }

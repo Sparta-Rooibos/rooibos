@@ -1,7 +1,7 @@
 package com.spring.cloud.client.auth.application.service.core;
 
 import com.spring.cloud.client.auth.application.dto.request.LoginRequest;
-import com.spring.cloud.client.auth.application.dto.UserAuthDTO;
+import com.spring.cloud.client.auth.application.dto.AuthStreamResponse;
 import com.spring.cloud.client.auth.application.exception.BusinessAuthException;
 import com.spring.cloud.client.auth.application.exception.custom.AuthErrorCode;
 import com.spring.cloud.client.auth.application.service.port.AuthService;
@@ -43,11 +43,11 @@ public class AuthServiceImpl implements AuthService {
                 throw new BusinessAuthException(AuthErrorCode.BLOCKED_ACCOUNT);
             }
         }
-        Optional<UserAuthDTO> cachedUser = redisProvider.getUserInfo(loginRequest.email());
+        Optional<AuthStreamResponse> cachedUser = redisProvider.getUserInfo(loginRequest.email());
         if (cachedUser.isEmpty()) {
             throw new BusinessAuthException(AuthErrorCode.INVALID_CREDENTIALS);
         }
-        UserAuthDTO user = cachedUser.get();
+        AuthStreamResponse user = cachedUser.get();
 
         if (!passwordEncoder.matches(loginRequest.password(), user.password())) {
             throw new BusinessAuthException(AuthErrorCode.INVALID_PASSWORD);

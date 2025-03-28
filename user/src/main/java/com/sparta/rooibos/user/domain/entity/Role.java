@@ -1,5 +1,8 @@
 package com.sparta.rooibos.user.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+
 public enum Role {
     MASTER("ROLE_MASTER"),      // 최상위 관리자
     HUB("ROLE_HUB"),            // 허브 관리자
@@ -14,7 +17,17 @@ public enum Role {
 
     public String getAuthority() {
         return this.authority;
-    }// 업체 관리자
+    }
+
+//    @JsonValue
+//    public String toValue() {
+//        return name(); // or authority if you'd rather serialize "ROLE_MASTER"
+//    }
+//
+//    @JsonCreator
+//    public static Role from(String value) {
+//        return Role.valueOf(value.toUpperCase());
+//    }
 }
 
 
