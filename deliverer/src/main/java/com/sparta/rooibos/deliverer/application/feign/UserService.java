@@ -1,6 +1,8 @@
 package com.sparta.rooibos.deliverer.application.feign;
 
-import com.sparta.rooibos.deliverer.infrastructure.feign.dto.UserResponse;
+
+
+import com.sparta.rooibos.user.application.dto.response.UserResponse;
 
 import java.util.UUID;
 

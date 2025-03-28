@@ -15,7 +15,7 @@ import com.sparta.rooibos.deliverer.domain.entity.DelivererStatus;
 import com.sparta.rooibos.deliverer.domain.entity.DelivererType;
 import com.sparta.rooibos.deliverer.domain.model.Pagination;
 import com.sparta.rooibos.deliverer.domain.repository.DelivererRepository;
-import com.sparta.rooibos.deliverer.infrastructure.feign.dto.UserResponse;
+import com.sparta.rooibos.user.application.dto.response.UserResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
