@@ -1,10 +1,10 @@
 package com.sparta.rooibos.hub.infrastructure.adapter.out.repository;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Repository;
 import com.sparta.rooibos.hub.domain.model.HubManager;
 import com.sparta.rooibos.hub.domain.respository.HubManagerRepository;
 import com.sparta.rooibos.hub.infrastructure.jpa.JpaHubManagerRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 import java.util.UUID;

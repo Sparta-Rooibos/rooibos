@@ -1,12 +1,12 @@
 package com.sparta.rooibos.hub.infrastructure.init;
 
+import com.sparta.rooibos.hub.application.dto.hub.request.CreateHubRequest;
+import com.sparta.rooibos.hub.application.port.in.HubService;
+import com.sparta.rooibos.hub.domain.respository.HubRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
-import com.sparta.rooibos.hub.application.dto.hub.request.CreateHubRequest;
-import com.sparta.rooibos.hub.application.port.in.HubService;
-import com.sparta.rooibos.hub.domain.respository.HubRepository;
 
 @Component
 @RequiredArgsConstructor
