@@ -1,12 +1,12 @@
 package com.sparta.rooibos.hub.presentation.adapter.in.controller;
 
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import com.sparta.rooibos.hub.application.aop.RoleCheck;
 import com.sparta.rooibos.hub.application.dto.hubManager.request.CreateHubManagerRequest;
 import com.sparta.rooibos.hub.application.dto.hubManager.response.CreateHubManagerResponse;
 import com.sparta.rooibos.hub.application.port.in.HubManagerService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 

@@ -1,6 +1,7 @@
 package com.sparta.rooibos.user.infrastructure.persistence;
 
 import com.sparta.rooibos.user.application.dto.request.UserSearchRequest;
+import com.sparta.rooibos.user.domain.critria.UserSearchCriteria;
 import com.sparta.rooibos.user.domain.entity.User;
 import com.sparta.rooibos.user.domain.model.Pagination;
 import com.sparta.rooibos.user.domain.repository.UserRepository;
@@ -43,7 +44,7 @@ public class UserRepositoryAdapter implements UserRepository {
     }
 
     @Override
-    public Pagination<User> searchUsers(UserSearchRequest request) {
-        return userRepositoryCustom.searchUsers(request);
+    public Pagination<User> searchUsers(UserSearchCriteria criteria) {
+        return userRepositoryCustom.searchUsers(criteria);
     }
 }

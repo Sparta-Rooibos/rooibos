@@ -1,10 +1,10 @@
 package com.sparta.rooibos.route.infrastructure.adapter.out.api;
 
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 import com.sparta.rooibos.route.application.dto.response.direction.GetGeoDirectionResponse;
 import com.sparta.rooibos.route.application.port.out.GeoDirectionService;
 import com.sparta.rooibos.route.infrastructure.client.NaverGeoDirectionClient;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor

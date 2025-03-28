@@ -1,4 +1,4 @@
-package com.sparta.rooibos.deliverer.infrastructure.feign.dto;
+package com.sparta.rooibos.deliverer.application.feign.dto;
 
 import java.util.UUID;
 

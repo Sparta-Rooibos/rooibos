@@ -3,6 +3,7 @@ package com.sparta.rooibos.order.infrastructure.delivery;
 import com.sparta.rooibos.order.application.dto.request.CreateDeliveryRequest;
 import com.sparta.rooibos.order.application.dto.request.UpdateDeliveryRequest;
 import com.sparta.rooibos.order.application.dto.response.CreateDeliveryResponse;
+import com.sparta.rooibos.order.application.feign.dto.UpdateDeliveryResponse;
 import com.sparta.rooibos.order.application.service.feign.DeliveryService;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.context.annotation.Primary;
