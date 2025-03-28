@@ -5,7 +5,6 @@ import com.sparta.rooibos.route.application.dto.request.route.GetOptimizedRouteR
 import com.sparta.rooibos.route.application.dto.request.route.SearchRouteRequest;
 import com.sparta.rooibos.route.application.dto.request.route.UpdateRouteRequest;
 import com.sparta.rooibos.route.application.dto.response.route.*;
-import sparta.rooibos.route.application.dto.response.route.*;
 
 import java.util.UUID;
 

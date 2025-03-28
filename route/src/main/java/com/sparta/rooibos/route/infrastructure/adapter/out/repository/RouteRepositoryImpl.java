@@ -4,12 +4,12 @@ import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Repository;
-import sparta.rooibos.route.domain.model.QRoute;
+import com.sparta.rooibos.route.domain.model.QRoute;
 import com.sparta.rooibos.route.domain.model.Route;
 import com.sparta.rooibos.route.domain.repository.RouteRepository;
 import com.sparta.rooibos.route.infrastructure.jpa.JpaRouteRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
