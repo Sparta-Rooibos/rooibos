@@ -2,7 +2,6 @@ package com.sparta.rooibos.deliverer.application.dto.response;
 
 import com.sparta.rooibos.deliverer.domain.entity.Deliverer;
 import com.sparta.rooibos.deliverer.domain.entity.DelivererType;
-import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 import java.util.UUID;

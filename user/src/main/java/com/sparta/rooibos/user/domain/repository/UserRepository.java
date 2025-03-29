@@ -1,10 +1,9 @@
 package com.sparta.rooibos.user.domain.repository;
 
 import com.sparta.rooibos.user.application.dto.request.UserSearchRequest;
+import com.sparta.rooibos.user.domain.critria.UserSearchCriteria;
 import com.sparta.rooibos.user.domain.entity.User;
 import com.sparta.rooibos.user.domain.model.Pagination;
-import org.springframework.data.domain.Page;
-import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -20,5 +19,5 @@ public interface UserRepository {
 
     void deleteById(UUID id);
 
-    Pagination<User> searchUsers(UserSearchRequest request);
+    Pagination<User> searchUsers(UserSearchCriteria criteria);
 }

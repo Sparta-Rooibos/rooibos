@@ -13,15 +13,23 @@ public class EventProviderImpl implements EventProvider {
     private final UserEventProducer userEventProducer;
 
     @Override
-    public void sendUserInfo(UserAuthDTO dto) {}
+    public void sendUserInfo(UserAuthDTO dto) {
+        userEventProducer.sendUserInfo(dto);
+    }
 
     @Override
-    public void sendUserDeleteInfo(String email) {}
+    public void sendUserDeleteInfo(String email) {
+        userEventProducer.sendUserDeleteInfo(email);
+    }
 
     @Override
-    public void sendUserReportInfo(String email) {}
+    public void sendUserReportInfo(String email) {
+        userEventProducer.sendUserReportInfo(email);
+    }
 
     @Override
-    public void blacklistUser(String email, long ttlSeconds) {}
+    public void blacklistUser(String email, long ttlSeconds) {
+        blacklistManager.blacklistUser(email, ttlSeconds);
+    }
 }
 

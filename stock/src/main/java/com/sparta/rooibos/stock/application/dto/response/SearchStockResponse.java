@@ -1,7 +1,7 @@
 package com.sparta.rooibos.stock.application.dto.response;
 
-import com.sparta.rooibos.stock.domain.model.Pagination;
 import com.sparta.rooibos.stock.domain.entity.Stock;
+import com.sparta.rooibos.stock.domain.model.Pagination;
 
 import java.util.List;
 

@@ -3,7 +3,6 @@ package com.sparta.rooibos.client.domain.repository;
 import com.sparta.rooibos.client.domain.entity.ClientManager;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 public interface ClientManagerRepository {

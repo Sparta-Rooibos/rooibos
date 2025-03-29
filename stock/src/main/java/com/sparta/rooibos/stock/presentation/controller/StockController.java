@@ -38,7 +38,7 @@ public class StockController {
             @RequestHeader("X-User-Email") String email,
             @RequestHeader("X-User-Name") String username,
             @RequestHeader("X-User-Role") String role,
-            @PathVariable String productId) {
+            @PathVariable(value = "productId") String productId) {
         return ResponseEntity.ok(stockService.getStock(productId));
     }
 
@@ -58,7 +58,7 @@ public class StockController {
             @RequestHeader("X-User-Email") String email,
             @RequestHeader("X-User-Name") String username,
             @RequestHeader("X-User-Role") String role,
-            @PathVariable UUID stockId, @RequestBody @Valid UpdateStockRequest request) {
+            @PathVariable(value = "stockId") UUID stockId, @RequestBody @Valid UpdateStockRequest request) {
         stockService.updateStock(email, stockId, request);
         return ResponseEntity.ok().build();
     }
@@ -69,7 +69,7 @@ public class StockController {
             @RequestHeader("X-User-Email") String email,
             @RequestHeader("X-User-Name") String username,
             @RequestHeader("X-User-Role") String role,
-            @PathVariable UUID stockId) {
+            @PathVariable(value = "stockId") UUID stockId) {
         stockService.deleteStock(email, stockId);
         return ResponseEntity.ok().build();
     }

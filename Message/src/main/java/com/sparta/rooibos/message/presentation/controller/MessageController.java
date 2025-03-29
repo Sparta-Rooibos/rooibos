@@ -3,7 +3,9 @@ package com.sparta.rooibos.message.presentation.controller;
 import com.sparta.rooibos.message.application.annotation.RoleCheck;
 import com.sparta.rooibos.message.application.dto.request.CreateMessageRequest;
 import com.sparta.rooibos.message.application.dto.request.SearchMessageRequest;
-import com.sparta.rooibos.message.application.dto.response.*;
+import com.sparta.rooibos.message.application.dto.response.CreateMessageResponse;
+import com.sparta.rooibos.message.application.dto.response.GetMessageResponse;
+import com.sparta.rooibos.message.application.dto.response.SearchMessageResponse;
 import com.sparta.rooibos.message.application.service.MessageService;
 import com.sparta.rooibos.message.application.type.Role;
 import jakarta.validation.Valid;
@@ -43,7 +45,7 @@ public class MessageController {
             @RequestHeader("X-User-Email") String email,
             @RequestHeader("X-User-Name") String username,
             @RequestHeader("X-User-Role") String role,
-            @PathVariable UUID messageId) {
+            @PathVariable(value = "messageId") UUID messageId) {
         return ResponseEntity.ok(messageService.getMessage(messageId));
     }
 
@@ -53,7 +55,7 @@ public class MessageController {
             @RequestHeader("X-User-Email") String email,
             @RequestHeader("X-User-Name") String username,
             @RequestHeader("X-User-Role") String role,
-            @PathVariable UUID messageId) {
+            @PathVariable(value = "messageId") UUID messageId) {
         messageService.deleteMessage(email, messageId);
         return ResponseEntity.noContent().build();
     }

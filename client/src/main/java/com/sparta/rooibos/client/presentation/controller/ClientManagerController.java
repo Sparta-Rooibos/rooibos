@@ -41,7 +41,7 @@ public class ClientManagerController {
             @RequestHeader("X-User-Email") String email,
             @RequestHeader("X-User-Name") String username,
             @RequestHeader("X-User-Role") String role,
-            @PathVariable UUID clientId) {
+            @PathVariable(value = "clientId") UUID clientId) {
         return ResponseEntity.ok(service.getClientManager(clientId));
     }
 
@@ -52,7 +52,7 @@ public class ClientManagerController {
             @RequestHeader("X-User-Email") String email,
             @RequestHeader("X-User-Name") String username,
             @RequestHeader("X-User-Role") String role,
-            @PathVariable UUID clientId) {
+            @PathVariable(value = "clientId") UUID clientId) {
         service.deleteClientManager(clientId);
         return ResponseEntity.ok().build();
     }

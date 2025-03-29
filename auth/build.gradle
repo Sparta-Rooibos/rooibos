@@ -35,6 +35,7 @@ ext {
 dependencies {
     // ✅ Redis
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis-reactive'
 
     // JWT 관련 라이브러리 (jjwt 최신 설정)
     implementation 'io.jsonwebtoken:jjwt-api:0.12.6'
@@ -54,6 +55,8 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+//    swagger
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.5'
 }
 
 dependencyManagement {
