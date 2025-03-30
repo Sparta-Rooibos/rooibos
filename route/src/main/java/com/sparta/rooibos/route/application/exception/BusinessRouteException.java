@@ -1,7 +1,7 @@
 package com.sparta.rooibos.route.application.exception;
 
-import org.springframework.http.HttpStatus;
 import com.sparta.rooibos.route.application.exception.custom.RouteErrorCode;
+import org.springframework.http.HttpStatus;
 
 public class BusinessRouteException extends RuntimeException {
 

@@ -1,11 +1,11 @@
 package com.sparta.rooibos.hub.infrastructure.adapter.out.api;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 import com.sparta.rooibos.hub.application.dto.GeoLocation.request.GetCoordinatesRequest;
 import com.sparta.rooibos.hub.application.dto.GeoLocation.response.GetCoordinatesResponse;
 import com.sparta.rooibos.hub.application.port.out.GeoLocationService;
 import com.sparta.rooibos.hub.infrastructure.client.NaverGeocodingClient;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor

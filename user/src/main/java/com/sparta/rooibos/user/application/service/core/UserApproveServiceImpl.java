@@ -1,5 +1,6 @@
 package com.sparta.rooibos.user.application.service.core;
 
+import com.sparta.rooibos.user.application.auditing.UserAuditorContext;
 import com.sparta.rooibos.user.application.dto.UserAuthDTO;
 import com.sparta.rooibos.user.application.exception.BusinessUserException;
 import com.sparta.rooibos.user.application.exception.custom.UserErrorCode;
@@ -7,7 +8,6 @@ import com.sparta.rooibos.user.application.service.port.EventProvider;
 import com.sparta.rooibos.user.application.service.port.UserApproveService;
 import com.sparta.rooibos.user.domain.entity.User;
 import com.sparta.rooibos.user.domain.repository.UserRepository;
-import com.sparta.rooibos.user.application.auditing.UserAuditorContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

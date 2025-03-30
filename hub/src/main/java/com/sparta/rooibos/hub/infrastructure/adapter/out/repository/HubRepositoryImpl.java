@@ -2,13 +2,13 @@ package com.sparta.rooibos.hub.infrastructure.adapter.out.repository;
 
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Repository;
 import com.sparta.rooibos.hub.domain.model.Hub;
 import com.sparta.rooibos.hub.domain.model.Pagination;
 import com.sparta.rooibos.hub.domain.model.QHub;
 import com.sparta.rooibos.hub.domain.respository.HubRepository;
 import com.sparta.rooibos.hub.infrastructure.jpa.JpaHubRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;

@@ -2,11 +2,6 @@ package com.sparta.rooibos.hub.application.core;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.RequiredArgsConstructor;
-import org.springframework.boot.json.JsonParseException;
-import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import com.sparta.rooibos.hub.application.dto.GeoLocation.request.GetCoordinatesRequest;
 import com.sparta.rooibos.hub.application.dto.GeoLocation.response.GetCoordinatesResponse;
 import com.sparta.rooibos.hub.application.dto.hub.request.CreateHubRequest;
@@ -24,6 +19,11 @@ import com.sparta.rooibos.hub.application.port.out.GeoLocationService;
 import com.sparta.rooibos.hub.domain.model.Hub;
 import com.sparta.rooibos.hub.domain.model.Pagination;
 import com.sparta.rooibos.hub.domain.respository.HubRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.boot.json.JsonParseException;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 

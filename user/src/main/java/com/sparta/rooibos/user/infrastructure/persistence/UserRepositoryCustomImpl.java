@@ -4,7 +4,6 @@ package com.sparta.rooibos.user.infrastructure.persistence;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.sparta.rooibos.user.application.dto.request.UserSearchRequest;
 import com.sparta.rooibos.user.domain.critria.UserSearchCriteria;
 import com.sparta.rooibos.user.domain.entity.QUser;
 import com.sparta.rooibos.user.domain.entity.Role;
