@@ -21,7 +21,7 @@ public class RouteDataGenerator {
     private final GeoDirectionService geoDirectionService;
     private final RouteRepository routeRepository;
 
-    @Bean
+//    @Bean
     public CommandLineRunner init() {
         return args -> {
 

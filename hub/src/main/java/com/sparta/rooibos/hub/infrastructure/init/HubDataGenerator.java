@@ -16,7 +16,7 @@ public class HubDataGenerator {
 
     private final HubRepository hubRepository;
 
-    @Bean
+//    @Bean
     public CommandLineRunner init() {
         return args -> {
             hubService.createHub(new CreateHubRequest(
