@@ -1,6 +1,6 @@
 spring:
   application:
-    name: user
+    name: user-service
 
   datasource:
     url: jdbc:postgresql://localhost:5438/user_db
@@ -28,7 +28,7 @@ server:
 eureka:
   client:
     service-url:
-      defaultZone: http://localhost:19090/eureka/
+      defaultZone: http://localhost:19090/eureka
 
 management:
   zipkin:
