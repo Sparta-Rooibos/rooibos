@@ -1,6 +1,6 @@
 spring:
   application:
-    name: user
+    name: user-service
 
   datasource:
     url: jdbc:postgresql://localhost:5432/user
@@ -18,8 +18,8 @@ spring:
   data:
     redis:
       host: localhost
-      port: 6379
-      username: default
+      port: 6382
+#      username: default
       password: systempass
 
 server:
@@ -27,6 +27,8 @@ server:
 
 eureka:
   client:
+    register-with-eureka: true
+    fetch-registry: true
     service-url:
       defaultZone: http://localhost:19090/eureka/
 

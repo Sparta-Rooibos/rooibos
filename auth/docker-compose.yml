@@ -6,5 +6,5 @@ services:
     environment:
       REDIS_ARGS: "--requirepass systempass"
     ports:
-      - 6379:6379
+      - 6382:6379
       - 8001:8001
