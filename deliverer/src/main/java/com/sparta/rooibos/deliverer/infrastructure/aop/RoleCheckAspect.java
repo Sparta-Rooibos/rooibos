@@ -1,6 +1,6 @@
-package com.sparta.rooibos.deliverer.application.aop;
+package com.sparta.rooibos.deliverer.infrastructure.aop;
 
-import com.sparta.rooibos.deliverer.application.auditing.UserAuditorContext;
+import com.sparta.rooibos.deliverer.infrastructure.auditing.UserAuditorContext;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.aspectj.lang.ProceedingJoinPoint;

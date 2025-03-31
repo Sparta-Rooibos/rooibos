@@ -29,7 +29,7 @@ eureka:
     register-with-eureka: true
     fetch-registry: true
     service-url:
-      defaultZone: http://localhost:19090/eureka
+      defaultZone: http://localhost:19090/eureka/
 
 management:
   zipkin:

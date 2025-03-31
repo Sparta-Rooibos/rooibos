@@ -12,11 +12,6 @@ spring:
     show-sql: true
     generate-ddl: true
 
-eureka:
-  client:
-    service-url:
-      defaultZone: http://localhost:19090/eureka
-
 management:
   zipkin:
     tracing:

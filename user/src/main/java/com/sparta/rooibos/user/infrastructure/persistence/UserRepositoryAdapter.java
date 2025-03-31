@@ -1,6 +1,5 @@
 package com.sparta.rooibos.user.infrastructure.persistence;
 
-
 import com.sparta.rooibos.user.domain.critria.UserSearchCriteria;
 import com.sparta.rooibos.user.domain.entity.User;
 import com.sparta.rooibos.user.domain.model.Pagination;
