@@ -13,8 +13,8 @@ import java.util.UUID;
 public interface HubFeignClient {
 
     @GetMapping("/api/v1/hub/{hubId}")
-    HubClientResponse getHubByHubId(@PathVariable UUID hubId);
+    HubClientResponse getHubByHubId(@PathVariable("hubId") UUID hubId);
 
     @GetMapping("/api/v1/hub/region")
-    HubClientResponse getHubByRegion(@RequestParam String region);
+    HubClientResponse getHubByRegion(@RequestParam("region") String region);
 }

@@ -16,5 +16,6 @@ public interface JpaDelivererRepository extends JpaRepository<Deliverer, UUID> {
     int findMaxOrderByHubId(UUID hubId);
     int countByHubIdAndHiddenFalse(UUID hubId);
     int countByHubIdAndTypeAndHiddenFalse(UUID hubId, DelivererType type);
+    @Query("SELECT d from Deliverer d where d.hubId = :hubId and d.type = :type")
     Optional<Deliverer> findNextAvailableDeliverer(UUID hubId, DelivererType type);
 }

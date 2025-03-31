@@ -12,14 +12,15 @@ import org.springframework.web.bind.annotation.*;
 import java.util.UUID;
 
 @Primary
-@FeignClient(name = "delivery-service", url = "/api/v1/deliveries")
+@FeignClient(name = "delivery-service", url = "http://localhost:19097")
 public interface DeliveryClient extends DeliveryService {
-    @PostMapping
+    @PostMapping("/api/v1/deliveries")
     ResponseEntity<CreateDeliveryResponse> createDelivery(
         @RequestHeader("X-User-Id") UUID userId,
+        @RequestHeader("X-User-Email") String email,
         @RequestHeader("X-User-Name") String username,
         @RequestHeader("X-User-Role") String role,
-        CreateDeliveryRequest request);
+        @RequestBody CreateDeliveryRequest request);
 
     @PutMapping
     ResponseEntity<UpdateDeliveryResponse> cancelDelivery(

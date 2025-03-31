@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import java.util.UUID;
 
 public record CreateDeliveryRequest(
-    @NotNull UUID orderID,
+    @NotNull UUID orderId,
     @NotNull UUID requestClientId,
     @NotNull UUID receiveClientId
 ) {

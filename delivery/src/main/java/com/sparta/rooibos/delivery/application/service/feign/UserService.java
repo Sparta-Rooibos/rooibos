@@ -10,5 +10,6 @@ import java.util.UUID;
 public interface UserService {
     ResponseEntity<GetUserResponse> getUser(
         String role,
+        String email,
         UUID userId);
 }

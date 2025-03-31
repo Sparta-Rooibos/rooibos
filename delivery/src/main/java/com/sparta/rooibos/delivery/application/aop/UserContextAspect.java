@@ -18,7 +18,7 @@ public class UserContextAspect {
 
     private final UserContextRequestBean userContext;
 
-    @Before("execution(* com.sparta.rooibus.delivery.presentation.controller..*(..))")
+    @Before("execution(* com.sparta.rooibos.delivery.presentation.controller..*(..))")
     public void extractUserContext(JoinPoint joinPoint) {
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
 
@@ -28,7 +28,6 @@ public class UserContextAspect {
         String email = request.getHeader("X-User-Email");
 
 
-        if (role != null && name != null && email != null) {
             try {
                 UUID userId = UUID.fromString(request.getHeader("X-User-Id"));
                 userContext.set(role,email,name,userId);
@@ -36,8 +35,5 @@ public class UserContextAspect {
             } catch (Exception e) {
                 System.out.println("UserContext에 값 저장하는 과정중에 에러 발생");
             }
-        } else {
-            System.out.println("헤더에 로그인한 정보가 없음");
-        }
     }
 }

@@ -8,5 +8,5 @@ import org.springframework.stereotype.Component;
 @Component
 public interface RouteService {
 
-    ResponseEntity<GetRouteResponse> getRoute(GetRouteRequest request);
+    ResponseEntity<GetRouteResponse> recommendRoute(GetRouteRequest request);
 }
