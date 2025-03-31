@@ -1,0 +1,16 @@
+package com.sparta.rooibos.user.infrastructure.redis;
+
+import com.sparta.rooibos.user.infrastructure.auditing.UserAuditorContext;
+import org.springframework.cache.interceptor.KeyGenerator;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+
+@Configuration
+public class CacheConfig {
+
+    @Bean("auditorKeyGenerator")
+    public KeyGenerator auditorKeyGenerator() {
+        return (target, method, params) -> UserAuditorContext.getEmail();
+    }
+}

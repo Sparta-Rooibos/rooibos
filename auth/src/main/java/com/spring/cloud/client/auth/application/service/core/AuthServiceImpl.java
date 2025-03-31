@@ -1,32 +1,26 @@
 package com.spring.cloud.client.auth.application.service.core;
 
 import com.spring.cloud.client.auth.application.dto.request.LoginRequest;
-import com.spring.cloud.client.auth.application.dto.AuthStreamResponse;
+import com.spring.cloud.client.auth.application.dto.CachedUserResponse;
 import com.spring.cloud.client.auth.application.exception.BusinessAuthException;
 import com.spring.cloud.client.auth.application.exception.custom.AuthErrorCode;
-import com.spring.cloud.client.auth.application.service.port.AuthService;
-import com.spring.cloud.client.auth.application.service.port.CookieProvider;
-import com.spring.cloud.client.auth.application.service.port.JwtProvider;
-import com.spring.cloud.client.auth.application.service.port.RedisProvider;
+import com.spring.cloud.client.auth.application.service.port.*;
 import com.spring.cloud.client.auth.domain.entity.Refresh;
 import com.spring.cloud.client.auth.domain.repository.RefreshRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.redis.core.RedisTemplate;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Instant;
-import java.util.Optional;
-
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
     private final JwtProvider jwtProvider;
     private final RefreshRepository refreshRepository;
-    private final RedisProvider redisProvider;
     private final BCryptPasswordEncoder passwordEncoder;
     private final CookieProvider cookieProvider;
     private final RedisTemplate<String, String> redisTemplate;
@@ -47,12 +41,13 @@ public class AuthServiceImpl implements AuthService {
         if (cachedUser.isEmpty()) {
             throw new BusinessAuthException(AuthErrorCode.INVALID_CREDENTIALS);
         }
-        AuthStreamResponse user = cachedUser.get();
 
         if (!passwordEncoder.matches(loginRequest.password(), user.password())) {
             throw new BusinessAuthException(AuthErrorCode.INVALID_PASSWORD);
         }
 
+
+        refreshRepository.deleteByEmail(user.email());
         String accessToken = jwtProvider.createJwt("access", user.username(), user.email(), user.role(), 600000L);
         String refreshToken = jwtProvider.createJwt("refresh", user.username(), user.email(), user.role(), 86400000L);
         refreshRepository.save(Refresh.create(user.email(), refreshToken, 86400000L));
