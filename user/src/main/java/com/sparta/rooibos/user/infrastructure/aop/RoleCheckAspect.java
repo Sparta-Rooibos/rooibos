@@ -1,8 +1,8 @@
-package com.sparta.rooibos.user.application.aop;
+package com.sparta.rooibos.user.infrastructure.aop;
 
-import com.sparta.rooibos.user.application.auditing.UserAuditorContext;
 import com.sparta.rooibos.user.application.exception.BusinessUserException;
 import com.sparta.rooibos.user.application.exception.custom.UserErrorCode;
+import com.sparta.rooibos.user.infrastructure.auditing.UserAuditorContext;
 import lombok.RequiredArgsConstructor;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;

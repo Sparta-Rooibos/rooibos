@@ -5,6 +5,7 @@ import com.sparta.rooibos.hub.application.port.in.HubService;
 import com.sparta.rooibos.hub.domain.respository.HubRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -15,7 +16,7 @@ public class HubDataGenerator {
 
     private final HubRepository hubRepository;
 
-//    @Bean
+    @Bean
     public CommandLineRunner init() {
         return args -> {
             hubService.createHub(new CreateHubRequest(

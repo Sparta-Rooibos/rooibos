@@ -1,6 +1,5 @@
 package com.sparta.rooibos.user.domain.critria;
 
-
 public record UserSearchCriteria(
         String keyword,
         String sort,
@@ -8,5 +7,4 @@ public record UserSearchCriteria(
         int page,
         int size
 ) {
-
 }

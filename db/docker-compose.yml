@@ -154,11 +154,11 @@ services:
       - "5441:5432"
   deliverer-db:
     image: postgres:latest
-    container_name: deliverer_db
+    container_name: deliverer-db
     environment:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: 1234
-      POSTGRES_DB: deliverer_db
+      POSTGRES_DB: deliverer-db
     ports:
       - "5442:5432"
 
