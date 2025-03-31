@@ -29,7 +29,7 @@ public class MasterController {
 
     @MasterOnlyCheck
     @GetMapping("/{userId}")
-    public ResponseEntity<UserResponse> getUserByMaster(@PathVariable UUID userId) {
+    public ResponseEntity<UserResponse> getUserByMaster(@PathVariable("userId") UUID userId) {
         return ResponseEntity.ok(masterService.getUserByMaster(userId));
     }
 

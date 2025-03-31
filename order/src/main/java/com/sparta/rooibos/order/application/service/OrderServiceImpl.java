@@ -40,8 +40,8 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public CreateOrderResponse createOrder(@Valid CreateOrderRequest request) {
         Order order = Order.create(
-            request.requestClientId(),
             request.receiveClientId(),
+            request.requestClientId(),
             request.productId(),
             request.quantity(),
             request.requirement()
@@ -61,25 +61,26 @@ public class OrderServiceImpl implements OrderService {
         try {
             stockResponse = stockService.getStock(email,username,role,request.productId()).getBody();
             stockQuantity= stockResponse.productQuantity();
-            orderConfirmed = request.quantity()>stockQuantity?true:false;
+            orderConfirmed = request.quantity() < stockQuantity;
         } catch (Exception e) {
             throw new BusinessOrderException(OrderErrorCode.FEIGN_STOCK_ERROR);
         }
         if (orderConfirmed) {
-            stockService.updateStock(email,username,role,stockResponse.id(),stockQuantity-request.quantity());
+            try {
+                stockService.updateStock(email,username,role,stockResponse.id(),UpdateStockRequest.from(-request.quantity()));
+            } catch (Exception e) {
+                throw new BusinessOrderException(OrderErrorCode.FEIGN_STOCK_ERROR);
+            }
             order.setStatus(OrderStatus.CONFIRMED);
-        } else {
-            order.setStatus(OrderStatus.DENIED);
-            return null;
         }
         CreateDeliveryResponse deliveryFeignResult = null;
         try {
-            deliveryFeignResult = deliveryService.createDelivery(userId,username,role, CreateDeliveryRequest.from(order)).getBody();
+            deliveryFeignResult = deliveryService.createDelivery(userId,email,username,role, CreateDeliveryRequest.from(order)).getBody();
         } catch (Exception e) {
             throw new BusinessOrderException(OrderErrorCode.FEIGN_DELIVERY_ERROR);
         }
         UUID deliveryId = deliveryFeignResult.deliveryId();
-        UUID departureId = deliveryFeignResult.departure();
+        UUID departureId = deliveryFeignResult.manageHubId();
         order.setStatus(OrderStatus.SHIPPED);
         order.setDeliveryInfo(deliveryId,departureId);
 

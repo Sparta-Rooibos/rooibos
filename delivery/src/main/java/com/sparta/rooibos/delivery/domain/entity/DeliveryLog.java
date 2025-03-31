@@ -82,8 +82,9 @@ public class DeliveryLog {
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
 
-    public static DeliveryLog of( UUID fromHubId, UUID toHubId, String departure, String arrival, int sequence, String expectedDistance, String expectedTime) {
+    public static DeliveryLog of( UUID deliveryId,UUID fromHubId, UUID toHubId, String departure, String arrival, int sequence, String expectedDistance, String expectedTime) {
         DeliveryLog deliveryLog = new DeliveryLog();
+        deliveryLog.deliveryId = deliveryId;
         deliveryLog.fromHubId = fromHubId;
         deliveryLog.toHubId = toHubId;
         deliveryLog.departure = departure;
