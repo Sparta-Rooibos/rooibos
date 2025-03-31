@@ -13,8 +13,8 @@ import java.util.UUID;
 public interface DeliveryAgentClient extends DeliveryAgentService {
     @GetMapping("/api/v1/deliverers/assign}")
     GetDeliverResponse getDeliver(
-        @RequestParam UUID hubId,
-        @RequestParam String type,
+        @RequestParam("hubId") UUID hubId,
+        @RequestParam("type") String type,
         @RequestHeader("X-User-Role") String role);
 
     @PatchMapping("/api/v1/deliverers/unassign/{delivererId}}")

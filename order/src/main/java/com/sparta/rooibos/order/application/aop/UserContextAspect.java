@@ -18,7 +18,7 @@ public class UserContextAspect {
 
     private final UserContextRequestBean userContext;
 
-    @Before("execution(* com.sparta.rooibus.order.presentation.controller..*(..))")
+    @Before("execution(* com.sparta.rooibos.order.presentation.controller..*(..))")
     public void extractUserContext(JoinPoint joinPoint) {
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
 

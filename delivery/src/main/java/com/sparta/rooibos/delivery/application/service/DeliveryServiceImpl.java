@@ -9,6 +9,7 @@ import com.sparta.rooibos.delivery.application.dto.response.CreateDeliveryRespon
 import com.sparta.rooibos.delivery.application.dto.response.GetDeliveryResponse;
 import com.sparta.rooibos.delivery.application.dto.response.SearchDeliveryResponse;
 import com.sparta.rooibos.delivery.application.dto.response.UpdateDeliveryResponse;
+import com.sparta.rooibos.delivery.application.dto.response.feign.client.GetClientManagerResponse;
 import com.sparta.rooibos.delivery.application.dto.response.feign.client.GetClientResponse;
 import com.sparta.rooibos.delivery.application.dto.response.feign.route.GetRouteResponse;
 import com.sparta.rooibos.delivery.application.service.feign.*;
@@ -48,23 +49,51 @@ public class DeliveryServiceImpl {
         String loginUserRole = userContext.getRole();
         String feignRole = "ROLE_MASTER";
 
-        UUID departure = clientService.getClient(
-            email, username, loginUserRole, request.requestClientId()
-        ).getBody().manageHub().id();
+        UUID departure = null;
+        try {
+            departure = clientService.getClient(
+                email, username, loginUserRole, request.requestClientId()
+            ).getBody().manageHub().id();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
 
-        GetClientResponse getClientResponse = clientService.getClient(
-            email, username, loginUserRole, request.receiveClientId()
-        ).getBody();
-        String address = getClientResponse.address();
+        GetClientResponse getClientResponse = null;
+        String address = null;
+        try {
+            getClientResponse = clientService.getClient(
+                email, username, loginUserRole, request.receiveClientId()
+            ).getBody();
+            address = getClientResponse.address();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
 
-        UUID recipient = clientService.getClientManager(
-            email, username, feignRole, request.receiveClientId()
-        ).getBody().clientManagerId();
+        UUID recipient = null;
+        try {
+            GetClientManagerResponse getManagerResponse = clientService.getClientManager(
+                email, username, feignRole, request.receiveClientId()
+            ).getBody();
+            recipient=getManagerResponse.userId();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
 
-        String slackAccount = userService.getUser(feignRole, recipient).getBody().slackAccount();
+        String slackAccount = null;
+        try {
+            slackAccount = userService.getUser(feignRole, email,recipient).getBody().slackAccount();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
         UUID arrival = getClientResponse.manageHub().id();
 
-        GetRouteResponse routeResponse = routeService.getRoute(GetRouteRequest.of(departure,arrival)).getBody();
+        GetRouteResponse routeResponse = null;
+
+        try {
+            routeResponse = routeService.recommendRoute(GetRouteRequest.of(departure,arrival)).getBody();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
 
         Delivery delivery = Delivery.of(
             request.orderId(),
@@ -75,10 +104,13 @@ public class DeliveryServiceImpl {
             slackAccount
         );
 
+        deliveryRepository.save(delivery);
+
         AtomicInteger index = new AtomicInteger(0);
         List<DeliveryLog> deliveryLogs = routeResponse.routeInfos().stream()
             .map(route ->
                 DeliveryLog.of(
+                    delivery.getId(),
                     route.fromHubId(),
                     route.toHubId(),
                     route.fromHubName(),
@@ -89,7 +121,7 @@ public class DeliveryServiceImpl {
                 )).collect(Collectors.toList());
 
         deliveryLogRepository.saveAll(deliveryLogs);
-        deliveryRepository.save(delivery);
+
 
         return CreateDeliveryResponse.from(delivery);
     }

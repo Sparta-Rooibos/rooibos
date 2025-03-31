@@ -5,7 +5,7 @@ import com.sparta.rooibos.delivery.domain.entity.Delivery;
 import java.util.UUID;
 
 public record CreateDeliveryResponse(
-    UUID deliveryID,
+    UUID deliveryId,
     UUID manageHubId
 ) {
     public static CreateDeliveryResponse from(Delivery delivery) {

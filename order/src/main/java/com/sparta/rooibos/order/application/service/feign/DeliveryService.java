@@ -11,7 +11,7 @@ import java.util.UUID;
 
 @Component
 public interface DeliveryService {
-    ResponseEntity<CreateDeliveryResponse> createDelivery(UUID userId, String username, String role,CreateDeliveryRequest request);
+    ResponseEntity<CreateDeliveryResponse> createDelivery(UUID userId, String email,String username, String role,CreateDeliveryRequest request);
 
     ResponseEntity<UpdateDeliveryResponse> cancelDelivery(UpdateDeliveryRequest request, String feignRole);
 

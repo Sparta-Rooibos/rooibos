@@ -15,5 +15,5 @@ import org.springframework.web.bind.annotation.RequestParam;
 public interface NaverGeocodingClient {
 
     @GetMapping(value = "/map-geocode/v2/geocode", consumes = "application/json")
-    GetCoordinatesResponse getCoordinates(@RequestParam String query);
+    GetCoordinatesResponse getCoordinates(@RequestParam("query") String query);
 }

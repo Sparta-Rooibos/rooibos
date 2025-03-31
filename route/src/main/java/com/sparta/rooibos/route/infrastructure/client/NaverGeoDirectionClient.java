@@ -14,5 +14,5 @@ import org.springframework.web.bind.annotation.RequestParam;
 )
 public interface NaverGeoDirectionClient {
     @GetMapping(value = "/map-direction/v1/driving", consumes = "application/json")
-    GetGeoDirectionResponse getDirection(@RequestParam String start, @RequestParam String goal);
+    GetGeoDirectionResponse getDirection(@RequestParam("start") String start, @RequestParam("goal") String goal);
 }
