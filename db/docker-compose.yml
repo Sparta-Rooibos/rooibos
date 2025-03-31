@@ -9,7 +9,7 @@ services:
       POSTGRES_PASSWORD: 1234
       POSTGRES_DB: auth_db
     ports:
-      - "5432:5432"
+      - "5445:5432"
 
   order-db:
     image: postgres:latest
@@ -109,12 +109,12 @@ services:
       interval: 3s
       retries: 5
 
-  redis-stack:
+  auth-redis:
     image: redis/redis-stack
     container_name: redis-stack-auth
     restart: always
-    environment:
-      REDIS_ARGS: "--requirepass systempass"
+#    environment:
+#      REDIS_ARGS: "--requirepass systempass"
     ports:
       - "6381:6379"
       - "8002:8001"
