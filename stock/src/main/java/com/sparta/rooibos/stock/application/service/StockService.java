@@ -1,9 +1,7 @@
 package com.sparta.rooibos.stock.application.service;
 
 import com.sparta.rooibos.stock.application.custom.StockErrorCode;
-import com.sparta.rooibos.stock.application.dto.request.CreateStockRequest;
-import com.sparta.rooibos.stock.application.dto.request.SearchStockRequest;
-import com.sparta.rooibos.stock.application.dto.request.UpdateStockRequest;
+import com.sparta.rooibos.stock.application.dto.request.*;
 import com.sparta.rooibos.stock.application.dto.response.CreateStockResponse;
 import com.sparta.rooibos.stock.application.dto.response.GetStockResponse;
 import com.sparta.rooibos.stock.application.dto.response.SearchStockResponse;
@@ -16,6 +14,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -59,5 +58,13 @@ public class StockService {
     public void deleteStock(String email, UUID stockId) {
         Stock stock = repository.findByIdAndDeleteByIsNull(stockId).orElseThrow(() -> new BusinessStockException(StockErrorCode.STOCK_NOT_FOUND));
         stock.delete(email);
+    }
+
+    @Transactional
+    public void updateMultiStock(String email, UpdateMultiStockRequest request) {
+        List<Stock> stocks = repository.findByIdsAndDeleteByIsNullWithLock(request.asIds());
+        for (Stock stock : stocks) {
+            stock.update(request.findProductQuantity(stock.getId()), email);
+        }
     }
 }

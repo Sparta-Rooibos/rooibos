@@ -1,6 +1,7 @@
 package com.sparta.rooibos.stock.presentation.controller;
 
 import com.sparta.rooibos.stock.application.aop.RoleCheck;
+import com.sparta.rooibos.stock.application.dto.request.UpdateMultiStockRequest;
 import com.sparta.rooibos.stock.application.dto.request.CreateStockRequest;
 import com.sparta.rooibos.stock.application.dto.request.SearchStockRequest;
 import com.sparta.rooibos.stock.application.dto.request.UpdateStockRequest;
@@ -60,6 +61,17 @@ public class StockController {
             @RequestHeader("X-User-Role") String role,
             @PathVariable(value = "stockId") UUID stockId, @RequestBody @Valid UpdateStockRequest request) {
         stockService.updateStock(email, stockId, request);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/multi")
+    @RoleCheck({Role.MASTER, Role.HUB})
+    public ResponseEntity<Void> updateMultiStocks(
+            @RequestHeader("X-User-Email") String email,
+            @RequestHeader("X-User-Name") String username,
+            @RequestHeader("X-User-Role") String role,
+            @RequestBody @Valid UpdateMultiStockRequest request) {
+        stockService.updateMultiStock(email, request);
         return ResponseEntity.ok().build();
     }
 
