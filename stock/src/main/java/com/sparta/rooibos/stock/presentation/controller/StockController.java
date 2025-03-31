@@ -1,6 +1,6 @@
 package com.sparta.rooibos.stock.presentation.controller;
 
-import com.sparta.rooibos.stock.application.annotation.RoleCheck;
+import com.sparta.rooibos.stock.application.aop.RoleCheck;
 import com.sparta.rooibos.stock.application.dto.request.CreateStockRequest;
 import com.sparta.rooibos.stock.application.dto.request.SearchStockRequest;
 import com.sparta.rooibos.stock.application.dto.request.UpdateStockRequest;
