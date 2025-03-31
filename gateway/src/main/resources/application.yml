@@ -13,10 +13,14 @@ spring:
           uri: lb://auth-service
           predicates:
             - Path=/auth/**
+          filters:
+            - StripPrefix=1
         - id: user-service
           uri: lb://user-service
           predicates:
             - Path=/user/**
+          filters:
+            - StripPrefix=1
         - id: client-service
           uri: lb://client-service
           predicates:
