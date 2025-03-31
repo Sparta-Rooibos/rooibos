@@ -3,9 +3,9 @@ spring:
     name: auth-service
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/auth
-    username: postgres
-    password: "0000"
+    url: jdbc:postgresql://localhost:5432/auth_db
+    username: root
+    password: 1234
     driver-class-name: org.postgresql.Driver
     hikari:
       maximum-pool-size: 4
