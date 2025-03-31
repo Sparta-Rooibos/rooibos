@@ -3,6 +3,8 @@ package com.sparta.rooibos.gateway;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
@@ -31,6 +33,8 @@ public class JwtFilter implements GlobalFilter, Ordered {
 
     @Value("${jwt.secret}")
     private String secret;
+
+
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {

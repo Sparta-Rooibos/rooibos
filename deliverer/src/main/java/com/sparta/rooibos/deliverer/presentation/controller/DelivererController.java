@@ -1,12 +1,11 @@
 package com.sparta.rooibos.deliverer.presentation.controller;
 
+import com.sparta.rooibos.deliverer.application.aop.RoleCheck;
 import com.sparta.rooibos.deliverer.application.dto.request.DelivererRequest;
 import com.sparta.rooibos.deliverer.application.dto.request.DelivererSearchRequest;
 import com.sparta.rooibos.deliverer.application.dto.response.DelivererListResponse;
 import com.sparta.rooibos.deliverer.application.dto.response.DelivererResponse;
 import com.sparta.rooibos.deliverer.application.service.port.DelivererService;
-import com.sparta.rooibos.deliverer.domain.entity.DelivererType;
-import com.sparta.rooibos.deliverer.infrastructure.aop.RoleCheck;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -57,7 +56,7 @@ public class DelivererController {
     @RoleCheck({"ROLE_MASTER, ROLE_HUB, ROLE_DELIBERY"})
     public ResponseEntity<DelivererResponse> assignDeliverer(
             @RequestParam UUID hubId,
-            @RequestParam DelivererType type
+            @RequestParam String type
     ) {
         DelivererResponse assigned = delivererService.assignNextDeliverer(hubId, type);
         return ResponseEntity.ok(assigned);

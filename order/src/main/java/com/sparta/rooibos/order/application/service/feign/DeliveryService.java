@@ -3,7 +3,7 @@ package com.sparta.rooibos.order.application.service.feign;
 import com.sparta.rooibos.order.application.dto.request.CreateDeliveryRequest;
 import com.sparta.rooibos.order.application.dto.request.UpdateDeliveryRequest;
 import com.sparta.rooibos.order.application.dto.response.CreateDeliveryResponse;
-import com.sparta.rooibos.order.infrastructure.delivery.UpdateDeliveryResponse;
+import com.sparta.rooibos.order.application.feign.dto.UpdateDeliveryResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 

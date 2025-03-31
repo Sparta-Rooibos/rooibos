@@ -8,7 +8,6 @@ import com.sparta.rooibos.route.domain.repository.RouteRepository;
 import com.sparta.rooibos.route.infrastructure.client.HubFeignClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -21,7 +20,7 @@ public class RouteDataGenerator {
     private final GeoDirectionService geoDirectionService;
     private final RouteRepository routeRepository;
 
-    @Bean
+//    @Bean
     public CommandLineRunner init() {
         return args -> {
 

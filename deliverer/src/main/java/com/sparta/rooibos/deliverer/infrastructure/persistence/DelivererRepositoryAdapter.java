@@ -1,6 +1,6 @@
 package com.sparta.rooibos.deliverer.infrastructure.persistence;
 
-import com.sparta.rooibos.deliverer.application.dto.request.DelivererSearchRequest;
+import com.sparta.rooibos.deliverer.domain.critia.DelivererSearchCriteria;
 import com.sparta.rooibos.deliverer.domain.entity.Deliverer;
 import com.sparta.rooibos.deliverer.domain.entity.DelivererType;
 import com.sparta.rooibos.deliverer.domain.model.Pagination;
@@ -54,7 +54,7 @@ public class DelivererRepositoryAdapter implements DelivererRepository {
         return jpaDelivererRepository.findNextAvailableDeliverer(hubId, type);
     }
 
-    public Pagination<Deliverer> searchDeliverers(DelivererSearchRequest request) {
+    public Pagination<Deliverer> searchDeliverers(DelivererSearchCriteria request) {
         return delivererRepositoryCustom.searchDeliverers(request);
     }
 }

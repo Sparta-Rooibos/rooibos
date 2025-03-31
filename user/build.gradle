@@ -37,7 +37,7 @@ ext {
 dependencies {
     // ✅ Redis
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
-
+    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
     // queryDSL
     implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
     annotationProcessor "com.querydsl:querydsl-apt:5.0.0:jakarta"
@@ -74,4 +74,22 @@ dependencyManagement {
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+
+// Querydsl 빌드 옵션 (옵셔널)
+def generated = 'build/generated'
+
+// querydsl QClass 파일 생성 위치를 지정
+tasks.withType(JavaCompile).configureEach {
+    options.getGeneratedSourceOutputDirectory().set(file(generated))
+}
+
+// java source set 에 querydsl QClass 위치 추가
+sourceSets {
+    main.java.srcDirs += [ generated ]
+}
+
+// gradle clean 시에 QClass 디렉토리 삭제
+clean {
+    delete file(generated)
 }

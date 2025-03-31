@@ -1,5 +1,6 @@
 package com.sparta.rooibos.user.application.service.core;
 
+import com.sparta.rooibos.user.application.auditing.UserAuditorContext;
 import com.sparta.rooibos.user.application.dto.request.UserRequest;
 import com.sparta.rooibos.user.application.dto.request.UserUpdateRequest;
 import com.sparta.rooibos.user.application.dto.response.CachedUserResponse;
@@ -11,7 +12,6 @@ import com.sparta.rooibos.user.application.service.port.UserService;
 import com.sparta.rooibos.user.domain.entity.User;
 import com.sparta.rooibos.user.domain.entity.UserRoleStatus;
 import com.sparta.rooibos.user.domain.repository.UserRepository;
-import com.sparta.rooibos.user.infrastructure.auditing.UserAuditorContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
