@@ -13,5 +13,5 @@ public interface HubClient extends HubService {
 
 
     @GetMapping("/api/v1/hub/{hubId}")
-    Optional<Hub> getHub(@PathVariable String hubId);
+    Optional<Hub> getHub(@PathVariable("hubId") String hubId);
 }

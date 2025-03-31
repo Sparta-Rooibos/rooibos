@@ -1,5 +1,6 @@
 package com.sparta.rooibos.user.application.service.core;
 
+
 import com.sparta.rooibos.user.application.auditing.UserAuditorContext;
 import com.sparta.rooibos.user.application.dto.UserAuthDTO;
 import com.sparta.rooibos.user.application.exception.BusinessUserException;
@@ -9,6 +10,7 @@ import com.sparta.rooibos.user.application.service.port.UserApproveService;
 import com.sparta.rooibos.user.domain.entity.User;
 import com.sparta.rooibos.user.domain.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,9 +36,9 @@ public class UserApproveServiceImpl implements UserApproveService {
 
         user.approve();
         userRepository.save(user);
-        eventProvider.sendUserInfo(UserAuthDTO.fromEntity(user));
     }
 
+    @CacheEvict(cacheNames = "user_info", keyGenerator = "auditorKeyGenerator")
     @Transactional
     public void rejectUser(UUID userId) {
         User user = userRepository.findById(userId)

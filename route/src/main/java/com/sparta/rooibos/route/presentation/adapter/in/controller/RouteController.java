@@ -39,7 +39,7 @@ public class RouteController {
         return ResponseEntity.ok(routeService.searchRoute(email, searchRouteRequest));
     }
 
-    @GetMapping("/recommend")
+    @PostMapping("/recommend")
     public ResponseEntity<GetOptimizedRouteResponse> recommendRoute(
             @RequestBody GetOptimizedRouteRequest getOptimizedRouteRequest
     ) {

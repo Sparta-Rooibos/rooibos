@@ -18,6 +18,7 @@ public interface UserClient extends UserService {
     @GetMapping("/api/v1/user/master/{userId}")
     ResponseEntity<GetUserResponse> getUser(
         @RequestHeader("X-User-Role") String role,
+        @RequestHeader("X-User-Email") String email,
         @PathVariable("userId") UUID userId
     );
 }

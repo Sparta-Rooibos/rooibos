@@ -39,7 +39,7 @@ public class HubController {
     }
 
     @GetMapping("/region")
-    public ResponseEntity<GetHubResponse> getHubByRegion(@RequestParam String region) {
+    public ResponseEntity<GetHubResponse> getHubByRegion(@RequestParam("region") String region) {
         return ResponseEntity.ok(hubService.getHubByRegion(region));
     }
 

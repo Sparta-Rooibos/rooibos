@@ -25,6 +25,7 @@ public class DeliveryLogServiceImpl {
             throw new RuntimeException("권한이 마스터여야 합니다.");
         }
         DeliveryLog deliveryLog = DeliveryLog.of(
+            request.deliveryId(),
             request.departure(),
             request.arrival(),
             request.departureName(),

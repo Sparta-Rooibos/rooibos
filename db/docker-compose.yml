@@ -109,6 +109,20 @@ services:
       interval: 3s
       retries: 5
 
+  redis-stack:
+    image: redis/redis-stack
+    container_name: redis-stack-auth
+    restart: always
+    environment:
+      REDIS_ARGS: "--requirepass systempass"
+    ports:
+      - "6381:6379"
+      - "8002:8001"
+    healthcheck:
+      test: [ "CMD", "redis-cli", "-a", "systempass", "ping" ]
+      interval: 3s
+      retries: 5
+
   zookeeper:
     image: confluentinc/cp-zookeeper:latest
     environment:

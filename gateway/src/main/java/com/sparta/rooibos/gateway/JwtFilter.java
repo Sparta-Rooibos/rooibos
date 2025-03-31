@@ -16,27 +16,25 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
 import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
+import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 
 
 @Component
 @RequiredArgsConstructor
 public class JwtFilter implements GlobalFilter, Ordered {
-    private final ReactiveStringRedisTemplate redisTemplate;
+    private final WebClient webClient;
 
     @Value("${jwt.secret}")
-    private String secretKeyString;
+    private String secret;
 
-    private SecretKey secretKey;
 
-    @PostConstruct
-    public void init() {
-        this.secretKey = Keys.hmacShaKeyFor(secretKeyString.getBytes());
-    }
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
@@ -45,8 +43,9 @@ public class JwtFilter implements GlobalFilter, Ordered {
 
 
         String path = exchange.getRequest().getURI().getPath();
-        if (path.equals("/auth/login") || path.equals("/user/signup")) {
-            return chain.filter(exchange);  // /signIn 경로는 필터를 적용하지 않음
+        System.out.println("Gateway 요청 경로: " + path);
+        if (path.startsWith("/auth/api/v1/auth/login") || path.equals("/user/api/v1/user/signup")) {
+            return chain.filter(exchange);
         }
 
         if (!request.getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
@@ -70,7 +69,7 @@ public class JwtFilter implements GlobalFilter, Ordered {
         ServerHttpResponse response = exchange.getResponse();
         try {
             Jws<Claims> claimsJws = Jwts.parser()
-                    .verifyWith(secretKey)
+                    .verifyWith(new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), Jwts.SIG.HS256.key().build().getAlgorithm()))
                     .build().parseSignedClaims(token);
             Claims claims = claimsJws.getBody();
             String username = claims.get("username", String.class);
@@ -88,28 +87,65 @@ public class JwtFilter implements GlobalFilter, Ordered {
 
             // 2) 토큰 만료 기한 확인
             if (Instant.now().isAfter(expiredAt)) {
-                return response.setComplete();
-            }
+                String refreshToken = exchange.getRequest().getCookies()
+                        .getFirst("refreshToken") != null ?
+                        exchange.getRequest().getCookies().getFirst("refreshToken").getValue() : null;
 
-            String blacklistKey = "blacklist:" + email;
-            return redisTemplate.opsForValue().get(blacklistKey)
-                    .flatMap(blockedAtStr -> {
-                        if (blockedAtStr != null) {
-                            Instant blockedAt = Instant.ofEpochSecond(Long.parseLong(blockedAtStr));
-                            if (issuedAt.isBefore(blockedAt)) {
+                if (refreshToken == null) {
+                    response.setStatusCode(HttpStatus.UNAUTHORIZED);
+                    return response.setComplete();
+                }
+                return webClient.post()
+                        .uri("http://auth-service/api/v1/auth/reissue")
+                        .cookie("refreshToken", refreshToken)
+                        .exchangeToMono(reissueResponse -> {
+                            if (reissueResponse.statusCode().is2xxSuccessful()) {
+                                // 새 AccessToken 가져옴
+                                String newAccessToken = reissueResponse.headers().header("Authorization").get(0);
+
+                                // 요청 헤더 교체
+                                ServerHttpRequest mutatedRequest = exchange.getRequest().mutate()
+                                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + newAccessToken)
+                                        .build();
+
+                                return chain.filter(exchange.mutate().request(mutatedRequest).build());
+                            } else {
                                 response.setStatusCode(HttpStatus.UNAUTHORIZED);
                                 return response.setComplete();
                             }
-                        }
+                        });
+            }
 
-                        // 헤더 설정 후 체인 진행
-                        exchange.getRequest().mutate()
-                                .header("X-User-Name", username)
-                                .header("X-User-Email", email)
-                                .header("X-User-Role", role)
-                                .build();
-                        return chain.filter(exchange);
-                    });
+            ServerHttpRequest mutatedRequest = exchange.getRequest().mutate()
+                    .header("X-User-Name", username)
+                    .header("X-User-Email", email)
+                    .header("X-User-Role", role)
+                    .build();
+
+            ServerWebExchange mutatedExchange = exchange.mutate().request(mutatedRequest).build();
+            return chain.filter(mutatedExchange);
+//            String blacklistKey = "blacklist:" + email;
+//            return redisTemplate.opsForValue().get(blacklistKey)
+//                    .flatMap(blockedAtStr -> {
+//                        if (blockedAtStr != null) {
+//                            Instant blockedAt = Instant.ofEpochSecond(Long.parseLong(blockedAtStr));
+//                            if (issuedAt.isBefore(blockedAt)) {
+//                                response.setStatusCode(HttpStatus.UNAUTHORIZED);
+//                                return response.setComplete();
+//                            }
+//                        }
+//
+//                        // 헤더 설정 후 체인 진행
+//                        ServerHttpRequest mutatedRequest = exchange.getRequest().mutate()
+//                                .header("X-User-Name", username)
+//                                .header("X-User-Email", email)
+//                                .header("X-User-Role", role)
+//                                .build();
+//
+//                        ServerWebExchange mutatedExchange = exchange.mutate().request(mutatedRequest).build();
+//                        return chain.filter(mutatedExchange);
+//
+//                    });
         }catch (Exception e) {
             return response.setComplete();
         }

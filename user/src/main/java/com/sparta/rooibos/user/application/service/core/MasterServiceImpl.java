@@ -1,6 +1,5 @@
 package com.sparta.rooibos.user.application.service.core;
 
-import com.sparta.rooibos.user.application.dto.UserAuthDTO;
 import com.sparta.rooibos.user.application.dto.request.UserRequest;
 import com.sparta.rooibos.user.application.dto.request.UserSearchRequest;
 import com.sparta.rooibos.user.application.dto.request.UserUpdateRequest;
@@ -15,6 +14,7 @@ import com.sparta.rooibos.user.domain.entity.UserRoleStatus;
 import com.sparta.rooibos.user.domain.model.Pagination;
 import com.sparta.rooibos.user.domain.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,7 +46,6 @@ public class MasterServiceImpl implements MasterService {
         );
 
         userRepository.save(user);
-        eventProvider.sendUserInfo(UserAuthDTO.fromEntity(user));
 
         return UserResponse.from(user);
     }
@@ -59,6 +58,7 @@ public class MasterServiceImpl implements MasterService {
         return UserResponse.from(user);
     }
 
+    @CacheEvict(cacheNames = "user_info", keyGenerator = "auditorKeyGenerator")
     @Transactional
     public UserResponse updateUserByMaster(UUID userId, UserUpdateRequest request) {
         User user = userRepository.findById(userId)
@@ -71,7 +71,6 @@ public class MasterServiceImpl implements MasterService {
         );
 
         User updatedUser = userRepository.save(user);
-        eventProvider.sendUserInfo(UserAuthDTO.fromEntity(updatedUser));
 
         return UserResponse.from(updatedUser);
     }
@@ -82,6 +81,7 @@ public class MasterServiceImpl implements MasterService {
         return UserListResponse.from(resultPage);
     }
 
+    @CacheEvict(cacheNames = "user_info", keyGenerator = "auditorKeyGenerator")
     @Transactional
     public void deleteUserByMaster(UUID userId) {
         User user = userRepository.findById(userId)
@@ -89,15 +89,14 @@ public class MasterServiceImpl implements MasterService {
 
         user.delete(user.getEmail());
         userRepository.save(user);
-        eventProvider.sendUserDeleteInfo(user.getEmail());
     }
 
+    @CacheEvict(cacheNames = "user_info", keyGenerator = "auditorKeyGenerator")
     @Transactional
     public void reportUserByMaster(UUID userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new BusinessUserException(UserErrorCode.USER_NOT_FOUND));
 
-        eventProvider.sendUserReportInfo(user.getEmail());
         eventProvider.blacklistUser(user.getEmail(), 86400000L);
     }
 }

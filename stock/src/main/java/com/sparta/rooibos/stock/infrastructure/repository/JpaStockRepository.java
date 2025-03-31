@@ -9,9 +9,10 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.Optional;
 import java.util.UUID;
+import org.springframework.data.repository.query.Param;
 
 public interface JpaStockRepository extends JpaRepository<Stock, UUID>, StockRepository {
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select s from Stock s where s.id = :uuid and s.deleteBy is null")
-    Optional<Stock> findByIdAndDeleteByIsNullWithLock(UUID uuid);
+    Optional<Stock> findByIdAndDeleteByIsNullWithLock(@Param("uuid")UUID uuid);
 }
