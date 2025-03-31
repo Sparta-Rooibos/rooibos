@@ -27,18 +27,6 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .cors(corsCustomizer -> corsCustomizer.configurationSource(request -> {
-                    CorsConfiguration configuration = new CorsConfiguration();
-                    configuration.setAllowedOrigins(Collections.singletonList("http://localhost:3000"));
-                    configuration.setAllowedMethods(Collections.singletonList("*"));
-                    configuration.setAllowCredentials(true);
-                    configuration.setAllowedHeaders(Collections.singletonList("*"));
-                    configuration.setMaxAge(3600L);
-                    configuration.setExposedHeaders(Collections.singletonList("Set-Cookie"));
-                    return configuration;
-                }));
-
-        http
                 .csrf(csrf -> csrf.disable())
                 .formLogin((auth) -> auth.disable())
                 .httpBasic((auth) -> auth.disable());
@@ -49,7 +37,7 @@ public class SecurityConfig {
 
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/v1/user/signup").permitAll()
+                        .requestMatchers("/api/v1/user/signup", "/api/v1/user/internal/**").permitAll()
                         .anyRequest().authenticated());
 
         http
