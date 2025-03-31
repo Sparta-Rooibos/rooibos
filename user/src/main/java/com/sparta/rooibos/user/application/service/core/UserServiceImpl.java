@@ -1,7 +1,6 @@
 package com.sparta.rooibos.user.application.service.core;
 
 import com.sparta.rooibos.user.application.auditing.UserAuditorContext;
-import com.sparta.rooibos.user.application.dto.UserAuthDTO;
 import com.sparta.rooibos.user.application.dto.request.UserRequest;
 import com.sparta.rooibos.user.application.dto.request.UserUpdateRequest;
 import com.sparta.rooibos.user.application.dto.response.CachedUserResponse;
