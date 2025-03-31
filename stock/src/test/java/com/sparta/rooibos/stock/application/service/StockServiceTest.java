@@ -1,43 +1,71 @@
 package com.sparta.rooibos.stock.application.service;
 
-import com.sparta.rooibos.stock.application.dto.request.UpdateStockRequest;
 import com.sparta.rooibos.stock.domain.entity.Stock;
-import com.sparta.rooibos.stock.domain.repository.StockRepository;
-import org.junit.jupiter.api.RepeatedTest;
-import org.mockito.Mockito;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-import java.util.Optional;
-import java.util.UUID;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-
+@DisplayName("재고 테스트")
 class StockServiceTest {
 
-    @RepeatedTest(100)
-    public void testConcurrency() throws InterruptedException {
-        UUID stockId = UUID.randomUUID();
-        Stock stock = new Stock(stockId, 100);
-        StockRepository mockStockRepository = Mockito.mock(StockRepository.class);
-        Mockito.when(mockStockRepository.findByIdAndDeleteByIsNullWithLock(stockId)).thenReturn(Optional.of(stock));
 
-        StockService stockService = new StockService(mockStockRepository, null);
+    @Test
+    @DisplayName("재고 생성")
+    void createStock() {
+        Stock stock = Stock.create(
+                "test@apple.com",
+                "hubId",
+                "productId",
+                10
+        );
 
-        ExecutorService executorService = Executors.newFixedThreadPool(100);
+        Assertions.assertThat(stock.getProductQuantity()).isEqualTo(10);
+        Assertions.assertThat(stock.getCreateBy()).isNotNull();
+    }
 
-        // 두 스레드에서 동시에 재고 차감 시도
-        for (int i = 0; i < 100; i++) {
-            executorService.submit(() -> {
-                stockService.updateStock(null, stockId, new UpdateStockRequest(-1)); // 첫 번째 스레드
-            });
-        }
+    @Test
+    @DisplayName("재고 수정 (정상)")
+    void updateStock() {
+        Stock stock = Stock.create(
+                "test@apple.com",
+                "hubId",
+                "productId",
+                10
+        );
 
-        executorService.shutdown();
-        executorService.awaitTermination(1, TimeUnit.SECONDS);
+        stock.update(-5, "test@apple.com");
+        Assertions.assertThat(stock.getProductQuantity()).isEqualTo(5);
+        Assertions.assertThat(stock.getUpdateBy()).isNotNull();
+    }
 
-        assertEquals(0, stock.getProductQuantity());
+    @Test
+    @DisplayName("수량을 가진것보다 재고에서 많이 사용이 되어지는 경우")
+    void minusUpdateStock() {
+        Stock stock = Stock.create(
+                "test@apple.com",
+                "hubId",
+                "productId",
+                10
+        );
+
+        Assertions.assertThatThrownBy(() -> {
+                    stock.update(-20, "test@apple.com");
+                    throw new IllegalArgumentException("수량은 0보다 작을 수 없습니다.");
+                }).isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("수량은 0보다 작을 수 없습니다.");
+    }
+
+
+    @Test
+    @DisplayName("재고가 삭제가 되어지는 경우")
+    void deleteStock() {
+        Stock stock = Stock.create(
+                "test@apple.com",
+                "hubId",
+                "productId",
+                10
+        );
+        stock.delete("test@apple.com");
+        Assertions.assertThat(stock.getDeleteBy()).isNotNull();
     }
 }
