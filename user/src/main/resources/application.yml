@@ -5,7 +5,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5438/user_db
     username: root
-    password: 1234
+    password: "1234"
     driver-class-name: org.postgresql.Driver
     hikari:
       maximum-pool-size: 4
@@ -19,7 +19,6 @@ spring:
     redis:
       host: localhost
       port: 6381
-      password: systempass
 
 server:
   port: 19093
