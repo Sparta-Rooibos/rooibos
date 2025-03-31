@@ -14,6 +14,7 @@ import com.sparta.rooibos.user.domain.entity.UserRoleStatus;
 import com.sparta.rooibos.user.domain.repository.UserRepository;
 import com.sparta.rooibos.user.infrastructure.auditing.UserAuditorContext;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -55,6 +56,7 @@ public class UserServiceImpl implements UserService {
         return UserResponse.from(user);
     }
 
+    @CacheEvict(cacheNames = "user_info", keyGenerator = "auditorKeyGenerator")
     @Transactional
     public UserResponse updateUser(UserUpdateRequest request) {
         String email = UserAuditorContext.getEmail();

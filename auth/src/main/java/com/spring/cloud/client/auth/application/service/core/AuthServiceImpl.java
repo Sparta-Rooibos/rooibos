@@ -7,6 +7,7 @@ import com.spring.cloud.client.auth.application.exception.custom.AuthErrorCode;
 import com.spring.cloud.client.auth.application.service.port.*;
 import com.spring.cloud.client.auth.domain.entity.Refresh;
 import com.spring.cloud.client.auth.domain.repository.RefreshRepository;
+import com.spring.cloud.client.auth.infrastructure.feign.UserClient;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -23,22 +24,28 @@ public class AuthServiceImpl implements AuthService {
     private final RefreshRepository refreshRepository;
     private final BCryptPasswordEncoder passwordEncoder;
     private final CookieProvider cookieProvider;
-    private final RedisTemplate<String, String> redisTemplate;
+//    private final UserClient userClient;
+    private final UserInfoCacheService userInfoCacheService;
+
 
     @Override
     @Transactional
     public void login(LoginRequest loginRequest, HttpServletRequest request, HttpServletResponse response) {
-        String key = "blacklist:" + loginRequest.email();
-        String blockedAtStr = redisTemplate.opsForValue().get(key);
+//        String key = "blacklist:" + loginRequest.email();
+//        String blockedAtStr = redisTemplate.opsForValue().get(key);
+//
+//        if (blockedAtStr != null) {
+//            Instant blockedAt = Instant.ofEpochSecond(Long.parseLong(blockedAtStr));
+//            if (Instant.now().isBefore(blockedAt)) {
+//                throw new BusinessAuthException(AuthErrorCode.BLOCKED_ACCOUNT);
+//            }
+//        }
+        log.info("Feign 호출 시작 - email: {}", loginRequest.email());
 
-        if (blockedAtStr != null) {
-            Instant blockedAt = Instant.ofEpochSecond(Long.parseLong(blockedAtStr));
-            if (Instant.now().isBefore(blockedAt)) {
-                throw new BusinessAuthException(AuthErrorCode.BLOCKED_ACCOUNT);
-            }
-        }
-        Optional<AuthStreamResponse> cachedUser = redisProvider.getUserInfo(loginRequest.email());
-        if (cachedUser.isEmpty()) {
+        CachedUserResponse user = userInfoCacheService.getUserForAuth(loginRequest.email());
+        log.info("유저 정보 조회 성공: {}", user.email());
+
+        if (user == null) {
             throw new BusinessAuthException(AuthErrorCode.INVALID_CREDENTIALS);
         }
 
