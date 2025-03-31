@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
+import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
@@ -26,6 +27,7 @@ import java.time.Instant;
 @RequiredArgsConstructor
 public class JwtFilter implements GlobalFilter, Ordered {
     private final WebClient webClient;
+    private final ReactiveStringRedisTemplate redisTemplate;
 
     @Value("${jwt.secret}")
     private String secret;
@@ -109,37 +111,36 @@ public class JwtFilter implements GlobalFilter, Ordered {
                             }
                         });
             }
+//
+//            ServerHttpRequest mutatedRequest = exchange.getRequest().mutate()
+//                    .header("X-User-Name", username)
+//                    .header("X-User-Email", email)
+//                    .header("X-User-Role", role)
+//                    .build();
+//
+//            ServerWebExchange mutatedExchange = exchange.mutate().request(mutatedRequest).build();
+//            return chain.filter(mutatedExchange);
+            String blacklistKey = "blacklist:" + email;
+            return redisTemplate.opsForValue().get(blacklistKey)
+                    .flatMap(blockedAtStr -> {
+                        if (blockedAtStr != null) {
+                            Instant blockedAt = Instant.ofEpochSecond(Long.parseLong(blockedAtStr));
+                            if (issuedAt.isBefore(blockedAt)) {
+                                response.setStatusCode(HttpStatus.UNAUTHORIZED);
+                                return response.setComplete();
+                            }
+                        }
 
-            ServerHttpRequest mutatedRequest = exchange.getRequest().mutate()
-                    .header("X-User-Name", username)
-                    .header("X-User-Email", email)
-                    .header("X-User-Role", role)
-                    .build();
+                        // 헤더 설정 후 체인 진행
+                        ServerHttpRequest mutatedRequest = exchange.getRequest().mutate()
+                                .header("X-User-Name", username)
+                                .header("X-User-Email", email)
+                                .header("X-User-Role", role)
+                                .build();
 
-            ServerWebExchange mutatedExchange = exchange.mutate().request(mutatedRequest).build();
-            return chain.filter(mutatedExchange);
-//            String blacklistKey = "blacklist:" + email;
-//            return redisTemplate.opsForValue().get(blacklistKey)
-//                    .flatMap(blockedAtStr -> {
-//                        if (blockedAtStr != null) {
-//                            Instant blockedAt = Instant.ofEpochSecond(Long.parseLong(blockedAtStr));
-//                            if (issuedAt.isBefore(blockedAt)) {
-//                                response.setStatusCode(HttpStatus.UNAUTHORIZED);
-//                                return response.setComplete();
-//                            }
-//                        }
-//
-//                        // 헤더 설정 후 체인 진행
-//                        ServerHttpRequest mutatedRequest = exchange.getRequest().mutate()
-//                                .header("X-User-Name", username)
-//                                .header("X-User-Email", email)
-//                                .header("X-User-Role", role)
-//                                .build();
-//
-//                        ServerWebExchange mutatedExchange = exchange.mutate().request(mutatedRequest).build();
-//                        return chain.filter(mutatedExchange);
-//
-//                    });
+                        return chain.filter(exchange.mutate().request(mutatedRequest).build());
+
+                    });
         }catch (Exception e) {
             return response.setComplete();
         }

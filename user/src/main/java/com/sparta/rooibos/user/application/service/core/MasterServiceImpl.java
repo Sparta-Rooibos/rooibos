@@ -7,7 +7,7 @@ import com.sparta.rooibos.user.application.dto.response.UserListResponse;
 import com.sparta.rooibos.user.application.dto.response.UserResponse;
 import com.sparta.rooibos.user.application.exception.BusinessUserException;
 import com.sparta.rooibos.user.application.exception.custom.UserErrorCode;
-import com.sparta.rooibos.user.application.service.port.EventProvider;
+import com.sparta.rooibos.user.application.service.port.BlacklistProvider;
 import com.sparta.rooibos.user.application.service.port.MasterService;
 import com.sparta.rooibos.user.domain.entity.User;
 import com.sparta.rooibos.user.domain.entity.UserRoleStatus;
@@ -26,7 +26,7 @@ import java.util.UUID;
 public class MasterServiceImpl implements MasterService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
-    private final EventProvider eventProvider;
+    private final BlacklistProvider blacklistProvider;
 
     @Transactional
     public UserResponse createUserByMaster(UserRequest userRequest) {
@@ -97,6 +97,6 @@ public class MasterServiceImpl implements MasterService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new BusinessUserException(UserErrorCode.USER_NOT_FOUND));
 
-        eventProvider.blacklistUser(user.getEmail(), 86400000L);
+        blacklistProvider.addToBlacklist(user.getEmail(), 86400000L);
     }
 }

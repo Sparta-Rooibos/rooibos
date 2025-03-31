@@ -20,6 +20,11 @@ spring:
       host: localhost
       port: 6381
 
+  redis:
+    blacklist:
+      host: localhost
+      port: 6382
+
 server:
   port: 19093
 
