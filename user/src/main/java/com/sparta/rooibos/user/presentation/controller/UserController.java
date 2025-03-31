@@ -2,8 +2,12 @@ package com.sparta.rooibos.user.presentation.controller;
 
 import com.sparta.rooibos.user.application.dto.request.UserRequest;
 import com.sparta.rooibos.user.application.dto.request.UserUpdateRequest;
+import com.sparta.rooibos.user.application.dto.response.CachedUserResponse;
 import com.sparta.rooibos.user.application.dto.response.UserResponse;
+import com.sparta.rooibos.user.application.exception.BusinessUserException;
+import com.sparta.rooibos.user.application.exception.custom.UserErrorCode;
 import com.sparta.rooibos.user.application.service.port.UserService;
+import com.sparta.rooibos.user.domain.entity.UserRoleStatus;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -40,5 +44,11 @@ public class UserController {
     public ResponseEntity<Void> reportUser() {
         userService.reportUser();
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/internal/{email}")
+    public ResponseEntity<CachedUserResponse> getUserForAuth(@PathVariable String email) {
+        System.out.println("[UserController] 내부 유저 조회 진입 - email: " + email);
+        return ResponseEntity.ok(userService.getUserForAuth(email));
     }
 }

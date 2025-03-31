@@ -3,12 +3,14 @@ package com.sparta.rooibos.user.application.service.core;
 import com.sparta.rooibos.user.application.dto.UserStreamRequest;
 import com.sparta.rooibos.user.application.dto.request.UserRequest;
 import com.sparta.rooibos.user.application.dto.request.UserUpdateRequest;
+import com.sparta.rooibos.user.application.dto.response.CachedUserResponse;
 import com.sparta.rooibos.user.application.dto.response.UserResponse;
 import com.sparta.rooibos.user.application.exception.BusinessUserException;
 import com.sparta.rooibos.user.application.exception.custom.UserErrorCode;
 import com.sparta.rooibos.user.application.service.port.EventProvider;
 import com.sparta.rooibos.user.application.service.port.UserService;
 import com.sparta.rooibos.user.domain.entity.User;
+import com.sparta.rooibos.user.domain.entity.UserRoleStatus;
 import com.sparta.rooibos.user.domain.repository.UserRepository;
 import com.sparta.rooibos.user.infrastructure.auditing.UserAuditorContext;
 import lombok.RequiredArgsConstructor;
@@ -70,11 +72,11 @@ public class UserServiceImpl implements UserService {
         );
 
         User updatedUser = userRepository.save(user);
-        eventProvider.sendUserInfo(UserStreamRequest.fromEntity(updatedUser));
 
         return UserResponse.from(updatedUser);
     }
 
+    @CacheEvict(cacheNames = "user_info", keyGenerator = "auditorKeyGenerator")
     @Transactional
     public void deleteUser() {
         String email = UserAuditorContext.getEmail();
@@ -83,15 +85,27 @@ public class UserServiceImpl implements UserService {
 
         user.delete(email);
         userRepository.save(user);
-        eventProvider.sendUserDeleteInfo(email);
     }
 
+    @CacheEvict(cacheNames = "user_info", keyGenerator = "auditorKeyGenerator")
     @Transactional
     public void reportUser() {
         String email = UserAuditorContext.getEmail();
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new BusinessUserException(UserErrorCode.USER_NOT_FOUND));
-        eventProvider.sendUserReportInfo(email);
         eventProvider.blacklistUser(email, 86400000L);
     }
+
+    @Transactional(readOnly = true)
+    public CachedUserResponse getUserForAuth(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new BusinessUserException(UserErrorCode.USER_NOT_FOUND));
+
+        if (user.isHidden() || user.getStatus() != UserRoleStatus.ACTIVE) {
+            throw new BusinessUserException(UserErrorCode.USER_NOT_FOUND);
+        }
+
+        return CachedUserResponse.from(user);
+    }
+
 }

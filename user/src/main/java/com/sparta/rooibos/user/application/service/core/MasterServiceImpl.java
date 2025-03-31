@@ -46,7 +46,6 @@ public class MasterServiceImpl implements MasterService {
         );
 
         userRepository.save(user);
-        eventProvider.sendUserInfo(UserStreamRequest.fromEntity(user));
 
         return UserResponse.from(user);
     }
@@ -71,7 +70,6 @@ public class MasterServiceImpl implements MasterService {
         );
 
         User updatedUser = userRepository.save(user);
-        eventProvider.sendUserInfo(UserStreamRequest.fromEntity(updatedUser));
 
         return UserResponse.from(updatedUser);
     }
@@ -89,7 +87,6 @@ public class MasterServiceImpl implements MasterService {
 
         user.delete(user.getEmail());
         userRepository.save(user);
-        eventProvider.sendUserDeleteInfo(user.getEmail());
     }
 
     @Transactional
@@ -97,7 +94,6 @@ public class MasterServiceImpl implements MasterService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new BusinessUserException(UserErrorCode.USER_NOT_FOUND));
 
-        eventProvider.sendUserReportInfo(user.getEmail());
         eventProvider.blacklistUser(user.getEmail(), 86400000L);
     }
 }

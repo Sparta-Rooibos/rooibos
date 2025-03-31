@@ -2,6 +2,7 @@ package com.sparta.rooibos.user.application.service.port;
 
 import com.sparta.rooibos.user.application.dto.request.UserRequest;
 import com.sparta.rooibos.user.application.dto.request.UserUpdateRequest;
+import com.sparta.rooibos.user.application.dto.response.CachedUserResponse;
 import com.sparta.rooibos.user.application.dto.response.UserResponse;
 
 public interface UserService {
@@ -10,4 +11,5 @@ public interface UserService {
     UserResponse updateUser(UserUpdateRequest request);
     void deleteUser();
     void reportUser();
+    CachedUserResponse getUserForAuth(String email);
 }

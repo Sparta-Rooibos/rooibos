@@ -38,7 +38,6 @@ public class UserApproveServiceImpl implements UserApproveService {
 
         user.approve();
         userRepository.save(user);
-        eventProvider.sendUserInfo(UserStreamRequest.fromEntity(user));
     }
 
     @Transactional

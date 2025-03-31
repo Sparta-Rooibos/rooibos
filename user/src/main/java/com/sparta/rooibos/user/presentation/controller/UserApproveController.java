@@ -20,7 +20,7 @@ public class UserApproveController {
 
     @PatchMapping("/approve/{userId}")
     public ResponseEntity<Void> approveUser(@PathVariable UUID userId) {
-        log.info("🔥 Approve API 진입: {}", userId);
+        log.info("Approve API 진입: {}", userId);
         userApproveService.approveUser(userId);
         return ResponseEntity.ok().build();
     }

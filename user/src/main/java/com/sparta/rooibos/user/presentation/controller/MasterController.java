@@ -9,6 +9,7 @@ import com.sparta.rooibos.user.application.service.port.MasterService;
 import com.sparta.rooibos.user.infrastructure.aop.MasterOnlyCheck;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,12 +35,14 @@ public class MasterController {
     }
 
     @MasterOnlyCheck
+    @CacheEvict(cacheNames = "user_info", key = "#user.email")
     @PutMapping("/{userId}")
     public ResponseEntity<UserResponse> updateUserByMaster(@PathVariable UUID userId, @RequestBody @Valid UserUpdateRequest request) {
         return ResponseEntity.ok(masterService.updateUserByMaster(userId, request));
     }
 
     @MasterOnlyCheck
+    @CacheEvict(cacheNames = "user_info", key = "#user.email")
     @PatchMapping("/delete/{userId}")
     public ResponseEntity<Void> deleteUserByMaster(@PathVariable UUID userId) {
         masterService.deleteUserByMaster(userId);
@@ -47,6 +50,7 @@ public class MasterController {
     }
 
     @MasterOnlyCheck
+    @CacheEvict(cacheNames = "user_info", key = "#user.email")
     @PatchMapping("/report/{userId}")
     public ResponseEntity<Void> reportUserByMaster(@PathVariable UUID userId) {
         masterService.reportUserByMaster(userId);
