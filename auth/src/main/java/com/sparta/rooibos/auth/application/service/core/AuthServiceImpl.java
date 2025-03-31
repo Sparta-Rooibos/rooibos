@@ -1,18 +1,16 @@
 package com.sparta.rooibos.auth.application.service.core;
 
-import com.sparta.rooibos.auth.application.dto.UserAuthDTO;
 import com.sparta.rooibos.auth.application.dto.request.LoginRequest;
+import com.sparta.rooibos.auth.application.dto.response.CachedUserResponse;
 import com.sparta.rooibos.auth.application.exception.BusinessAuthException;
 import com.sparta.rooibos.auth.application.exception.custom.AuthErrorCode;
-import com.sparta.rooibos.auth.application.service.port.AuthService;
-import com.sparta.rooibos.auth.application.service.port.CookieProvider;
-import com.sparta.rooibos.auth.application.service.port.JwtProvider;
-import com.sparta.rooibos.auth.application.service.port.RedisProvider;
+import com.sparta.rooibos.auth.application.service.port.*;
 import com.sparta.rooibos.auth.domain.entity.Refresh;
 import com.sparta.rooibos.auth.domain.repository.RefreshRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -21,38 +19,43 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.Instant;
 import java.util.Optional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
     private final JwtProvider jwtProvider;
     private final RefreshRepository refreshRepository;
-    private final RedisProvider redisProvider;
     private final BCryptPasswordEncoder passwordEncoder;
     private final CookieProvider cookieProvider;
-    private final RedisTemplate<String, String> redisTemplate;
+    private final UserInfoCacheService userInfoCacheService;
 
     @Override
     @Transactional
     public void login(LoginRequest loginRequest, HttpServletRequest request, HttpServletResponse response) {
-        String key = "blacklist:" + loginRequest.email();
-        String blockedAtStr = redisTemplate.opsForValue().get(key);
+//        String key = "blacklist:" + loginRequest.email();
+//        String blockedAtStr = redisTemplate.opsForValue().get(key);
+//
+//        if (blockedAtStr != null) {
+//            Instant blockedAt = Instant.ofEpochSecond(Long.parseLong(blockedAtStr));
+//            if (Instant.now().isBefore(blockedAt)) {
+//                throw new BusinessAuthException(AuthErrorCode.BLOCKED_ACCOUNT);
+//            }
+//        }
 
-        if (blockedAtStr != null) {
-            Instant blockedAt = Instant.ofEpochSecond(Long.parseLong(blockedAtStr));
-            if (Instant.now().isBefore(blockedAt)) {
-                throw new BusinessAuthException(AuthErrorCode.BLOCKED_ACCOUNT);
-            }
-        }
-        Optional<UserAuthDTO> cachedUser = redisProvider.getUserInfo(loginRequest.email());
-        if (cachedUser.isEmpty()) {
+        log.info("Feign 호출 시작 - email: {}", loginRequest.email());
+
+        CachedUserResponse user = userInfoCacheService.getUserForAuth(loginRequest.email());
+        log.info("유저 정보 조회 성공: {}", user.email());
+
+        if (user == null) {
             throw new BusinessAuthException(AuthErrorCode.INVALID_CREDENTIALS);
         }
-        UserAuthDTO user = cachedUser.get();
 
         if (!passwordEncoder.matches(loginRequest.password(), user.password())) {
             throw new BusinessAuthException(AuthErrorCode.INVALID_PASSWORD);
         }
 
+        refreshRepository.deleteByEmail(user.email());
         String accessToken = jwtProvider.createJwt("access", user.username(), user.email(), user.role(), 600000L);
         String refreshToken = jwtProvider.createJwt("refresh", user.username(), user.email(), user.role(), 86400000L);
         refreshRepository.save(Refresh.create(user.email(), refreshToken, 86400000L));

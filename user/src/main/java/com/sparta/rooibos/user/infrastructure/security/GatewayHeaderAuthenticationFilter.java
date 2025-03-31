@@ -21,11 +21,16 @@ public class GatewayHeaderAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
+        //        String gatewayAuth = request.getHeader("X-GATEWAY-AUTHORIZED");
+        //        if (!"true".equals(gatewayAuth)) {
+        //            response.sendError(HttpServletResponse.SC_FORBIDDEN, "Forbidden");
+        //            return;
+        //        }
+
         String email = request.getHeader("X-User-Email");
         String role = request.getHeader("X-User-Role");
 
         if (email != null && role != null) {
-            // 간단한 인증 객체 생성
             List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(role));
             Authentication authentication = new UsernamePasswordAuthenticationToken(email, null, authorities);
             SecurityContextHolder.getContext().setAuthentication(authentication);

@@ -1,5 +1,6 @@
 package com.sparta.rooibos.user.infrastructure.redis;
 
+import com.sparta.rooibos.user.application.service.port.EventProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
@@ -9,7 +10,7 @@ import java.util.concurrent.TimeUnit;
 
 @Component
 @RequiredArgsConstructor
-public class BlacklistManager {
+public class BlacklistManager implements EventProvider {
 
     private final StringRedisTemplate redisTemplate;
 
