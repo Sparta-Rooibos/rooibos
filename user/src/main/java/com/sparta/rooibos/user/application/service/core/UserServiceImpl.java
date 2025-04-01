@@ -6,7 +6,7 @@ import com.sparta.rooibos.user.application.dto.response.CachedUserResponse;
 import com.sparta.rooibos.user.application.dto.response.UserResponse;
 import com.sparta.rooibos.user.application.exception.BusinessUserException;
 import com.sparta.rooibos.user.application.exception.custom.UserErrorCode;
-import com.sparta.rooibos.user.application.service.port.EventProvider;
+import com.sparta.rooibos.user.application.service.port.BlacklistProvider;
 import com.sparta.rooibos.user.application.service.port.UserService;
 import com.sparta.rooibos.user.domain.entity.User;
 import com.sparta.rooibos.user.domain.entity.UserRoleStatus;
@@ -23,7 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
-    private final EventProvider eventProvider;
+    private final BlacklistProvider blacklistProvider;
 
     @Transactional
     public UserResponse createUser(UserRequest userRequest) {
@@ -94,7 +94,7 @@ public class UserServiceImpl implements UserService {
         String email = UserAuditorContext.getEmail();
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new BusinessUserException(UserErrorCode.USER_NOT_FOUND));
-        eventProvider.blacklistUser(email, 86400000L);
+        blacklistProvider.addToBlacklist(email, 86400000L);
     }
 
 

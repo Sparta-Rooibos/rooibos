@@ -2,7 +2,6 @@ package com.sparta.rooibos.user.application.service.core;
 
 import com.sparta.rooibos.user.application.exception.BusinessUserException;
 import com.sparta.rooibos.user.application.exception.custom.UserErrorCode;
-import com.sparta.rooibos.user.application.service.port.EventProvider;
 import com.sparta.rooibos.user.application.service.port.UserApproveService;
 import com.sparta.rooibos.user.domain.entity.User;
 import com.sparta.rooibos.user.domain.repository.UserRepository;
@@ -18,7 +17,6 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class UserApproveServiceImpl implements UserApproveService {
     private final UserRepository userRepository;
-    private final EventProvider eventProvider;
 
     @Transactional
     public void approveUser(UUID userId) {

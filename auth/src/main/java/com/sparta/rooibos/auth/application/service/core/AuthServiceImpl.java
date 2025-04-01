@@ -7,17 +7,14 @@ import com.sparta.rooibos.auth.application.exception.custom.AuthErrorCode;
 import com.sparta.rooibos.auth.application.service.port.*;
 import com.sparta.rooibos.auth.domain.entity.Refresh;
 import com.sparta.rooibos.auth.domain.repository.RefreshRepository;
+import com.sparta.rooibos.auth.domain.repository.RefreshRepositoryCustom;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.Instant;
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -32,18 +29,6 @@ public class AuthServiceImpl implements AuthService {
     @Override
     @Transactional
     public void login(LoginRequest loginRequest, HttpServletRequest request, HttpServletResponse response) {
-//        String key = "blacklist:" + loginRequest.email();
-//        String blockedAtStr = redisTemplate.opsForValue().get(key);
-//
-//        if (blockedAtStr != null) {
-//            Instant blockedAt = Instant.ofEpochSecond(Long.parseLong(blockedAtStr));
-//            if (Instant.now().isBefore(blockedAt)) {
-//                throw new BusinessAuthException(AuthErrorCode.BLOCKED_ACCOUNT);
-//            }
-//        }
-
-        log.info("Feign 호출 시작 - email: {}", loginRequest.email());
-
         CachedUserResponse user = userInfoCacheService.getUserForAuth(loginRequest.email());
         log.info("유저 정보 조회 성공: {}", user.email());
 
@@ -56,6 +41,9 @@ public class AuthServiceImpl implements AuthService {
         }
 
         refreshRepository.deleteByEmail(user.email());
+        if (refreshRepository instanceof RefreshRepositoryCustom customRepo) {
+            customRepo.flush();
+        }
         String accessToken = jwtProvider.createJwt("access", user.username(), user.email(), user.role(), 600000L);
         String refreshToken = jwtProvider.createJwt("refresh", user.username(), user.email(), user.role(), 86400000L);
         refreshRepository.save(Refresh.create(user.email(), refreshToken, 86400000L));
@@ -106,11 +94,5 @@ public class AuthServiceImpl implements AuthService {
 
         response.setHeader("Authorization", "Bearer " + newAccessToken);
         response.addCookie(cookieProvider.createCookie(newRefreshToken));
-    }
-
-    @Override
-    @Transactional
-    public void banUser(String email) {
-        refreshRepository.deleteByEmail(email);
     }
 }

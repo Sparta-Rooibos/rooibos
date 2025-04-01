@@ -7,9 +7,11 @@ import com.sparta.rooibos.user.application.dto.response.UserResponse;
 import com.sparta.rooibos.user.application.service.port.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/v1/user")
 @RequiredArgsConstructor
@@ -45,7 +47,7 @@ public class UserController {
 
     @GetMapping("/internal/{email}")
     public ResponseEntity<CachedUserResponse> getUserForAuth(@PathVariable String email) {
-        System.out.println("[UserController] 내부 유저 조회 진입 - email: " + email);
+        log.info("[UserController] 내부 유저 조회 진입 - email: " + email);
         return ResponseEntity.ok(userService.getUserForAuth(email));
     }
 }
