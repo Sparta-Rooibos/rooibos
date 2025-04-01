@@ -1,4 +1,4 @@
-package com.sparta.rooibos.stock.application.annotation;
+package com.sparta.rooibos.stock.application.aop;
 
 import lombok.RequiredArgsConstructor;
 import org.aspectj.lang.annotation.Aspect;

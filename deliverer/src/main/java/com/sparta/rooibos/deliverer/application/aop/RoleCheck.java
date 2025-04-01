@@ -1,6 +1,4 @@
-package com.sparta.rooibos.stock.application.annotation;
-
-import com.sparta.rooibos.stock.application.type.Role;
+package com.sparta.rooibos.deliverer.application.aop;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -10,5 +8,5 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface RoleCheck {
-    Role[] value();
+    String[] value();
 }

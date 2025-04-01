@@ -1,4 +1,4 @@
-package com.sparta.rooibos.deliverer.infrastructure.auditing;
+package com.sparta.rooibos.deliverer.application.auditing;
 
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.stereotype.Component;

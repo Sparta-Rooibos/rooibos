@@ -1,4 +1,4 @@
-package com.sparta.rooibos.deliverer.infrastructure.auditing;
+package com.sparta.rooibos.deliverer.application.auditing;
 
 import java.util.Optional;
 

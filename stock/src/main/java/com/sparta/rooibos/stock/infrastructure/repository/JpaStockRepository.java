@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.data.repository.query.Param;
@@ -15,4 +16,10 @@ public interface JpaStockRepository extends JpaRepository<Stock, UUID>, StockRep
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select s from Stock s where s.id = :uuid and s.deleteBy is null")
     Optional<Stock> findByIdAndDeleteByIsNullWithLock(@Param("uuid")UUID uuid);
+
+
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("select s from Stock s where s.id IN :ids and s.deleteBy is null")
+    List<Stock> findByIdsAndDeleteByIsNullWithLock(@Param("ids")List<UUID> ids);
+
 }
