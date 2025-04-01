@@ -107,6 +107,7 @@ public class JwtFilter implements GlobalFilter, Ordered {
                             }
                         });
             }
+
             String blacklistKey = "blacklist:" + email;
             return redisTemplate.opsForValue().get(blacklistKey)
                     .defaultIfEmpty("")
@@ -114,6 +115,7 @@ public class JwtFilter implements GlobalFilter, Ordered {
                         if (!blacklistTimestamp.isEmpty()) {
                             Instant blacklistedAt = Instant.ofEpochSecond(Long.parseLong(blacklistTimestamp));
                             if (issuedAt.isBefore(blacklistedAt)) {
+                                log.warn("블랙리스트 사용자 접근 차단됨");
                                 response.setStatusCode(HttpStatus.UNAUTHORIZED);
                                 return response.setComplete();
                             }
@@ -129,6 +131,7 @@ public class JwtFilter implements GlobalFilter, Ordered {
 
                     });
         }catch (Exception e) {
+            log.error("토큰 검증 중 예외 발생: {}", e.getMessage(), e);
             return response.setComplete();
         }
     }
