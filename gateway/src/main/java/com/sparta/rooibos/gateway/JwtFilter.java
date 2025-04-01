@@ -4,6 +4,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
@@ -22,7 +23,7 @@ import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 
-
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class JwtFilter implements GlobalFilter, Ordered {
@@ -37,9 +38,8 @@ public class JwtFilter implements GlobalFilter, Ordered {
         ServerHttpRequest request = exchange.getRequest();
         ServerHttpResponse response = exchange.getResponse();
 
-
         String path = exchange.getRequest().getURI().getPath();
-        System.out.println("Gateway 요청 경로: " + path);
+        log.info("Gateway 요청 경로: " + path);
         if (path.startsWith("/auth/api/v1/auth/login") || path.equals("/user/api/v1/user/signup")) {
             return chain.filter(exchange);
         }
@@ -56,7 +56,6 @@ public class JwtFilter implements GlobalFilter, Ordered {
         }
 
         String token = authorization.split(" ")[1];
-
 
         return validateToken(token, exchange, chain);
     }
@@ -75,13 +74,10 @@ public class JwtFilter implements GlobalFilter, Ordered {
             Instant issuedAt = claims.getIssuedAt().toInstant();
             Instant expiredAt = claims.getExpiration().toInstant();
 
-
-            // 1) 토큰 카테고리 확인 (access인지 refresh인지)
             if (!"access".equals(category)) {
                 return response.setComplete();
             }
 
-            // 2) 토큰 만료 기한 확인
             if (Instant.now().isAfter(expiredAt)) {
                 String refreshToken = exchange.getRequest().getCookies()
                         .getFirst("refreshToken") != null ?
@@ -111,27 +107,18 @@ public class JwtFilter implements GlobalFilter, Ordered {
                             }
                         });
             }
-//
-//            ServerHttpRequest mutatedRequest = exchange.getRequest().mutate()
-//                    .header("X-User-Name", username)
-//                    .header("X-User-Email", email)
-//                    .header("X-User-Role", role)
-//                    .build();
-//
-//            ServerWebExchange mutatedExchange = exchange.mutate().request(mutatedRequest).build();
-//            return chain.filter(mutatedExchange);
             String blacklistKey = "blacklist:" + email;
             return redisTemplate.opsForValue().get(blacklistKey)
-                    .flatMap(blockedAtStr -> {
-                        if (blockedAtStr != null) {
-                            Instant blockedAt = Instant.ofEpochSecond(Long.parseLong(blockedAtStr));
-                            if (issuedAt.isBefore(blockedAt)) {
+                    .defaultIfEmpty("")
+                    .flatMap(blacklistTimestamp -> {
+                        if (!blacklistTimestamp.isEmpty()) {
+                            Instant blacklistedAt = Instant.ofEpochSecond(Long.parseLong(blacklistTimestamp));
+                            if (issuedAt.isBefore(blacklistedAt)) {
                                 response.setStatusCode(HttpStatus.UNAUTHORIZED);
                                 return response.setComplete();
                             }
                         }
 
-                        // 헤더 설정 후 체인 진행
                         ServerHttpRequest mutatedRequest = exchange.getRequest().mutate()
                                 .header("X-User-Name", username)
                                 .header("X-User-Email", email)
