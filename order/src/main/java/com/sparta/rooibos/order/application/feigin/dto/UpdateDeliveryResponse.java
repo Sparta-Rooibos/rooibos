@@ -1,4 +1,4 @@
-package com.sparta.rooibos.order.infrastructure.delivery;
+package com.sparta.rooibos.order.application.feigin.dto;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
