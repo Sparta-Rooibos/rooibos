@@ -52,7 +52,7 @@ public class Stock extends BaseEntity {
 
 
     public void validateQuantity() {
-        if (productQuantity < 0) {
+        if (productQuantity <= 0) {
             throw new IllegalArgumentException("수량은 0보다 작을 수 없습니다.");
         }
     }
