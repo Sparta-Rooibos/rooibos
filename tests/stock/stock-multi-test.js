@@ -12,15 +12,15 @@ export const options = {
     scenarios: {
         extreme_deadlock: {
             executor: 'ramping-arrival-rate',
-            startRate: 20,         // 초당 20개 요청으로 시작
+            startRate: 2000,         // 초당 20개 요청으로 시작
             timeUnit: '1s',
-            preAllocatedVUs: 50,
-            maxVUs: 200,
+            preAllocatedVUs: 10000,
+            maxVUs: 100000,
             stages: [
-                { duration: '5s', target: 50 },    // 5초 동안 초당 50개 요청으로 증가
-                { duration: '10s', target: 100 },  // 10초 동안 초당 100개 요청으로 증가
-                { duration: '10s', target: 100 },  // 10초 동안 100개 유지
-                { duration: '5s', target: 20 }     // 5초 동안 20개로 감소
+                { duration: '5s', target: 10000 },    // 5초 동안 초당 50개 요청으로 증가
+                { duration: '10s', target: 20000 },  // 10초 동안 초당 100개 요청으로 증가
+                { duration: '10s', target: 15000 },  // 10초 동안 100개 유지
+                { duration: '5s', target: 1000 }     // 5초 동안 20개로 감소
             ],
         }
     },
@@ -45,7 +45,7 @@ export function setup() {
     const createdIds = [];
 
     // 필수 테스트용 재고 2개만 생성 (데드락 유발이 더 쉬움)
-    for (let i = 0; i < 2; i++) {
+    for (let i = 0; i < 5; i++) {
         const productId = `deadlock-extreme-${randomString(5)}`;
 
         const createPayload = JSON.stringify({
