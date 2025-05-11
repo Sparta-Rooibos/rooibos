@@ -1,44 +1,48 @@
-package com.sparta.rooibos.user.application.service.core;
+package com.sparta.rooibos.user.application.service.usecase;
 
 import com.sparta.rooibos.user.application.dto.request.UserRequest;
+import com.sparta.rooibos.user.application.dto.request.UserSearchRequest;
 import com.sparta.rooibos.user.application.dto.request.UserUpdateRequest;
-import com.sparta.rooibos.user.application.dto.response.CachedUserResponse;
+import com.sparta.rooibos.user.application.dto.response.UserListResponse;
 import com.sparta.rooibos.user.application.dto.response.UserResponse;
 import com.sparta.rooibos.user.application.exception.BusinessUserException;
 import com.sparta.rooibos.user.application.exception.custom.UserErrorCode;
 import com.sparta.rooibos.user.application.service.port.BlacklistProvider;
-import com.sparta.rooibos.user.application.service.port.UserService;
+import com.sparta.rooibos.user.application.service.port.MasterService;
 import com.sparta.rooibos.user.domain.entity.User;
 import com.sparta.rooibos.user.domain.entity.UserRoleStatus;
+import com.sparta.rooibos.user.domain.model.Pagination;
 import com.sparta.rooibos.user.domain.repository.UserRepository;
-import com.sparta.rooibos.user.application.auditing.UserAuditorContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.UUID;
+
 @Service
 @RequiredArgsConstructor
-public class UserServiceImpl implements UserService {
+public class MasterServiceImpl implements MasterService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
     private final BlacklistProvider blacklistProvider;
 
     @Transactional
-    public UserResponse createUser(UserRequest userRequest) {
+    public UserResponse createUserByMaster(UserRequest userRequest) {
         boolean isExist = userRepository.existsByEmail(userRequest.email());
         if (isExist) {
             throw new BusinessUserException(UserErrorCode.DUPLICATE_EMAIL);
         }
 
-        User user = User.create(
+        User user = User.createByMaster(
                 userRequest.username(),
                 userRequest.email(),
                 passwordEncoder.encode(userRequest.password()),
                 userRequest.slackAccount(),
                 userRequest.phone(),
-                userRequest.role()
+                userRequest.role(),
+                UserRoleStatus.ACTIVE
         );
 
         userRepository.save(user);
@@ -47,9 +51,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Transactional(readOnly = true)
-    public UserResponse getUser() {
-        String email = UserAuditorContext.getEmail();
-        User user = userRepository.findByEmail(email)
+    public UserResponse getUserByMaster(UUID userId) {
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new BusinessUserException(UserErrorCode.USER_NOT_FOUND));
 
         return UserResponse.from(user);
@@ -57,18 +60,13 @@ public class UserServiceImpl implements UserService {
 
     @CacheEvict(cacheNames = "user_info", keyGenerator = "auditorKeyGenerator")
     @Transactional
-    public UserResponse updateUser(UserUpdateRequest request) {
-        String email = UserAuditorContext.getEmail();
-        User user = userRepository.findByEmail(email)
+    public UserResponse updateUserByMaster(UUID userId, UserUpdateRequest request) {
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new BusinessUserException(UserErrorCode.USER_NOT_FOUND));
-
-        if (user.isHidden()) {
-            throw new BusinessUserException(UserErrorCode.DELETED_USER_CANNOT_UPDATE);
-        }
 
         user.update(
                 request.slackAccount(),
-                request.password() != null ? passwordEncoder.encode(request.password()) : null,
+                passwordEncoder.encode(request.password()),
                 request.phone()
         );
 
@@ -77,35 +75,28 @@ public class UserServiceImpl implements UserService {
         return UserResponse.from(updatedUser);
     }
 
+    @Transactional(readOnly = true)
+    public UserListResponse searchUsersByMaster(UserSearchRequest request) {
+        Pagination<User> resultPage = userRepository.searchUsers(request.toCriteria());
+        return UserListResponse.from(resultPage);
+    }
+
     @CacheEvict(cacheNames = "user_info", keyGenerator = "auditorKeyGenerator")
     @Transactional
-    public void deleteUser() {
-        String email = UserAuditorContext.getEmail();
-        User user = userRepository.findByEmail(email)
+    public void deleteUserByMaster(UUID userId) {
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new BusinessUserException(UserErrorCode.USER_NOT_FOUND));
 
-        user.delete(email);
+        user.delete(user.getEmail());
         userRepository.save(user);
     }
 
     @CacheEvict(cacheNames = "user_info", keyGenerator = "auditorKeyGenerator")
     @Transactional
-    public void reportUser() {
-        String email = UserAuditorContext.getEmail();
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new BusinessUserException(UserErrorCode.USER_NOT_FOUND));
-        blacklistProvider.addToBlacklist(email, 86400000L);
-    }
-
-
-    @Transactional(readOnly = true)
-    public CachedUserResponse getUserForAuth(String email) {
-        User user = userRepository.findByEmail(email)
+    public void reportUserByMaster(UUID userId) {
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new BusinessUserException(UserErrorCode.USER_NOT_FOUND));
 
-        if (user.isHidden() || user.getStatus() != UserRoleStatus.ACTIVE) {
-            throw new BusinessUserException(UserErrorCode.USER_NOT_FOUND);
-        }
-        return CachedUserResponse.from(user);
+        blacklistProvider.addToBlacklist(user.getEmail(), 86400000L);
     }
 }

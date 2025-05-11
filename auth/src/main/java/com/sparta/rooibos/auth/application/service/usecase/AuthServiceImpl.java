@@ -1,4 +1,4 @@
-package com.sparta.rooibos.auth.application.service.core;
+package com.sparta.rooibos.auth.application.service.usecase;
 
 import com.sparta.rooibos.auth.application.dto.request.LoginRequest;
 import com.sparta.rooibos.auth.application.dto.response.CachedUserResponse;

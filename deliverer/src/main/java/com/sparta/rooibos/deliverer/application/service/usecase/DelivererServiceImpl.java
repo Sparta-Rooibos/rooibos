@@ -1,4 +1,4 @@
-package com.sparta.rooibos.deliverer.application.service.core;
+package com.sparta.rooibos.deliverer.application.service.usecase;
 
 import com.sparta.rooibos.deliverer.application.auditing.UserAuditorContext;
 import com.sparta.rooibos.deliverer.application.dto.request.DelivererRequest;

@@ -1,4 +1,4 @@
-package com.sparta.rooibos.user.application.service.core;
+package com.sparta.rooibos.user.application.service.usecase;
 
 import com.sparta.rooibos.user.application.exception.BusinessUserException;
 import com.sparta.rooibos.user.application.exception.custom.UserErrorCode;
